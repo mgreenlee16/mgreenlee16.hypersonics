@@ -249,6 +249,26 @@ table.data tr.sub td { background: var(--surface-2); font-family: var(--sans); f
 .quiz .why { font-size: .86rem; color: var(--muted); margin-top: .35rem; display: none; }
 .quiz .why.show { display: block; }
 
+/* problem generator */
+.practice { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent-2); border-radius: 14px; padding: 1rem 1.1rem; margin: 1.2rem 0; font-family: var(--sans); }
+.practice-head { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: .8rem; }
+.practice-head > b { font-size: 1rem; margin-right: auto; }
+.practice .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.practice .pscore { font-family: var(--mono); color: var(--muted); font-size: .85rem; }
+.practice .pq { font-size: .98rem; margin-bottom: .6rem; line-height: 1.5; }
+.practice .pq .pill { margin-right: .3rem; }
+.practice .pans { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; margin-bottom: .5rem; }
+.practice .pans input { width: 10rem; }
+.practice .punit { color: var(--muted); font-size: .88rem; min-width: 2rem; }
+.practice .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .35rem; }
+.practice .opts button { text-align: left; font-size: .86rem; padding: .4rem .6rem; }
+.practice .opts button.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--surface)); }
+.practice .opts button.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+.practice .why { font-size: .86rem; color: var(--muted); margin-top: .5rem; display: none; }
+.practice .why.show { display: block; }
+.practice .pfoot { font-size: .76rem; color: var(--muted); margin: .8rem 0 0; }
+.practice #psolbox { margin-top: .4rem; overflow-x: auto; }
+
 /* key equations */
 .keyeq { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: .8rem; margin: 1rem 0; }
 .keyeq > div { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: .7rem 1rem; }

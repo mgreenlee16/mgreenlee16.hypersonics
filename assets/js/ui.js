@@ -305,7 +305,9 @@
 
   // ---------- self-check quiz ----------
   // items: [{ q, opts: [...], a: index, why }]
+  const quizBank = {};
   function quiz(target, items) {
+    quizBank[target] = items;
     const el = document.querySelector(target);
     el.classList.add("quiz");
     el.innerHTML = `<span class="score">0 / ${items.length}</span><b>Pick an answer to see whether it is right, and why.</b><ol>` +
@@ -453,10 +455,17 @@
 
   window.UI = {
     gamma: () => gamma, setGamma, onGamma: fn => listeners.push(fn), wire, val, seg, setSeg, live, fmt, readout, table, plot,
-    linspace, logspace, cards, quiz, initTabs, typeset, $, LESSONS, CALCS, store,
+    linspace, logspace, cards, quiz, quizBank, initTabs, typeset, $, LESSONS, CALCS, store,
   };
 
   buildTopbar();
   initTabs();
-  document.addEventListener("DOMContentLoaded", () => { buildPager(); buildFooter(); loadMath(); });
+  // Lesson pages get the problem generator (assets/js/practice.js), loaded after the page's own scripts have run.
+  function loadPractice() {
+    if (!document.body.dataset.lesson) return;
+    const s = document.createElement("script");
+    s.src = ROOT + "assets/js/practice.js";
+    document.body.append(s);
+  }
+  document.addEventListener("DOMContentLoaded", () => { loadPractice(); buildPager(); buildFooter(); loadMath(); });
 })();
