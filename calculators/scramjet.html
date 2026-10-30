@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramjet and Scramjet Cycle Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Propulsion</div>
+  <h1>Ramjet &amp; Scramjet Cycle</h1>
+  <p class="lead">Station-by-station Brayton-cycle analysis after Heiser and Pratt, with compression, burner and expansion efficiencies. Specify the inlet either by its cycle temperature ratio ψ = T₃/T₀ or by the burner-entry Mach number M₃. M₃ below 1 is a ramjet; above 1, a scramjet.</p>
+</div>
+<section class="calc">
+  <div class="inputs">
+    <label>Flight Mach M₀<input type="number" id="M0" value="10" step="any"></label>
+    <label>Dynamic pressure q₀ (kPa; sets altitude)<input type="number" id="q" value="47.88" step="any"></label>
+    <label>Inlet given by<select id="mode"><option value="psi">ψ = T₃/T₀</option><option value="M3">burner-entry Mach M₃</option></select></label>
+    <label>ψ or M₃<input type="number" id="val" value="7" step="any"></label>
+    <label>Fuel<select id="fuel"><option value="H2">hydrogen</option><option value="HC">hydrocarbon (JP-7 class)</option></select></label>
+    <label>Equivalence ratio φ<input type="number" id="phi" value="1" step="any"></label>
+  </div>
+  <div class="inputs" style="margin-top:.6rem">
+    <label>η_c<input type="number" id="ec" value="0.9" step="any"></label>
+    <label>η_b<input type="number" id="eb" value="0.9" step="any"></label>
+    <label>η_e<input type="number" id="ee" value="0.9" step="any"></label>
+    <label>γ inlet<input type="number" id="gc" value="1.4" step="any"></label>
+    <label>γ burner/nozzle<input type="number" id="gb" value="1.3" step="any"></label>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="calc-grid results"><div id="o1"></div><div id="o2"></div></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>\(V_3^2 = V_0^2 - 2c_p(T_3 - T_0)\); \(p_3/p_0 = [\psi/(\psi(1-\eta_c)+\eta_c)]^{c_p/R}\); constant-pressure burner with fuel injected without axial momentum, \(V_4 = V_3/(1+f)\), \((1+f)(c_{pb}T_4 + V_4^2/2) = c_pT_3 + V_3^2/2 + \eta_bfh_{PR}\); nozzle to ambient pressure, \(T_{10} = T_4\{1 - \eta_e[1 - (p_0/p_3)^{R/c_{pb}}]\}\); \(F/\dot m_0 = (1+f)V_{10} - V_0\). Heating values: H₂ 119.95 MJ/kg (f_st = 0.0292), hydrocarbon 43.9 MJ/kg (f_st = 0.0676). Constant specific heats overestimate T₄ when it exceeds about 2,500 K. See <a href="../lessons/airbreathing.html">Lesson 14</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const ids = ["M0", "q", "mode", "val", "fuel", "phi", "ec", "eb", "ee", "gc", "gb"];
+  function run() {
+    const M0 = UI.val("M0"), q = UI.val("q") * 1000, mode = document.getElementById("mode").value, v = UI.val("val"), err = document.getElementById("err");
+    if (!(M0 > 1 && q > 0 && v > 0)) { err.textContent = "Need M₀ > 1, q₀ > 0 and a positive ψ or M₃."; return; }
+    const z = HY.altitudeForQ(M0, q), a = HY.atmosphere(z);
+    const o = { M0, T0: a.T, etac: UI.val("ec"), etab: UI.val("eb"), etae: UI.val("ee"), phi: UI.val("phi"), fuel: document.getElementById("fuel").value, gc: UI.val("gc"), gb: UI.val("gb") };
+    if (mode === "psi") o.psi = v; else o.M3 = v;
+    const c = HY.brayton(o);
+    if (c.error) { err.textContent = c.error; document.getElementById("o1").innerHTML = ""; document.getElementById("o2").innerHTML = ""; return; }
+    err.textContent = c.Fm <= 0 ? "This cycle produces no net thrust." : c.T4 > 2800 ? "T₄ exceeds about 2,800 K: dissociation would reduce the real performance." : "";
+    UI.table("#o1", ["Station", "Value"], [["Altitude (km)", z / 1000], ["0: T₀ (K), p₀ (Pa)", `${a.T.toFixed(1)}, ${a.p.toFixed(0)}`], ["0: V₀ (m/s)", c.V0], ["0: T_t (K)", c.Tt0],
+      ["3: T₃ (K)", c.T3], ["3: ψ", c.psi], ["3: M₃", c.M3], ["3: V₃ (m/s)", c.V3], ["3: p₃/p₀", c.p3_p0], ["4: T₄ (K)", c.T4], ["4: M₄", c.M4], ["10: T₁₀ (K)", c.T10], ["10: V₁₀ (m/s)", c.V10]]);
+    UI.table("#o2", ["Performance", "Value"], [["Mode", c.mode], ["Fuel-air ratio f", c.f], ["Specific thrust F/ṁ₀ (N·s/kg)", c.Fm], ["Specific impulse I_sp (s)", c.Isp], ["TSFC (kg/(N·h))", c.TSFC * 3600],
+      ["Overall efficiency η_o", c.etaO], ["Capture area per 100 kN thrust (m²)", c.Fm > 0 ? 1e5 / c.Fm / (a.rho * c.V0) : "—"]]);
+  }
+  ids.forEach(i => { const e = document.getElementById(i); e.addEventListener("input", run); e.addEventListener("change", run); });
+  document.getElementById("mode").addEventListener("change", () => { document.getElementById("val").value = document.getElementById("mode").value === "psi" ? 7 : 2.5; run(); });
+  run();
+})();
+</script>
+</body>
+</html>

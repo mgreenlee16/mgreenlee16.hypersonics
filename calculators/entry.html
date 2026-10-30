@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entry Trajectory Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Spaceflight</div>
+  <h1>Entry Trajectory</h1>
+  <p class="lead">Planar three-degree-of-freedom entry over a spherical, non-rotating Earth, with constant L/D and bank angle, the 1976 Standard Atmosphere to 150 km, and Sutton–Graves stagnation heating. For a ballistic entry, the Allen–Eggers closed form is shown alongside.</p>
+</div>
+<section class="calc">
+  <div class="inputs">
+    <label>Entry altitude (km)<input type="number" id="h0" value="121.92" step="any"></label>
+    <label>Entry velocity (m/s)<input type="number" id="V0" value="7600" step="any"></label>
+    <label>Flight-path angle γ_E (deg, negative down)<input type="number" id="g0" value="-1.5" step="any"></label>
+    <label>Mass m (kg)<input type="number" id="m" value="5500" step="any"></label>
+    <label>Reference area A (m²)<input type="number" id="A" value="12" step="any"></label>
+    <label>Drag coefficient C_D<input type="number" id="CD" value="1.3" step="any"></label>
+  </div>
+  <div class="inputs" style="margin-top:.6rem">
+    <label>L/D<input type="number" id="LD" value="0.3" step="any"></label>
+    <label>Bank angle σ (deg)<input type="number" id="bank" value="45" step="any"></label>
+    <label>Nose radius R_n (m)<input type="number" id="Rn" value="4.7" step="any"></label>
+    <label>Stop at altitude (km)<input type="number" id="hE" value="10" step="any"></label>
+    <button id="csv">Download trajectory CSV</button>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="calc-grid results"><div id="o1"></div><div id="o2"></div></div>
+  <div class="two-up" style="margin-top:1rem"><div id="p1"></div><div id="p2"></div></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>\(\dot V = -\rho V^2/(2\beta) - g\sin\gamma\), \(V\dot\gamma = (L/D)\rho V^2\cos\sigma/(2\beta) - (g - V^2/r)\cos\gamma\), \(\dot h = V\sin\gamma\), with β = m/(C_DA) and g = μ/r², integrated by fourth-order Runge–Kutta. Heating \(q = 1.7415\times10^{-4}\sqrt{\rho/R_n}V^3\) (cold wall, convective only); heat load by trapezoidal integration. Allen–Eggers: \(a_\max = V_E^2\sin\gamma_E/(2eH)\), H = 7.2 km. A run is flagged as a skip-out if the vehicle climbs back above its entry altitude. See <a href="../lessons/entry.html">Lesson 13</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const ids = ["h0", "V0", "g0", "m", "A", "CD", "LD", "bank", "Rn", "hE"];
+  let last = null;
+  function run() {
+    const v = Object.fromEntries(ids.map(i => [i, UI.val(i)])), err = document.getElementById("err");
+    if (!(v.V0 > 0 && v.m > 0 && v.A > 0 && v.CD > 0 && v.Rn > 0 && v.h0 > v.hE)) { err.textContent = "Check the inputs: all must be positive, and the entry altitude above the stop altitude."; return; }
+    err.textContent = "";
+    const beta = v.m / (v.CD * v.A);
+    const r = HY.entry({ h0: v.h0 * 1000, V0: v.V0, gamma0Deg: v.g0, beta, LD: v.LD, bankDeg: v.bank, Rn: v.Rn, hEnd: v.hE * 1000, dt: v.g0 < -12 ? 0.02 : 0.1 });
+    last = r;
+    const pk = r.hist.reduce((a, p) => p.q > a.q ? p : a, r.hist[0]), pn = r.hist.reduce((a, p) => p.n > a.n ? p : a, r.hist[0]);
+    UI.table("#o1", ["Result", "Value"], [["Ballistic coefficient β (kg/m²)", beta], ["Outcome", r.skipped ? "skipped out" : "captured"], ["Peak g-load", r.nmax], ["Altitude of peak g (km)", pn.h / 1000],
+      ["Peak heat flux (W/cm²)", r.qmax / 1e4], ["Altitude, velocity at peak q", `${(pk.h / 1000).toFixed(1)} km, ${(pk.V / 1000).toFixed(2)} km/s`], ["Heat load (MJ/m²)", r.Q / 1e6],
+      ["Peak dynamic pressure (kPa)", r.qdynMax / 1000], ["Downrange (km)", r.range / 1000], ["Flight time (s)", r.tf], ["Final velocity (m/s)", r.hist[r.hist.length - 1].V]]);
+    const gE = -v.g0 * Math.PI / 180;
+    UI.table("#o2", ["Allen–Eggers (ballistic, γ_E > 0)", "Value"], gE > 0 ? (() => { const ae = HY.allenEggers({ VE: v.V0, gammaE: gE, beta }); return [["a_max (g)", ae.aMax / GD.G0], ["Altitude of a_max (km)", ae.hAmax / 1000], ["V at a_max (m/s)", ae.VAmax], ["Altitude of q_max (km)", ae.hQmax / 1000], ["V at q_max (m/s)", ae.VQmax], ["Note", v.LD > 0 ? "vehicle has lift: compare loosely" : "valid for steep entries"]]; })() : [["Not applicable", "γ_E must be negative (descending)"]]);
+    const H = r.hist;
+    UI.plot("#p1", { w: 420, h: 300, xlabel: "V (km/s)", ylabel: "h (km)", series: [{ x: H.map(p => p.V / 1000), y: H.map(p => p.h / 1000), c: 1 }], legend: false });
+    UI.plot("#p2", { w: 420, h: 300, xlabel: "t (s)", ylabel: "g-load, q/10 (W/cm²)", series: [{ x: H.map(p => p.t), y: H.map(p => p.n), c: 4, label: "g" }, { x: H.map(p => p.t), y: H.map(p => p.q / 1e5), c: 3, label: "q/10" }], legend: "tr", legendWidth: 70 });
+  }
+  ids.forEach(i => document.getElementById(i).addEventListener("input", run));
+  document.getElementById("csv").addEventListener("click", () => {
+    if (!last) return;
+    const head = "t_s,altitude_m,velocity_mps,gamma_deg,downrange_m,mach,g_load,q_Wm2,heat_load_Jm2,dyn_pressure_Pa";
+    const csv = [head].concat(last.hist.map(p => [p.t, p.h, p.V, p.gamma * 180 / Math.PI, p.s, p.M, p.n, p.q, p.Q, p.qdyn].map(x => x.toPrecision(6)).join(","))).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "entry_trajectory.csv"; a.click();
+  });
+  run();
+})();
+</script>
+</body>
+</html>

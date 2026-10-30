@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shock Tube and Hypersonic Tunnel Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Experiment</div>
+  <h1>Shock Tube &amp; Hypersonic Tunnel</h1>
+  <p class="lead">Three facility tools: the ideal shock tube with its reflected-shock reservoir, a Ludwieg tube feeding a hypersonic nozzle, and the minimum reservoir temperature that avoids liquefaction. Perfect-gas models throughout.</p>
+</div>
+<section class="calc">
+  <h3>Shock tube</h3>
+  <div class="inputs">
+    <label>p₄/p₁<input type="number" id="p41" value="100" step="any"></label>
+    <label>Driver gas<select id="gas"><option value="air">air</option><option value="He" selected>helium</option><option value="H2">hydrogen</option></select></label>
+    <label>T₁ (K)<input type="number" id="T1" value="300" step="any"></label>
+    <label>T₄ (K)<input type="number" id="T4" value="300" step="any"></label>
+    <label>p₁ (kPa)<input type="number" id="p1" value="10" step="any"></label>
+  </div>
+  <div class="err" id="err1"></div>
+  <div class="results" id="o1"></div>
+</section>
+<section class="calc">
+  <h3>Ludwieg tube</h3>
+  <div class="inputs">
+    <label>Test Mach<input type="number" id="LM" value="6" step="any"></label>
+    <label>Tube length (m)<input type="number" id="LL" value="37" step="any"></label>
+    <label>Tube diameter (m)<input type="number" id="LD" value="0.445" step="any"></label>
+    <label>Nozzle-exit diameter (m)<input type="number" id="LE" value="0.24" step="any"></label>
+    <label>p_i (MPa)<input type="number" id="Lp" value="1" step="any"></label>
+    <label>T_i (K)<input type="number" id="LT" value="433" step="any"></label>
+  </div>
+  <div class="err" id="err2"></div>
+  <div class="results" id="o2"></div>
+</section>
+<section class="calc">
+  <h3>Liquefaction limit</h3>
+  <div class="inputs">
+    <label>Test Mach<input type="number" id="qM" value="8" step="any"></label>
+    <label>Reservoir p₀ (MPa)<input type="number" id="qp" value="4" step="any"></label>
+  </div>
+  <div class="err" id="err3"></div>
+  <div class="results" id="o3"></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>Shock tube: the shock-tube equation for p₄/p₁ solved for p₂/p₁; reflected shock from \(M_R/(M_R^2-1) = [M_s/(M_s^2-1)]\sqrt{1 + 2(\gamma-1)(M_s^2-1)(\gamma + 1/M_s^2)/(\gamma+1)^2}\). Real-gas effects lower T₅ when it exceeds about 2,500 K. Ludwieg tube: tube Mach from the subsonic area–Mach relation for tube/throat area; unsteady expansion \(a/a_i = 1/(1 + \tfrac{\gamma-1}{2}M_t)\); cycle time \(L/a_i + L/(u+a)\). Liquefaction: N₂ saturation curve (Lesson 15). See <a href="../lessons/hypersonic-testing.html">Lesson 15</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen } = GD, R = 287.05, g = 1.4, cp = g * R / (g - 1);
+  const GAS = { air: { g: 1.4, R: 287.05 }, He: { g: 5 / 3, R: 2077.1 }, H2: { g: 1.405, R: 4124.2 } };
+  function tube() {
+    const p41 = UI.val("p41"), G = GAS[document.getElementById("gas").value], T1 = UI.val("T1"), T4 = UI.val("T4"), p1 = UI.val("p1") * 1000, err = document.getElementById("err1");
+    if (!(p41 > 1 && T1 > 0 && T4 > 0 && p1 > 0)) { err.textContent = "Need p₄/p₁ > 1 and positive temperatures and pressure."; return; }
+    err.textContent = "";
+    const a1 = Math.sqrt(g * R * T1), a4 = Math.sqrt(G.g * G.R * T4), s = HY.shockTube(p41, g, G.g, a1 / a4), T2 = T1 * s.T2T1;
+    UI.table("#o1", ["Quantity", "Value"], [["a₁/a₄", a1 / a4], ["Shock Mach M_s", s.Ms], ["Shock speed (m/s)", s.Ms * a1], ["p₂/p₁", s.p2p1], ["p₂ (kPa)", p1 * s.p2p1 / 1000], ["T₂ (K)", T2], ["ρ₂/ρ₁", s.rho2rho1],
+      ["u₂ (m/s)", s.up_a1 * a1], ["Flow Mach in region 2", s.M2], ["T₃/T₄", s.T3T4], ["Reflected M_R", s.MR], ["p₅ (kPa)", p1 * s.p5p1 / 1000], ["T₅ (K)", T1 * s.T5T1], ["h₀ in region 5 (MJ/kg)", cp * T1 * s.T5T1 / 1e6],
+      ["Limiting M_s as p₄/p₁ → ∞", s.MsMax]]);
+  }
+  function lud() {
+    const M = UI.val("LM"), L = UI.val("LL"), D = UI.val("LD"), De = UI.val("LE"), pi = UI.val("Lp") * 1e6, Ti = UI.val("LT"), err = document.getElementById("err2");
+    const Dt = De / Math.sqrt(isen.A_Astar(M, g)), AR = (D / Dt) ** 2;
+    if (!(M > 1 && L > 0 && AR > 1 && pi > 0 && Ti > 0)) { err.textContent = "The tube must be wider than the nozzle throat, and all inputs positive."; return; }
+    err.textContent = "";
+    const l = HY.ludwieg({ L, Ti, pi, AR }), T = l.T0 / isen.T0_T(M, g), p = l.p0 / isen.p0_p(M, g), rho = p / (R * T), V = M * Math.sqrt(g * R * T);
+    UI.table("#o2", ["Quantity", "Value"], [["Throat diameter (mm)", Dt * 1000], ["Tube Mach M_t", l.Mt], ["p₀ (MPa)", l.p0 / 1e6], ["T₀ (K)", l.T0], ["Cycle time (s)", l.t], ["Test static T (K), p (Pa)", `${T.toFixed(2)}, ${p.toFixed(1)}`],
+      ["Test velocity (m/s)", V], ["Unit Reynolds number (1/m)", rho * V / GD.sutherland(T)], ["Mass flow (kg/s)", isen.massFlowParam(1, g, R) * Math.PI * Dt * Dt / 4 * l.p0 / Math.sqrt(l.T0)],
+      ["Minimum T₀ for no liquefaction (K)", HY.minT0Liquefaction(M, l.p0).T0min]]);
+  }
+  function liq() {
+    const M = UI.val("qM"), p0 = UI.val("qp") * 1e6, err = document.getElementById("err3");
+    if (!(M > 1 && p0 > 0)) { err.textContent = "Need M > 1 and p₀ > 0."; return; }
+    const r = HY.minT0Liquefaction(M, p0);
+    if (!isFinite(r.Tsat)) { err.textContent = "Static pressure outside the saturation-curve range."; return; }
+    err.textContent = "";
+    UI.table("#o3", ["Quantity", "Value"], [["Test static pressure (Pa)", r.p], ["Saturation temperature (K)", r.Tsat], ["Minimum T₀ (K)", r.T0min], ["Test velocity at that T₀ (m/s)", M * Math.sqrt(g * R * r.Tsat)]]);
+  }
+  ["p41", "gas", "T1", "T4", "p1"].forEach(i => { const e = document.getElementById(i); e.addEventListener("input", tube); e.addEventListener("change", tube); });
+  ["LM", "LL", "LD", "LE", "Lp", "LT"].forEach(i => document.getElementById(i).addEventListener("input", lud));
+  ["qM", "qp"].forEach(i => document.getElementById(i).addEventListener("input", liq));
+  tube(); lud(); liq();
+})();
+</script>
+</body>
+</html>
