@@ -40,6 +40,30 @@
     { slug: "wind-tunnels", n: 8, title: "Supersonic Wind Tunnels",
       blurb: "Blowdown, indraft and continuous tunnels, nozzle and diffuser sizing, starting, run time, condensation, Reynolds-number range, and instrumentation from Pitot rakes to schlieren.",
       tags: ["7 interactives", "worked examples", "self-check"] },
+    { part: "Part V · Hypersonic flow" },
+    { slug: "hypersonic-flow", n: 9, title: "What Makes a Flow Hypersonic",
+      blurb: "Flight regimes and vehicle classes, the hypersonic limit of the shock relations, thin shock layers, similarity and Mach-number independence, entropy layers and viscous interaction.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { slug: "newtonian", n: 10, title: "Newtonian Theory & Hypersonic Aerodynamics",
+      blurb: "Newtonian and modified Newtonian flow, cones by Taylor–Maccoll, capsules and blunt cones at incidence, trim and static stability, tangent-wedge and tangent-cone methods.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { slug: "high-temperature", n: 11, title: "High-Temperature Gas Dynamics",
+      blurb: "Vibration, dissociation and ionization of air in chemical equilibrium, real-gas normal shocks, nonequilibrium and relaxation, and the Shuttle's hypersonic pitching-moment anomaly.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { slug: "aeroheating", n: 12, title: "Hypersonic Boundary Layers & Aeroheating",
+      blurb: "Reference-temperature boundary layers, stagnation-point heating, the radiation-adiabatic wall, laminar–turbulent transition and second-mode waves, and thermal protection.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { part: "Part VI · Spaceflight and propulsion" },
+    { slug: "entry", n: 13, title: "Atmospheric Entry",
+      blurb: "Ballistic entry by Allen–Eggers, lifting entry and equilibrium glide, entry corridors and skip-out, and a trajectory simulator for capsules, winged vehicles and reentry vehicles.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { slug: "airbreathing", n: 14, title: "Hypersonic Air-Breathing Propulsion",
+      blurb: "Why ramjets give way to scramjets, the Brayton cycle with component efficiencies, specific impulse across the Mach range, the flight corridor, and commercial applications.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
+    { part: "Part VII · Hypersonic testing" },
+    { slug: "hypersonic-testing", n: 15, title: "Hypersonic Ground Testing",
+      blurb: "Duplication versus simulation, liquefaction and heated tunnels, Ludwieg tubes and quiet tunnels (BAM6QT), shock tubes and reflected-shock tunnels, and high-speed instrumentation.",
+      tags: ["5 interactives", "worked examples", "self-check"] },
   ];
   const CALCS = [
     { slug: "isentropic", kicker: "Isentropic flow", title: "Isentropic Flow", blurb: "M, p₀/p, T₀/T, ρ₀/ρ, A/A*, Mach angle and ν from any one of them." },
@@ -50,6 +74,13 @@
     { slug: "fanno", kicker: "Friction", title: "Fanno Flow", blurb: "Adiabatic duct flow with friction: 4fL*/D and the starred ratios." },
     { slug: "atmosphere", kicker: "Standard atmosphere", title: "Standard Atmosphere", blurb: "1976 U.S. Standard Atmosphere to 86 km, plus Mach → velocity, dynamic pressure, total conditions and Reynolds number." },
     { slug: "wind-tunnel", kicker: "Experiment", title: "Supersonic Wind Tunnel", blurb: "Test-section conditions, mass flow, starting requirements, second-throat size and blowdown run time." },
+    { slug: "cone", kicker: "Hypersonic", title: "Conical Flow (Taylor–Maccoll)", blurb: "Shock angle, surface Mach number, pressure and temperature on a sharp cone, with the Newtonian estimate for comparison." },
+    { slug: "newtonian", kicker: "Hypersonic", title: "Newtonian Aerodynamics", blurb: "CL, CD, L/D and Cm of capsules, blunt cones, spheres and flat plates at any incidence, with trim for a given center of gravity." },
+    { slug: "equilibrium-air", kicker: "High temperature", title: "Equilibrium Air & Real-Gas Shock", blurb: "Composition and properties of air to 20,000 K, and the equilibrium normal shock at any flight speed and altitude." },
+    { slug: "aeroheating", kicker: "Aeroheating", title: "Aeroheating", blurb: "Stagnation-point heating, radiation-adiabatic wall temperature, and laminar or turbulent heating on plates and cones." },
+    { slug: "entry", kicker: "Spaceflight", title: "Entry Trajectory", blurb: "Simulate a ballistic or lifting entry: altitude, velocity, g-load, heating rate and heat load, with Allen–Eggers for comparison." },
+    { slug: "scramjet", kicker: "Propulsion", title: "Ramjet & Scramjet Cycle", blurb: "Station-by-station cycle analysis with component efficiencies: thrust, specific impulse and combustor temperatures." },
+    { slug: "shock-tube", kicker: "Experiment", title: "Shock Tube & Hypersonic Tunnel", blurb: "Shock-tube and reflected-shock conditions, Ludwieg-tube run time, and the reservoir temperature needed to avoid liquefaction." },
   ];
   const GLYPH = {
     isentropic: '<path d="M10 22 Q60 22 90 32 T170 42" class="fan"/><path d="M10 42 Q60 42 90 32 T170 22" class="fan"/><text x="12" y="58" class="small">p, T, M</text><text x="120" y="58" class="small">p₀, T₀</text>',
@@ -59,6 +90,13 @@
     nozzles: '<path d="M10 8 Q60 8 80 26 Q100 34 170 4" class="body" style="fill:none"/><path d="M10 56 Q60 56 80 38 Q100 30 170 60" class="body" style="fill:none"/><line x1="125" y1="20" x2="125" y2="44" class="shock"/>',
     "duct-flow": '<rect x="20" y="16" width="140" height="32" class="body" style="fill:none"/><g class="shock" style="stroke-width:1.5"><path d="M60 40 q5 -16 10 0 q5 -16 10 0"/><path d="M95 40 q5 -16 10 0 q5 -16 10 0"/></g><text x="24" y="60" class="small">q → T₀ ↑, M → 1</text>',
     linearized: '<path d="M20 34 Q50 14 100 18 Q140 22 165 34 Q140 38 100 40 Q50 42 20 34 Z" class="body"/><line x1="92" y1="10" x2="96" y2="20" class="shock" style="stroke-width:1.8"/><text x="22" y="60" class="small">M∞ → M_cr</text>',
+    "hypersonic-flow": '<path d="M30 40 L170 28 L170 52 Z" class="body"/><path d="M30 40 L172 18" class="shock"/><path d="M30 40 L172 62" class="shock"/><text x="4" y="20" class="label">M ≫ 1</text>',
+    newtonian: '<path d="M70 32 m0 -26 a40 26 0 0 0 0 52" class="body" style="fill:var(--surface-2)"/><path d="M70 6 L150 22 L150 42 L70 58" class="body" style="fill:none"/><g class="stream"><line x1="4" y1="16" x2="38" y2="16"/><line x1="4" y1="32" x2="30" y2="32"/><line x1="4" y1="48" x2="38" y2="48"/></g><path d="M44 2 Q22 32 44 62" class="shock"/>',
+    "high-temperature": '<path d="M10 54 Q60 50 90 30 T170 8" class="shock" style="fill:none;stroke-width:2"/><circle cx="40" cy="22" r="6" class="accfill"/><circle cx="52" cy="22" r="6" class="accfill"/><circle cx="120" cy="44" r="6" class="hotfill"/><circle cx="148" cy="52" r="6" class="hotfill"/><text x="20" y="62" class="small">N₂, O₂ → N, O, NO</text>',
+    aeroheating: '<rect x="20" y="40" width="150" height="8" class="body"/><path d="M20 40 Q90 30 170 22" class="fan"/><g class="shock" style="stroke-width:1.5"><line x1="50" y1="38" x2="50" y2="26"/><line x1="90" y1="34" x2="90" y2="18"/><line x1="130" y1="30" x2="130" y2="10"/></g><text x="22" y="60" class="small">q̇ = εσT_w⁴</text>',
+    entry: '<path d="M10 6 Q70 10 110 34 T172 58" class="fan" style="stroke-width:1.8"/><path d="M104 26 l14 4 l-4 12 z" class="hotfill"/><text x="8" y="58" class="small">h, V, g, q̇</text>',
+    airbreathing: '<path d="M8 40 L60 26 L140 26 L176 34 L176 46 L140 52 L60 52 L40 48 Z" class="body"/><line x1="8" y1="40" x2="60" y2="22" class="shock" style="stroke-width:1.6"/><path d="M90 30 q6 -10 12 0 q6 -10 12 0" class="shock" style="stroke-width:1.3"/><text x="70" y="62" class="small">scramjet</text>',
+    "hypersonic-testing": '<rect x="4" y="22" width="80" height="20" class="body"/><path d="M84 26 L96 30 L96 34 L84 38 Z" class="body"/><path d="M96 30 L150 14 L150 50 L96 34 Z" class="body" style="fill:none"/><path d="M112 32 l14 -4 l0 8 z" class="accfill"/><text x="8" y="60" class="small">Ludwieg tube · Mach 6</text>',
     "wind-tunnels": '<path d="M4 14 L30 14 Q45 14 52 24 Q58 28 70 20 L110 20 L130 26 Q140 30 150 26 L176 14" class="body" style="fill:none"/><path d="M4 50 L30 50 Q45 50 52 40 Q58 36 70 44 L110 44 L130 38 Q140 34 150 38 L176 50" class="body" style="fill:none"/><path d="M84 32 l8 -6 l8 6 z" class="accfill"/><line x1="140" y1="27" x2="140" y2="37" class="shock" style="stroke-width:1.6"/><text x="74" y="60" class="small">test section</text>',
   };
 
@@ -84,7 +122,7 @@
       <div class="topbar-inner">
         <a class="brand" href="${ROOT}index.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12 L15 9.2 L22.5 12 L15 14.8 Z" fill="var(--accent)"/><path d="M1 3.5 Q9 6 13.5 9.4 M1 20.5 Q9 18 13.5 14.6" stroke="var(--hot)" fill="none" stroke-width="1.7"/></svg>
-          Compressible Flow Lab
+          Hypersonics Lab
         </a>
         <nav>
           <a href="${ROOT}index.html#lessons" ${here === "lessons" ? 'aria-current="page"' : ""}>Lessons</a>
@@ -133,10 +171,11 @@
   function buildFooter() {
     const f = document.createElement("footer");
     f.innerHTML = `<div class="inner">
-      <b style="color:var(--chrome-text)">Compressible Flow Lab</b> — interactive notes on compressible aerodynamics and supersonic testing.
+      <b style="color:var(--chrome-text)">Hypersonics Lab</b> by Michael Greenlee — interactive notes on compressible aerodynamics, hypersonic flight and high-speed testing.
       Values come from closed-form relations for a calorically perfect gas unless a page says otherwise; they are for learning, not design.
       Main references: J. D. Anderson, <i>Fundamentals of Aerodynamics</i> and <i>Modern Compressible Flow</i>; Liepmann &amp; Roshko, <i>Elements of Gasdynamics</i>;
-      Pope &amp; Goin, <i>High-Speed Wind Tunnel Testing</i>; NACA Report 1135.
+      Pope &amp; Goin, <i>High-Speed Wind Tunnel Testing</i>; NACA Report 1135; Anderson, <i>Hypersonic and High-Temperature Gas Dynamics</i>;
+      Hirschel &amp; Weiland, <i>Selected Aerothermodynamic Design Problems of Hypersonic Flight Vehicles</i>; Heiser &amp; Pratt, <i>Hypersonic Airbreathing Propulsion</i>.
       Code under the MIT License; text and figures under CC BY 4.0.</div>`;
     document.body.append(f);
   }

@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Makes a Flow Hypersonic · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="hypersonic-flow">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 9 · Part V</div>
+  <h1>What Makes a Flow Hypersonic</h1>
+  <p class="lead">Hypersonic flow is not simply "supersonic, but faster". Above roughly Mach 5, physical effects that are small at supersonic speeds start to dominate: shock layers become thin, nose bluntness leaves a thick entropy layer, boundary layers grow so fast that they reshape the inviscid flow, and the gas becomes hot enough to vibrate, dissociate and ionize. This lesson maps where hypersonic vehicles fly and develops the features that set the regime apart.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#define">When is a flow hypersonic?</a></li>
+    <li><a href="#classes">Vehicle classes and where they fly</a></li>
+    <li><a href="#limit">The hypersonic limit of the shock relations</a></li>
+    <li><a href="#thin">Thin shock layers</a></li>
+    <li><a href="#similarity">Hypersonic similarity and Mach-number independence</a></li>
+    <li><a href="#entropy">Blunt bodies and the entropy layer</a></li>
+    <li><a href="#viscous">Viscous interaction</a></li>
+    <li><a href="#rarefied">High temperature and low density</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="define"><span class="sec">Section 9.1</span>When is a flow hypersonic?</h2>
+  <p>The usual rule of thumb is \(M_\infty &gt; 5\), but there is no sharp boundary. Anderson's definition is the useful one: a flow is hypersonic when some or all of the following become important as the Mach number rises.</p>
+  <ul>
+    <li><b class="term">Thin shock layers.</b> The shock lies close to the body, so the region between them is thin. This is what makes Newtonian theory (Lesson 10) work.</li>
+    <li><b class="term">Entropy layers.</b> Every real vehicle has a blunt nose. The strongly curved bow shock produces a layer of high-entropy, low-velocity gas that wraps the body and is "swallowed" by the boundary layer downstream.</li>
+    <li><b class="term">Viscous interaction.</b> Laminar boundary-layer thickness grows like \(M_\infty^2/\sqrt{Re_x}\). At high Mach numbers the boundary layer displaces the outer flow enough to change the surface pressure, skin friction and heating.</li>
+    <li><b class="term">High-temperature effects.</b> The kinetic energy of a vehicle at 7 km/s, turned into heat in the shock layer, excites molecular vibration and dissociates O₂ and N₂. The gas no longer has a constant γ (Lesson 11).</li>
+    <li><b class="term">Low-density effects.</b> At very high altitude the mean free path becomes comparable with the vehicle size, and the continuum equations fail.</li>
+  </ul>
+  <p>Hirschel and Weiland add a design-oriented view. What matters for a real vehicle is the <b>thermal state of the surface</b>, meaning its temperature and heat flux, together with which flow phenomena (transition, separation, shock interactions, real-gas effects) govern the loads. The following lessons follow that thread from shocks to heating, entry trajectories, propulsion and ground testing.</p>
+
+  <h2 id="classes"><span class="sec">Section 9.2</span>Vehicle classes and where they fly</h2>
+  <p>Hirschel and Weiland sort hypersonic vehicles into classes. The classes face different aerothermodynamic design problems because they fly through the atmosphere in different ways:</p>
+</div>
+<div class="prose">
+<table class="data text">
+  <thead><tr><th>Class</th><th>Examples</th><th>Flight</th><th>Dominant design problems</th></tr></thead>
+  <tbody>
+    <tr><td><b>RV-W</b>: winged re-entry vehicles</td><td>Space Shuttle Orbiter, Buran, HERMES (study), X-37B</td><td>Gliding entry at high angle of attack (≈ 40°), L/D ≈ 1 hypersonically</td><td>Trim and flap effectiveness, thermal loads on the windward side and leading edges, transition, real-gas effects on pitching moment</td></tr>
+    <tr><td><b>RV-NW</b>: non-winged re-entry vehicles</td><td>Apollo, Soyuz, Orion, Dragon, ARD; lifting bodies such as X-38</td><td>Ballistic or low-lift entry, L/D ≈ 0.2–0.4 from an offset center of gravity</td><td>Static stability and trim, heat-shield design, base flow and afterbody heating</td></tr>
+    <tr><td><b>CAV</b>: cruise and acceleration vehicles</td><td>X-43A, X-51A, SÄNGER (study), hypersonic airliner concepts</td><td>Air-breathing flight at roughly constant dynamic pressure, low angle of attack</td><td>Forebody pre-compression and inlet onset flow, viscous drag, transition, propulsion–airframe integration</td></tr>
+    <tr><td><b>ARV</b>: aeroassisted orbital-transfer vehicles</td><td>Aerobraking and aerocapture concepts</td><td>Brief passes through the upper atmosphere</td><td>Low-density and nonequilibrium effects, heating</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="prose">
+  <p>Interactive 1 plots these vehicles on the velocity–altitude map. The entry trajectories are computed by the simulator of Lesson 13, and the lines of constant Mach number, dynamic pressure and Knudsen number come from the 1976 U.S. Standard Atmosphere. Re-entry vehicles fly high and decelerate quickly. A CAV must fly in a narrow dynamic-pressure band: high enough for its engine to work, low enough for its structure and heating to survive.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">The velocity–altitude map</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="mL">Reference length for Kn, log₁₀(L / 1 m) <output for="mL"></output></label>
+      <input type="range" id="mL" min="-2" max="1.5" step="0.05" value="0" data-dec="2"></div>
+    <div class="ctl"><label for="mq">Air-breather dynamic pressure q (kPa) <output for="mq"></output></label>
+      <input type="range" id="mq" min="20" max="100" step="1" value="48" data-dec="0"></div>
+    <div class="ctl inline"><span>Trajectories</span>
+      <div class="seg" id="mTraj" data-value="all"><button data-value="all" aria-pressed="true">show</button><button data-value="none" aria-pressed="false">hide</button></div></div>
+    <div id="ro1" class="readout"></div>
+    <p class="note" style="margin:0"><b>Reading the map</b>Above the Kn = 0.01 line, a body of length L is in slip or transitional flow. Mach lines bend because the speed of sound changes with temperature through the atmosphere.</p>
+  </div>
+  <div class="views"><figure><div id="plot1"></div><figcaption>Altitude versus flight velocity. Solid colored curves: computed entry trajectories (capsule from lunar return, winged orbiter, steep ballistic reentry vehicle). Dashed: constant Mach number. Thick band: the air-breathing corridor between q/2 and 2q.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="limit"><span class="sec">Section 9.3</span>The hypersonic limit of the shock relations</h2>
+  <p>Write the oblique-shock relations with \(M_1\sin\beta\) large. The terms with 1 in them drop out, and the ratios approach limits that no longer depend on the Mach number in the same way:</p>
+  $$\frac{p_2}{p_1} \to \frac{2\gamma}{\gamma+1}M_1^2\sin^2\beta, \qquad \frac{\rho_2}{\rho_1} \to \frac{\gamma+1}{\gamma-1}, \qquad \frac{T_2}{T_1} \to \frac{2\gamma(\gamma-1)}{(\gamma+1)^2}M_1^2\sin^2\beta.$$
+  <p>The density ratio saturates at 6 for γ = 1.4. However strong the shock, the gas can only be squeezed six-fold, while pressure and temperature keep rising with \(M^2\). In terms of the pressure coefficient, \(C_p = (p_2-p_1)/q_1\),</p>
+  $$C_{p,2} \to \frac{4}{\gamma+1}\sin^2\beta.$$
+  <p>For a slender wedge (small θ and β), \(\tan\theta \approx \theta\), and the θ–β–M relation in the limit \(M_1 \to \infty\) gives</p>
+  $$\frac{\beta}{\theta} \to \frac{\gamma+1}{2} = 1.2 \quad (\gamma = 1.4).$$
+  <p>The shock angle is only 20% larger than the wedge angle. Interactive 2 compares the exact relations with these limits as the Mach number rises.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Approaching the hypersonic limit</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="lth">Wedge half-angle θ <output for="lth"></output></label>
+      <input type="range" id="lth" min="2" max="30" step="0.5" value="10" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="lM">Mach number for the readout M₁ <output for="lM"></output></label>
+      <input type="range" id="lM" min="1.5" max="40" step="0.1" value="20" data-dec="1"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"lth":10,"lM":5}'>θ = 10°, M = 5</button>
+      <button data-preset='{"lth":10,"lM":20}'>θ = 10°, M = 20</button>
+      <button data-preset='{"lth":5,"lM":20}'>Slender: θ = 5°</button>
+      <button data-preset='{"lth":10,"lM":20,"gamma":1.15}'>Real-gas γ = 1.15</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot2a"></div><figcaption>Density ratio across the wedge shock (solid) and its limit (γ+1)/(γ−1) (dashed).</figcaption></figure>
+    <figure><div id="plot2b"></div><figcaption>β/θ for the wedge (solid), the slender-body limit (γ+1)/2 (dashed), and the HSD result (dotted, Section 9.5).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="thin"><span class="sec">Section 9.4</span>Thin shock layers</h2>
+  <p>Because \(\rho_2/\rho_1\) is large, mass conservation needs only a thin layer to carry the flow that has crossed the shock. On a wedge in the limit, β − θ ≈ θ(γ − 1)/2, only 0.2θ for γ = 1.4. As γ → 1, which is roughly what happens in a dissociating gas, the shock collapses onto the surface. The flow then behaves as though the gas particles hit the body and slide along it. That picture is Newton's 1687 model of fluid resistance, which fails badly at low speeds but becomes accurate in the hypersonic limit. Lesson 10 develops it.</p>
+  <p>Thin shock layers have practical consequences:</p>
+  <ul>
+    <li>The shock can lie inside, or interact with, the boundary layer near the leading edge (viscous interaction).</li>
+    <li>On an inlet ramp, the shock moves close to the cowl lip. That is why a scramjet forebody is long and slender (Lesson 14).</li>
+    <li>Bow shocks from a vehicle's nose can strike wings, fins or cowls, producing shock–shock interactions with intense local heating (Edney's types I–VI).</li>
+  </ul>
+
+  <h2 id="similarity"><span class="sec">Section 9.5</span>Hypersonic similarity and Mach-number independence</h2>
+  <p>For slender bodies at high Mach number, the small-disturbance equations (hypersonic small-disturbance theory, HSD) show that the flow depends on \(M_\infty\) and the thickness ratio τ only through their product, the <b class="term">hypersonic similarity parameter</b></p>
+  $$K = M_\infty\tau.$$
+  <p>Two affinely related slender bodies (same shape, scaled in thickness) at the same K and γ have the same \(C_p/\tau^2\), \(C_L/\tau^2\) and \(C_D/\tau^3\). For a wedge of half-angle θ, HSD gives closed forms:</p>
+  $$\frac{\beta}{\theta} = \frac{\gamma+1}{4} + \sqrt{\left(\frac{\gamma+1}{4}\right)^2 + \frac{1}{K^2}}, \qquad \frac{C_p}{\theta^2} = \frac{\gamma+1}{2} + \sqrt{\left(\frac{\gamma+1}{2}\right)^2 + \frac{4}{K^2}}.$$
+  <p>As \(K\to\infty\), both become constants: \(C_p/\theta^2 \to \gamma+1\). This is <b class="term">Mach-number independence</b>. Above some Mach number, pressure coefficients, shock shapes and force coefficients stop changing. It also holds for blunt bodies, where \(C_{p,\max}\) approaches 1.839 for γ = 1.4. Mach-number independence is why a Mach 6–10 wind tunnel can predict the inviscid aerodynamics of a Mach 20 vehicle, provided high-temperature and viscous effects are handled separately.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Hypersonic similarity on wedges</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sM">Mach number M∞ <output for="sM"></output></label>
+      <input type="range" id="sM" min="2" max="30" step="0.1" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="sth">Wedge half-angle θ <output for="sth"></output></label>
+      <input type="range" id="sth" min="2" max="25" step="0.5" value="8" data-dec="1" data-unit="°"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"sM":12,"sth":5}'>M 12, θ 5°</button>
+      <button data-preset='{"sM":6,"sth":10}'>M 6, θ 10° (same K)</button>
+      <button data-preset='{"sM":25,"sth":20}'>Thick wedge</button>
+    </div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Exact oblique-shock \(C_p/\theta^2\) against K = Mθ for four wedge angles (solid), and HSD (dashed). Slender wedges collapse onto one curve; the large-K plateau is Mach-number independence.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="entropy"><span class="sec">Section 9.6</span>Blunt bodies and the entropy layer</h2>
+  <p>Sharp noses cannot survive hypersonic heating: Lesson 12 shows stagnation-point heat flux scales as \(1/\sqrt{R_n}\), so every real vehicle is blunted. The bow shock ahead of a blunt nose is normal on the axis and weakens toward the Mach angle far away. Each streamline crosses it at a different strength, and so gains a different entropy:</p>
+  $$\frac{\Delta s}{R} = -\ln\frac{p_{0,2}}{p_{0,1}}\bigg|_{M_n = M_\infty\sin\beta}.$$
+  <p>Streamlines near the axis have passed the nearly normal part of the shock. They carry high entropy, low total pressure and low velocity, and form a thin <b class="term">entropy layer</b> hugging the body that persists far downstream. The boundary layer grows into it and eventually "swallows" it. Until then, the entropy layer changes the boundary-layer edge conditions, which matters for heating and transition on blunted cones.</p>
+  <p>Billig's correlations (1967) describe the shock shape for a sphere-cone and a cylinder-wedge of nose radius R:</p>
+  $$\text{sphere: }\frac{\Delta}{R} = 0.143\,e^{3.24/M_\infty^2},\quad \frac{R_c}{R} = 1.143\,e^{0.54/(M_\infty-1)^{1.2}};\qquad \text{cylinder: }\frac{\Delta}{R} = 0.386\,e^{4.67/M_\infty^2},\quad \frac{R_c}{R} = 1.386\,e^{1.8/(M_\infty-1)^{0.75}},$$
+  $$x = R + \Delta - R_c\cot^2\mu\left[\sqrt{1 + \frac{y^2\tan^2\mu}{R_c^2}} - 1\right],$$
+  <p>where Δ is the stand-off distance, \(R_c\) the shock radius of curvature at the axis, μ the freestream Mach angle, and x is measured upstream from the center of the nose.</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Bow shock and entropy layer</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="bM">Mach number M∞ <output for="bM"></output></label>
+      <input type="range" id="bM" min="1.5" max="25" step="0.1" value="8" data-dec="1"></div>
+    <div class="ctl inline"><span>Nose</span>
+      <div class="seg" id="bShape" data-value="sphere"><button data-value="sphere" aria-pressed="true">sphere</button><button data-value="cyl" aria-pressed="false">cylinder</button></div></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"bM":2}'>M 2</button><button data-preset='{"bM":6}'>M 6</button><button data-preset='{"bM":20}'>M 20</button>
+    </div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag4"></div><figcaption>Billig bow-shock shape. Streamlines are colored by the entropy they gain crossing the shock (red: high). The high-entropy gas forms the entropy layer along the body.</figcaption></figure>
+    <figure><div id="plot4"></div><figcaption>Entropy rise Δs/R and total-pressure ratio p₀₂/p₀₁ along the shock, against the height y/R at which the streamline crosses it.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="viscous"><span class="sec">Section 9.7</span>Viscous interaction</h2>
+  <p>On a flat plate the laminar boundary-layer thickness at hypersonic speed scales as</p>
+  $$\frac{\delta}{x} \propto \frac{M_\infty^2}{\sqrt{Re_x}}.$$
+  <p>The \(M^2\) comes from the temperature rise inside the boundary layer: viscous dissipation heats the gas to near the recovery temperature, its density falls, and the layer thickens to carry the same mass. A thick boundary layer acts like a thickened body. The outer flow sees it as a wedge, generating an induced shock and raising the surface pressure. The governing parameter is the <b class="term">viscous interaction parameter</b></p>
+  $$\bar\chi = \frac{M_\infty^3\sqrt{C}}{\sqrt{Re_x}}, \qquad C = \frac{\rho_w\mu_w}{\rho_\infty\mu_\infty}\ \ (\text{Chapman–Rubesin}).$$
+  <p>Large \(\bar\chi\) (near the leading edge, at high Mach number, low Reynolds number) is <b>strong interaction</b>. Small \(\bar\chi\) is <b>weak interaction</b>. For an insulated plate with γ = 1.4, the induced pressure is approximately</p>
+  $$\text{weak: }\ \frac{p}{p_\infty} = 1 + 0.31\bar\chi + 0.05\bar\chi^2, \qquad \text{strong: }\ \frac{p}{p_\infty} = 0.514\bar\chi + 0.759.$$
+  <p>Viscous interaction raises skin friction and heating near leading edges and changes control-surface effectiveness. Hirschel and Weiland also stress that a vehicle's windward surface sees "weak" interaction over most of its length but strong interaction at leading edges and on small, low-Reynolds-number models, which matters when scaling wind-tunnel data to flight.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Induced pressure on a flat plate</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="vM">Mach number M∞ <output for="vM"></output></label>
+      <input type="range" id="vM" min="4" max="25" step="0.1" value="12" data-dec="1"></div>
+    <div class="ctl"><label for="vRe">Unit Reynolds number, log₁₀(Re/m) <output for="vRe"></output></label>
+      <input type="range" id="vRe" min="4" max="7.5" step="0.05" value="5.5" data-dec="2"></div>
+    <div class="ctl"><label for="vT">Freestream temperature T∞ (K) <output for="vT"></output></label>
+      <input type="range" id="vT" min="40" max="270" step="1" value="220" data-dec="0"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"vM":6,"vRe":7,"vT":60}'>Mach 6 tunnel, high Re</button>
+      <button data-preset='{"vM":12,"vRe":5.5,"vT":220}'>Flight, 50 km</button>
+      <button data-preset='{"vM":20,"vRe":4.5,"vT":200}'>Very high altitude</button>
+    </div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot5"></div><figcaption>Induced surface pressure p/p∞ along an insulated flat plate. Strong-interaction formula (orange) where χ̄ &gt; 3, weak (teal) where χ̄ &lt; 3; each is dashed outside its range.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="rarefied"><span class="sec">Section 9.8</span>High temperature and low density</h2>
+  <p>Stagnation temperatures in hypersonic flight are enormous: \(T_0 = T_\infty(1 + 0.2M_\infty^2)\) gives about 18,000 K for a calorically perfect gas at Mach 25. Real air never gets that hot. The energy goes into vibration, dissociation and ionization instead, as Lesson 11 shows, and the post-shock temperature at orbital speed is closer to 6,000–7,000 K. The perfect-gas relations of Lessons 1–8 still describe the cold freestream and most wind-tunnel flows, but not the shock layer of a re-entering vehicle.</p>
+  <p>At high altitude the <b class="term">Knudsen number</b> \(Kn = \lambda/L\) grows, where λ is the mean free path. Approximate regimes:</p>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Kn</th><th>Regime</th><th>Method</th></tr></thead><tbody>
+  <tr><td>&lt; 0.01</td><td>Continuum</td><td>Euler / Navier–Stokes</td></tr>
+  <tr><td>0.01–0.1</td><td>Slip flow</td><td>Navier–Stokes with velocity-slip and temperature-jump boundary conditions</td></tr>
+  <tr><td>0.1–10</td><td>Transitional</td><td>Direct Simulation Monte Carlo (DSMC)</td></tr>
+  <tr><td>&gt; 10</td><td>Free molecular</td><td>Kinetic theory of individual molecular impacts</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <p>Kinetic theory links Kn to the familiar parameters: \(Kn \approx 1.26\sqrt{\gamma}\,M_\infty/Re_\infty\). High Mach number with low Reynolds number, at high altitude or on small models, means rarefaction.</p>
+
+  <h2 id="examples"><span class="sec">Section 9.9</span>Worked examples</h2>
+</div>
+
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 9.1 · The hypersonic limit</button><button>Ex 9.2 · Similarity</button><button>Ex 9.3 · Stand-off distance</button><button>Ex 9.4 · Viscous interaction</button></div>
+  <div class="panel" id="ex1">
+    <p>A wedge of half-angle θ flies at Mach \(M_1\) in air (γ = 1.4). Compare the exact shock angle, density ratio and pressure coefficient with the hypersonic-limit formulas.</p>
+    <div class="given"><label>M₁<input type="number" id="e1M" value="20" step="any"></label><label>θ (deg)<input type="number" id="e1t" value="10" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>Wedge A (half-angle \(\theta_A\)) flies at \(M_A\); wedge B (half-angle \(\theta_B\)) flies at \(M_B\). Both have the same \(K = M\theta\) if \(M_A\theta_A = M_B\theta_B\). Verify that \(C_p/\theta^2\) is nearly the same for both, and compare with HSD.</p>
+    <div class="given"><label>M_A<input type="number" id="e2Ma" value="12" step="any"></label><label>θ_A (deg)<input type="number" id="e2ta" value="5" step="any"></label><label>θ_B (deg)<input type="number" id="e2tb" value="10" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A capsule with a spherical nose of radius R flies at Mach \(M_\infty\). Estimate the shock stand-off distance and the shock radius of curvature with Billig's correlation, and find where the bow shock has weakened to a 30° wave angle.</p>
+    <div class="given"><label>M∞<input type="number" id="e3M" value="10" step="any"></label><label>R (m)<input type="number" id="e3R" value="2.5" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>An insulated flat plate flies at Mach \(M_\infty\) at altitude z. Find χ̄ and the induced pressure at a distance x from the leading edge. Is the interaction weak or strong?</p>
+    <div class="given"><label>M∞<input type="number" id="e4M" value="15" step="any"></label><label>z (km)<input type="number" id="e4z" value="60" step="any"></label><label>x (m)<input type="number" id="e4x" value="0.1" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 9.10</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Hypersonic shock limit</h4>
+    $$\frac{\rho_2}{\rho_1} \to \frac{\gamma+1}{\gamma-1},\quad \frac{p_2}{p_1} \to \frac{2\gamma}{\gamma+1}M_1^2\sin^2\beta$$
+    $$C_{p,2} \to \frac{4}{\gamma+1}\sin^2\beta,\qquad \frac{\beta}{\theta} \to \frac{\gamma+1}{2}$$</div>
+  <div><h4>Hypersonic similarity (wedge)</h4>
+    $$K = M_\infty\theta,\qquad \frac{C_p}{\theta^2} = \frac{\gamma+1}{2} + \sqrt{\left(\frac{\gamma+1}{2}\right)^2 + \frac{4}{K^2}}$$</div>
+  <div><h4>Blunt bodies (Billig, sphere)</h4>
+    $$\frac{\Delta}{R} = 0.143\,e^{3.24/M_\infty^2},\quad \frac{R_c}{R} = 1.143\,e^{0.54/(M_\infty-1)^{1.2}}$$
+    $$\frac{\Delta s}{R} = -\ln\frac{p_{0,2}}{p_{0,1}}\bigg|_{M_\infty\sin\beta}$$</div>
+  <div><h4>Viscous interaction and rarefaction</h4>
+    $$\bar\chi = M_\infty^3\sqrt{C/Re_x},\quad \frac{p}{p_\infty} = 1 + 0.31\bar\chi + 0.05\bar\chi^2$$
+    $$Kn = \frac{\lambda}{L} \approx 1.26\sqrt\gamma\,\frac{M_\infty}{Re_L}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { obliqueShock, normalShock, isen, DEG, bisect } = GD;
+  const { atmosphere, meanFreePath, hsd, entry } = HY;
+
+  // ---------- Interactive 1: velocity–altitude map ----------
+  // altitude at which a function of the atmosphere reaches a target (monotone in z)
+  const zWhere = (fn, target) => { const f = z => fn(atmosphere(z)) - target; return f(0) * f(150000) > 0 ? NaN : bisect(f, 0, 150000, 1); };
+  const trajectories = [
+    { label: "capsule, lunar return", o: { h0: 121920, V0: 11000, gamma0Deg: -6.5, beta: 350, LD: 0.3, bankDeg: 60, Rn: 4.7 }, c: 4 },
+    { label: "winged orbiter", o: { h0: 121920, V0: 7600, gamma0Deg: -1.2, beta: 400, LD: 1.0, bankDeg: 70, Rn: 1 }, c: 2 },
+    { label: "ballistic RV", o: { h0: 121920, V0: 7000, gamma0Deg: -25, beta: 10000, LD: 0, Rn: 0.05 }, c: 3 },
+  ].map(t => { const r = entry(t.o); return { ...t, x: r.hist.map(p => p.V / 1000), y: r.hist.map(p => p.h / 1000) }; });
+  const Vgrid = UI.linspace(0.3, 12, 80);
+  UI.wire("#lab1", () => {
+    const L = Math.pow(10, UI.val("mL")), q = UI.val("mq") * 1000;
+    const series = [];
+    [1, 5, 10, 20, 30].forEach(M => {
+      const zs = UI.linspace(0, 120000, 121);
+      series.push({ x: zs.map(z => M * atmosphere(z).a / 1000), y: zs.map(z => z / 1000), c: 6, dash: true, width: 1 });
+    });
+    const qline = qq => ({ x: Vgrid, y: Vgrid.map(V => zWhere(a => -a.rho, -2 * qq / (V * V * 1e6)) / 1000) });
+    const qm = qline(q), qlo = qline(q / 2), qhi = qline(2 * q);
+    series.push({ ...qlo, c: 5, width: 1 }, { ...qhi, c: 5, width: 1 }, { ...qm, c: 5, width: 5, label: `air-breather, q = ${(q / 1000).toFixed(0)} kPa` });
+    const zKn = [0.01, 1].map(k => zWhere(a => -meanFreePath(a.p, a.T), -k * L) / 1000);
+    if (UI.seg("mTraj") === "all") trajectories.forEach(t => series.push({ x: t.x, y: t.y, c: t.c, label: t.label, width: 2.4 }));
+    const hl = [];
+    if (isFinite(zKn[0])) hl.push({ y: zKn[0], label: "Kn = 0.01", c: 1 });
+    if (isFinite(zKn[1])) hl.push({ y: zKn[1], label: "Kn = 1", c: 1 });
+    UI.plot("#plot1", { xlabel: "Velocity V (km/s)", ylabel: "Altitude z (km)", xlim: [0, 12], ylim: [0, 120], series, hlines: hl,
+      vlines: [{ x: 7.8, label: "orbital", c: 6 }, { x: 11.2, label: "escape", c: 6 }],
+      notes: [5, 10, 20, 30].map(M => ({ x: Math.min(11.6, M * atmosphere(30000).a / 1000), y: 32, text: "M " + M })), legend: "tl", legendWidth: 205, h: 440 });
+    const zq = zWhere(a => -a.rho, -2 * q / (2000 * 2000)) / 1000;
+    UI.readout("#ro1", [["Kn = 0.01 altitude (km)", zKn[0]], ["Kn = 1 altitude (km)", zKn[1]], ["Corridor altitude at 2 km/s (km)", zq], ["Mach at 2 km/s there", 2000 / atmosphere(zq * 1000).a]]);
+    UI.live("#lab1", `L = ${L.toPrecision(2)} m`);
+  });
+
+  // ---------- Interactive 2: hypersonic limit ----------
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), th = UI.val("lth") * DEG, M = UI.val("lM");
+    const Ms = UI.logspace(1.2, 50, 220);
+    const os = Ms.map(m => obliqueShock(m, th, g));
+    const rhoLim = (g + 1) / (g - 1);
+    UI.plot("#plot2a", { xlabel: "M₁", ylabel: "ρ₂/ρ₁", logx: true, xlim: [1.2, 50], ylim: [1, rhoLim * 1.08],
+      series: [{ x: Ms, y: os.map(o => o ? o.rho2_rho1 : NaN), label: "exact, wedge" }, { x: [1.2, 50], y: [rhoLim, rhoLim], c: 3, dash: true, label: "(γ+1)/(γ−1)" }],
+      vlines: [{ x: M, c: 4 }], legend: "br", legendWidth: 120 });
+    const HSD = Ms.map(m => hsd.beta_theta(m * th, g));
+    UI.plot("#plot2b", { xlabel: "M₁", ylabel: "β/θ", logx: true, xlim: [1.2, 50], ylim: [1, 5],
+      series: [{ x: Ms, y: os.map(o => o ? o.beta / th : NaN), label: "exact" }, { x: [1.2, 50], y: [(g + 1) / 2, (g + 1) / 2], c: 3, dash: true, label: "(γ+1)/2" },
+        { x: Ms, y: HSD, c: 2, dash: true, width: 1.4, label: "HSD" }], vlines: [{ x: M, c: 4 }], legend: "tr", legendWidth: 90 });
+    const o = obliqueShock(M, th, g);
+    if (!o) { UI.readout("#ro2", [["Status", "shock detached"]]); return; }
+    const q = 0.5 * g * M * M, Cp = (o.p2_p1 - 1) / q;
+    UI.readout("#ro2", [["β (°)", o.beta / DEG], ["β/θ", o.beta / th], ["ρ₂/ρ₁", o.rho2_rho1], ["ρ₂/ρ₁ limit", rhoLim], ["Cp exact", Cp], ["Cp limit 4sin²β/(γ+1)", 4 / (g + 1) * Math.sin(o.beta) ** 2],
+      ["Newtonian 2sin²θ", 2 * Math.sin(th) ** 2], ["β − θ (°)", (o.beta - th) / DEG], ["T₂/T₁", o.T2_T1]]);
+    UI.live("#lab2", `γ = ${g}`);
+  });
+
+  // ---------- Interactive 3: similarity ----------
+  UI.wire("#lab3", () => {
+    const g = UI.gamma(), M = UI.val("sM"), th = UI.val("sth") * DEG;
+    const Ks = UI.linspace(0.05, 6, 160), series = [];
+    [5, 10, 15, 20].forEach((td, k) => {
+      const t = td * DEG;
+      series.push({ x: Ks, y: Ks.map(K => { const m = K / t; if (m < 1.02) return NaN; const o = obliqueShock(m, t, g); return o ? (o.p2_p1 - 1) / (0.5 * g * m * m) / (t * t) : NaN; }), label: `exact, θ = ${td}°`, c: k + 1 });
+    });
+    series.push({ x: Ks, y: Ks.map(K => hsd.Cp_theta2(K, g)), c: 6, dash: true, label: "HSD", width: 2.6 });
+    const o = obliqueShock(M, th, g), K = M * th;
+    const pts = o ? [{ x: K, y: (o.p2_p1 - 1) / (0.5 * g * M * M) / (th * th), c: 4, label: "your wedge" }] : [];
+    UI.plot("#plot3", { xlabel: "Hypersonic similarity parameter K = M∞θ", ylabel: "Cp / θ²", xlim: [0, 6], ylim: [0, 10], series, points: pts, legend: "tr", legendWidth: 130, h: 400 });
+    UI.readout("#ro3", o ? [["K = Mθ", K], ["Cp/θ² exact", (o.p2_p1 - 1) / (0.5 * g * M * M) / (th * th)], ["Cp/θ² HSD", hsd.Cp_theta2(K, g)], ["limit γ+1 (K → ∞)", g + 1], ["β/θ exact", o.beta / th], ["β/θ HSD", hsd.beta_theta(K, g)]]
+      : [["Status", "shock detached"]]);
+  });
+
+  // ---------- Interactive 4: Billig shock and entropy layer ----------
+  const billig = (M, shape) => shape === "sphere"
+    ? { d: 0.143 * Math.exp(3.24 / (M * M)), Rc: 1.143 * Math.exp(0.54 / Math.pow(M - 1, 1.2)) }
+    : { d: 0.386 * Math.exp(4.67 / (M * M)), Rc: 1.386 * Math.exp(1.8 / Math.pow(M - 1, 0.75)) };
+  // shock x(y) and local wave angle for R = 1
+  const shockAt = (M, b, y) => {
+    const mu = Math.asin(1 / M), t2 = Math.tan(mu) ** 2;
+    const s = Math.sqrt(1 + y * y * t2 / (b.Rc * b.Rc));
+    const x = 1 + b.d - (b.Rc / t2) * (s - 1);
+    const slope = (y / (b.Rc * b.Rc)) / s;         // −dx/dy
+    return { x, beta: Math.atan2(1, slope) };
+  };
+  UI.wire("#lab4", () => {
+    const g = UI.gamma(), M = UI.val("bM"), shape = UI.seg("bShape"), b = billig(M, shape);
+    const W = 620, H = 300, sc = 60, cx = 250, cy = 270;
+    const X = x => cx - x * sc, Y = y => cy - y * sc;
+    let svg = "";
+    // body: circular nose (R = 1) tangent to a 15° cone or wedge, out to the right edge of the figure
+    const body = [];
+    for (let t = 0; t <= 75; t += 1.5) body.push({ x: Math.cos(t * DEG), y: Math.sin(t * DEG), nx: Math.cos(t * DEG), ny: Math.sin(t * DEG) });
+    const e = body[body.length - 1];
+    for (let k = 1; k <= 40; k++) { const L = 5.4 * k / 40; body.push({ x: e.x - L * Math.cos(15 * DEG), y: e.y + L * Math.sin(15 * DEG), nx: e.nx, ny: e.ny }); }
+    svg += `<path d="M${X(1)} ${Y(0)} ${body.map(p => `L${X(p.x)} ${Y(p.y)}`).join(" ")} L${X(body[body.length - 1].x)} ${Y(0)} Z" class="body"/>`;
+    // shock
+    const ys = UI.linspace(0, 4.6, 120), sh = ys.map(y => shockAt(M, b, y));
+    svg += `<path d="${ys.map((y, i) => `${i ? "L" : "M"}${X(sh[i].x)} ${Y(y)}`).join(" ")}" class="shock"/>`;
+    // shock-layer thickness along each body normal (ray from the body to where it meets the shock)
+    body.forEach(p => {
+      const f = n => (p.x + n * p.nx) - shockAt(M, b, p.y + n * p.ny).x;
+      p.ns = bisect(f, 0, 12); p.ys = p.y + p.ns * p.ny;
+    });
+    // streamlines: mass flux below y0 ∝ y0^k (k = 2 axisymmetric, 1 planar); place each one at the same mass fraction of the layer
+    const kk = shape === "sphere" ? 2 : 1;
+    const ds = beta => { const mn = M * Math.sin(beta); return mn > 1 ? -Math.log(normalShock(mn, g).p02_p01) : 0; };
+    const dsMax = ds(Math.PI / 2);
+    [0.08, 0.2, 0.35, 0.55, 0.8, 1.1, 1.5, 2.0, 2.6, 3.3, 4.1].forEach(y0 => {
+      const s0 = shockAt(M, b, y0), frac = dsMax > 0 ? ds(s0.beta) / dsMax : 0;
+      const col = `color-mix(in srgb, var(--hot) ${Math.round(100 * frac)}%, var(--cool))`;
+      let d = `M${X(1 + b.d + 2.6)} ${Y(y0)} L${X(s0.x)} ${Y(y0)}`;
+      body.forEach(p => { if (isFinite(p.ns) && p.ys >= y0) { const n = p.ns * Math.pow(y0 / p.ys, kk); d += ` L${X(p.x + n * p.nx)} ${Y(p.y + n * p.ny)}`; } });
+      svg += `<path d="${d}" stroke="${col}" stroke-width="${1 + 1.6 * frac}" fill="none"/>`;
+    });
+    svg += `<line x1="${X(1)}" y1="${Y(0) + 4}" x2="${X(1 + b.d)}" y2="${Y(0) + 4}" stroke="var(--text)"/><text x="${X(1 + b.d / 2) - 8}" y="${Y(0) + 18}" class="small">Δ</text>`;
+    svg += `<text x="${W - 190}" y="${H - 40}" class="label">M∞ = ${M.toFixed(1)}</text><text x="${W - 190}" y="${H - 22}" class="small">${shape === "sphere" ? "sphere-cone" : "cylinder-wedge"}, R = 1</text>`;
+    document.getElementById("diag4").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+    const yy = UI.linspace(0, 5, 160), bet = yy.map(y => shockAt(M, b, y).beta);
+    UI.plot("#plot4", { xlabel: "y/R where the streamline crosses the shock", ylabel: "Δs/R  and  p₀₂/p₀₁", xlim: [0, 5], ylim: [0, Math.max(1.05, dsMax * 1.05)],
+      series: [{ x: yy, y: bet.map(ds), label: "Δs/R", c: 4 }, { x: yy, y: bet.map(be => { const mn = M * Math.sin(be); return mn > 1 ? normalShock(mn, g).p02_p01 : 1; }), label: "p₀₂/p₀₁", c: 1 }], legend: "tr", legendWidth: 100, h: 280 });
+    const y30 = bisect(y => shockAt(M, b, y).beta - Math.max(30 * DEG, Math.asin(1 / M) + 0.01), 0, 200);
+    UI.readout("#ro4", [["Stand-off Δ/R", b.d], ["Shock radius R_c/R", b.Rc], ["Mach angle μ (°)", Math.asin(1 / M) / DEG], ["Δs/R on axis", dsMax], ["p₀₂/p₀₁ on axis", normalShock(M, g).p02_p01],
+      ["y/R where β = 30°", M * Math.sin(30 * DEG) > 1 ? y30 : "—"]]);
+  });
+
+  // ---------- Interactive 5: viscous interaction ----------
+  UI.wire("#lab5", () => {
+    const g = UI.gamma(), M = UI.val("vM"), Rem = Math.pow(10, UI.val("vRe")), T = UI.val("vT");
+    const Tw = T * (1 + Math.sqrt(0.71) * 0.5 * (g - 1) * M * M);  // insulated wall at recovery temperature
+    const C = (GD.sutherland(Tw) / GD.sutherland(T)) * (T / Tw);
+    const xs = UI.logspace(1e-4, 3, 200), chi = xs.map(x => M ** 3 * Math.sqrt(C / (Rem * x)));
+    const w = HY.viscousInteraction;
+    const strong = chi.map(c => w.strong(c)), weak = chi.map(c => w.weak(c));
+    UI.plot("#plot5", { xlabel: "Distance from leading edge x (m)", ylabel: "p / p∞", logx: true, logy: true, xlim: [1e-4, 3], ylim: [0.8, Math.max(3, Math.min(1e3, strong[0] * 1.2))],
+      series: [{ x: xs, y: weak.map((v, i) => chi[i] <= 3 ? v : NaN), c: 1, label: "weak interaction" }, { x: xs, y: weak.map((v, i) => chi[i] > 3 ? v : NaN), c: 1, dash: true },
+        { x: xs, y: strong.map((v, i) => chi[i] >= 3 ? v : NaN), c: 4, label: "strong interaction" }, { x: xs, y: strong.map((v, i) => chi[i] < 3 ? v : NaN), c: 4, dash: true }],
+      hlines: [{ y: 1, c: 6 }], legend: "tr", legendWidth: 140 });
+    const x3 = M ** 6 * C / (9 * Rem);
+    UI.readout("#ro5", [["Chapman–Rubesin C", C], ["Wall temperature (K)", Tw], ["χ̄ at x = 0.1 m", M ** 3 * Math.sqrt(C / (Rem * 0.1))], ["p/p∞ at 0.1 m", (() => { const c = M ** 3 * Math.sqrt(C / (Rem * 0.1)); return c > 3 ? w.strong(c) : w.weak(c); })()],
+      ["x where χ̄ = 3 (m)", x3], ["Kn based on 1 m", 1.26 * Math.sqrt(g) * M / Rem]]);
+  });
+
+  // ---------- Worked examples ----------
+  const g = 1.4;
+  UI.wire("#ex1", () => {
+    const M = UI.val("e1M"), th = UI.val("e1t") * DEG, o = obliqueShock(M, th, g);
+    if (!o) { document.getElementById("e1out").innerHTML = "<p class='status bad'>The shock is detached for this wedge and Mach number.</p>"; return; }
+    const q = 0.5 * g * M * M;
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["β (deg), exact", "θ–β–M relation", o.beta / DEG], ["β (deg), limit", "β ≈ (γ+1)θ/2", (g + 1) / 2 * th / DEG], ["β (deg), HSD", "HSD, K = Mθ", hsd.beta_theta(M * th, g) * th / DEG],
+      { sub: "Density and pressure" }, ["ρ₂/ρ₁, exact", "normal shock at Mₙ₁", o.rho2_rho1], ["ρ₂/ρ₁, limit", "(γ+1)/(γ−1)", (g + 1) / (g - 1)],
+      ["Cp, exact", "(p₂/p₁ − 1)/(γM²/2)", (o.p2_p1 - 1) / q], ["Cp, limit", "4 sin²β/(γ+1), exact β", 4 / (g + 1) * Math.sin(o.beta) ** 2],
+      ["Cp, HSD", "θ² × HSD", hsd.Cp_theta2(M * th, g) * th * th], ["Cp, Newtonian", "2 sin²θ", 2 * Math.sin(th) ** 2]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const Ma = UI.val("e2Ma"), ta = UI.val("e2ta") * DEG, tb = UI.val("e2tb") * DEG, K = Ma * ta, Mb = K / tb;
+    const oa = obliqueShock(Ma, ta, g), ob = Mb > 1 ? obliqueShock(Mb, tb, g) : null;
+    if (!oa || !ob) { document.getElementById("e2out").innerHTML = "<p class='status bad'>One of the shocks is detached, or M_B ≤ 1. Choose a larger K.</p>"; return; }
+    const cpa = (oa.p2_p1 - 1) / (0.5 * g * Ma * Ma), cpb = (ob.p2_p1 - 1) / (0.5 * g * Mb * Mb);
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["K", "M_A θ_A", K], ["M_B", "K/θ_B", Mb], { sub: "Wedge A" }, ["Cp", "oblique shock", cpa], ["Cp/θ²", "", cpa / (ta * ta)],
+      { sub: "Wedge B" }, ["Cp", "oblique shock", cpb], ["Cp/θ²", "", cpb / (tb * tb)], { sub: "Theory" }, ["Cp/θ², HSD", "HSD formula", hsd.Cp_theta2(K, g)],
+      ["Difference A vs B (%)", "", (100 * Math.abs(cpa / (ta * ta) - cpb / (tb * tb)) / (cpa / (ta * ta))).toFixed(2) + " %"]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const M = UI.val("e3M"), R = UI.val("e3R"), b = billig(M, "sphere");
+    const y30 = M * 0.5 > 1 ? bisect(y => shockAt(M, b, y).beta - 30 * DEG, 0, 200) : NaN;
+    UI.table("#e3out", ["Quantity", "Relation used", "Result"], [
+      ["Δ/R", "0.143 exp(3.24/M²)", b.d], ["Δ (m)", "", b.d * R], ["R_c/R", "1.143 exp(0.54/(M−1)^1.2)", b.Rc], ["R_c (m)", "", b.Rc * R],
+      ["μ (deg)", "sin⁻¹(1/M)", Math.asin(1 / M) / DEG], ["y (m) where β = 30°", "solve Billig shape", isFinite(y30) ? y30 * R : "M sin 30° < 1"],
+      ["Δs/R on the axis", "−ln(p₀₂/p₀₁), normal shock", -Math.log(normalShock(M, g).p02_p01)]], "ex");
+  });
+  UI.wire("#ex4", () => {
+    const M = UI.val("e4M"), z = UI.val("e4z") * 1000, x = UI.val("e4x"), a = atmosphere(z);
+    const V = M * a.a, Rex = a.rho * V * x / a.mu, Tw = a.T * (1 + Math.sqrt(0.71) * 0.2 * M * M);
+    const C = (GD.sutherland(Tw) / a.mu) * (a.T / Tw), chi = M ** 3 * Math.sqrt(C / Rex);
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [
+      ["T∞ (K), p∞ (Pa)", "1976 standard atmosphere", `${a.T.toFixed(1)}, ${a.p.toPrecision(4)}`], ["V (m/s)", "M a", V], ["Re_x", "ρVx/μ", Rex],
+      ["T_w (K), insulated", "T∞(1 + √Pr (γ−1)M²/2)", Tw], ["C", "(μ_w/μ∞)(T∞/T_w)", C], ["χ̄", "M³√(C/Re_x)", chi],
+      ["Regime", "χ̄ &lt; 3 weak, χ̄ &gt; 3 strong", chi > 3 ? "strong" : "weak"], ["p/p∞", chi > 3 ? "0.514χ̄ + 0.759" : "1 + 0.31χ̄ + 0.05χ̄²", chi > 3 ? HY.viscousInteraction.strong(chi) : HY.viscousInteraction.weak(chi)]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "Why does the density ratio across a strong shock stop growing with Mach number?", opts: ["Because the shock becomes isentropic", "Because the temperature rise makes the gas resist compression; ρ₂/ρ₁ → (γ+1)/(γ−1)", "Because of viscosity", "It does not; it grows like M²"], a: 1, why: "Pressure and temperature both grow like M², so their ratio, the density, approaches the constant (γ+1)/(γ−1) = 6 for γ = 1.4." },
+    { q: "In the hypersonic limit, a 10° wedge has a shock angle of about…", opts: ["10°", "12°", "20°", "45°"], a: 1, why: "β/θ → (γ+1)/2 = 1.2, so β ≈ 12°: the shock layer is thin. The exact value at M = 20 is about 12.7°." },
+    { q: "Lowering γ (as in a dissociating gas) makes the shock layer…", opts: ["thicker", "thinner", "unchanged", "detach"], a: 1, why: "ρ₂/ρ₁ = (γ+1)/(γ−1) rises as γ → 1, so the post-shock gas is denser and occupies a thinner layer." },
+    { q: "The hypersonic similarity parameter for slender bodies is…", opts: ["M/τ", "Mτ", "M²τ", "Re/M"], a: 1, why: "HSD shows that the flow depends on M∞ and the thickness ratio τ only through K = M∞τ (for a given γ)." },
+    { q: "Mach-number independence means that above some Mach number…", opts: ["the drag force stops changing", "pressure coefficients and shock shapes stop changing", "the flow becomes subsonic", "heating stops rising"], a: 1, why: "Coefficients such as Cp, CL, CD become independent of M∞. Forces (∝ q∞) and heating still rise with speed." },
+    { q: "The entropy layer on a blunt body is made of gas that…", opts: ["crossed the weak outer part of the bow shock", "crossed the nearly normal part of the bow shock near the axis", "came from the boundary layer", "was heated by radiation"], a: 1, why: "Streamlines near the axis pass the strongest part of the shock, gaining the most entropy, and then wrap around the body as a thin layer." },
+    { q: "Laminar boundary-layer thickness at hypersonic speed scales like…", opts: ["1/√Re_x", "M/√Re_x", "M²/√Re_x", "M³/Re_x"], a: 2, why: "Viscous heating raises the temperature and lowers the density in the boundary layer roughly in proportion to M², thickening it." },
+    { q: "Strong viscous interaction is most likely…", opts: ["far downstream on a large vehicle at low altitude", "near the leading edge at high Mach number and low Reynolds number", "at Mach 2", "in turbulent flow only"], a: 1, why: "χ̄ = M³√(C/Re_x) is largest when M is high and Re_x is small: near leading edges, at high altitude, or on small models." },
+    { q: "A re-entry capsule such as Apollo belongs to which Hirschel–Weiland class?", opts: ["RV-W", "RV-NW", "CAV", "ARV"], a: 1, why: "Non-winged re-entry vehicles (RV-NW): capsules and lifting bodies, flying with small L/D from a center-of-gravity offset." },
+    { q: "Rarefied (transitional) flow is expected when the Knudsen number is about…", opts: ["10⁻⁴", "0.001", "0.1–10", "only above 100"], a: 2, why: "Continuum holds for Kn < 0.01; slip flow 0.01–0.1; transitional 0.1–10, requiring DSMC; free molecular above about 10." },
+  ]);
+})();
+</script>
+</body>
+</html>
