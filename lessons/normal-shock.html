@@ -11,193 +11,429 @@
 <div class="prose">
   <div class="eyebrow">Lesson 2 · Part I</div>
   <h1>Normal Shock Waves</h1>
-  <p class="lead">A shock wave is an extremely thin region, a few mean free paths thick, across which a supersonic flow is compressed almost discontinuously. A normal shock stands perpendicular to the flow. It is the simplest shock to analyze, and the building block for oblique shocks, Pitot probes, inlets and nozzles.</p>
+  <p class="lead">A shock wave is a region a few mean free paths thick across which a supersonic flow is compressed almost discontinuously. A normal shock stands perpendicular to the flow. It is the simplest shock to analyze, and the building block for oblique shocks, Pitot probes, diffusers, nozzles and wind tunnels.</p>
   <nav class="toc"><b>Contents</b><ol>
-    <li><a href="#why">Why shocks form</a></li>
+    <li><a href="#why">How shocks form</a></li>
     <li><a href="#equations">The governing equations</a></li>
     <li><a href="#prandtl">The Prandtl relation</a></li>
     <li><a href="#relations">The normal-shock relations</a></li>
+    <li><a href="#hugoniot">The Hugoniot curve</a></li>
     <li><a href="#entropy">Entropy and the direction of the jump</a></li>
     <li><a href="#limits">Weak and strong limits</a></li>
-    <li><a href="#pitot">Measuring velocity with a Pitot tube</a></li>
+    <li><a href="#structure">Inside the shock</a></li>
+    <li><a href="#pitot">Pitot probes</a></li>
     <li><a href="#moving">Moving shocks</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
   </ol></nav>
 
-  <h2 id="why">1. Why shocks form</h2>
-  <p>Sound waves are how a body "tells" the oncoming flow it is there. In subsonic flow the signals run upstream, and the flow begins to adjust well ahead of the body. In supersonic flow the signals cannot outrun the stream. Instead, the compressive waves pile up into a thin, strong wave across which the flow adjusts abruptly. There is a second way to see it: a compression wave raises the temperature and so the speed of sound behind it. The rear of a compression pulse therefore travels faster than its front, and the pulse steepens until dissipation balances the steepening. The result is a shock.</p>
-  <p>Inside the shock, viscosity and heat conduction are large, which is why it produces entropy. Outside it, the flow is inviscid. Since the shock thickness (about 10⁻⁷ m at sea level) is far smaller than any body, we treat it as a discontinuity. The conservation laws are applied across it without needing to know its internal structure.</p>
-
-  <h2 id="equations">2. The governing equations</h2>
-  <p>Take a control volume enclosing a stationary normal shock, with uniform state 1 upstream and state 2 downstream. The flow is steady, adiabatic, and has no body forces or shear on the side faces, so the integral equations of Lesson 1 reduce to</p>
-  $$\rho_1 u_1 = \rho_2 u_2$$
-  $$p_1 + \rho_1 u_1^2 = p_2 + \rho_2 u_2^2$$
-  $$h_1 + \frac{u_1^2}{2} = h_2 + \frac{u_2^2}{2}$$
-  <p>With \(p = \rho R T\) and \(h = c_p T\), these are five equations for the five unknowns \(\rho_2, u_2, p_2, T_2, h_2\). Note the energy equation: total enthalpy, and therefore \(T_0\), is the same on both sides.</p>
-
-  <h2 id="prandtl">3. The Prandtl relation</h2>
-  <p>Divide momentum by continuity, use \(a^2 = \gamma p/\rho\), and write \(a^2\) in terms of \(a^*\) through the energy equation. The result is remarkably simple:</p>
-  $$u_1 u_2 = a^{*2} \qquad\Longleftrightarrow\qquad M_1^* M_2^* = 1.$$
-  <p>Since \(a^*\) is the same on both sides (the flow is adiabatic), a supersonic upstream velocity (\(M_1^* &gt; 1\)) must become subsonic (\(M_2^* &lt; 1\)). Using the M*–M relation from Lesson 1 turns this into the downstream Mach number.</p>
-
-  <h2 id="relations">4. The normal-shock relations</h2>
-  <p>Every ratio across the shock depends only on \(M_1\) and γ:</p>
-  $$M_2^2 = \frac{1 + \frac{\gamma-1}{2}M_1^2}{\gamma M_1^2 - \frac{\gamma-1}{2}}$$
-  $$\frac{\rho_2}{\rho_1} = \frac{u_1}{u_2} = \frac{(\gamma+1)M_1^2}{2 + (\gamma-1)M_1^2}$$
-  $$\frac{p_2}{p_1} = 1 + \frac{2\gamma}{\gamma+1}\left(M_1^2 - 1\right)$$
-  $$\frac{T_2}{T_1} = \frac{p_2}{p_1}\frac{\rho_1}{\rho_2} = \left[1 + \frac{2\gamma}{\gamma+1}(M_1^2-1)\right]\frac{2 + (\gamma-1)M_1^2}{(\gamma+1)M_1^2}$$
-  <p>Across the shock, static pressure, density, temperature and entropy rise. Velocity and Mach number fall, and total pressure falls.</p>
+  <h2 id="why"><span class="sec">Section 2.1</span>How shocks form</h2>
+  <p>Sound waves are how a body tells the oncoming flow it is there. In subsonic flow those signals travel upstream, and the flow begins to adjust well ahead of the body. In supersonic flow they cannot outrun the stream. The adjustment is postponed until it happens abruptly, across a shock.</p>
+  <p>There is a second, more mechanical way to see it. A finite compression wave is made of many small pressure increments. Each increment compresses and heats the gas slightly, so the next one travels through warmer gas, at a higher sound speed, and moving downstream with the gas that has been set in motion. For a simple wave in one dimension, each point on the wave profile moves at</p>
+  $$\frac{dx}{dt} = u + a = a_1 + \frac{\gamma+1}{2}u.$$
+  <p>Points of higher velocity (higher pressure) move faster. The back of a compression catches up with the front, the profile steepens, and eventually it would become multivalued. Before that can happen, the gradients become so steep that viscosity and heat conduction intervene, and a thin, steady shock forms. An expansion does the opposite and spreads out, which is why there are no expansion shocks. Interactive 1 follows this process for a smooth pulse.</p>
 </div>
 
 <section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">A compression wave steepens into a shock</span><span class="live"></span></div>
   <div class="controls">
-    <div class="ctl"><label for="M1">Upstream Mach M₁ <output for="M1"></output></label>
-      <input type="range" id="M1" min="1" max="6" step="0.01" value="2"></div>
+    <div class="ctl"><label for="wt">Time t / t<sub>break</sub> <output for="wt"></output></label>
+      <input type="range" id="wt" min="0" max="1.6" step="0.01" value="0.6"></div>
+    <div class="ctl"><label for="wu">Pulse amplitude u<sub>max</sub>/a₁ <output for="wu"></output></label>
+      <input type="range" id="wu" min="0.02" max="0.4" step="0.01" value="0.15"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"wt":0}'>Initial pulse</button>
+      <button data-preset='{"wt":1}'>Breaking point</button>
+      <button data-preset='{"wt":1.5}'>Past breaking</button>
+    </div>
     <div id="ro1" class="readout"></div>
+    <p class="note">Beyond t<sub>break</sub> the simple-wave solution folds over (dashed). Physically a shock forms instead, placed so that it cuts off equal areas (the equal-area rule).</p>
   </div>
-  <div class="views">
-    <figure><div id="diag1"></div><figcaption>A stationary normal shock. Bar heights show each downstream property relative to its upstream value.</figcaption></figure>
-    <figure><div id="plot1"></div><figcaption>Normal-shock ratios versus M₁ (log scale). Density ratio tends to (γ+1)/(γ−1); pressure and temperature grow without bound.</figcaption></figure>
-  </div>
+  <div class="views"><figure><div id="plot1"></div><figcaption>Velocity profile of a right-running simple wave in still air. The front half is a compression (u increases toward the back) and steepens; the back half is an expansion and spreads.</figcaption></figure></div>
 </section>
 
 <div class="prose">
-  <h2 id="entropy">5. Entropy and the direction of the jump</h2>
-  <p>The algebra above is equally happy with \(M_1 &lt; 1\), which would give an "expansion shock" with \(M_2 &gt; 1\). The second law decides. The entropy change across the shock is</p>
-  $$\frac{s_2 - s_1}{R} = \frac{\gamma}{\gamma-1}\ln\frac{T_2}{T_1} - \ln\frac{p_2}{p_1} = -\ln\frac{p_{0,2}}{p_{0,1}}.$$
-  <p>Plotted below for M₁ either side of 1, it is negative for \(M_1 &lt; 1\), which is impossible for an adiabatic process. So only compression shocks exist: the upstream flow must be supersonic. For weak shocks the entropy rise is third order in the shock strength,</p>
-  $$\frac{s_2 - s_1}{R} \approx \frac{2\gamma}{(\gamma+1)^2}\frac{(M_1^2-1)^3}{3},$$
-  <p>which is why a weak shock is almost isentropic, and why a series of weak waves compresses a flow far more efficiently than one strong shock (see <a href="oblique-shock.html">Lesson 5</a>). The total-pressure ratio follows from the entropy rise:</p>
-  $$\frac{p_{0,2}}{p_{0,1}} = \left[\frac{(\gamma+1)M_1^2}{2+(\gamma-1)M_1^2}\right]^{\gamma/(\gamma-1)}\left[\frac{\gamma+1}{2\gamma M_1^2-(\gamma-1)}\right]^{1/(\gamma-1)}.$$
-  <p>Total temperature does not change, but total pressure is lost. That loss is lost capacity to do work. It is why supersonic diffusers and inlets try hard to avoid a strong normal shock.</p>
+  <h2 id="equations"><span class="sec">Section 2.2</span>The governing equations</h2>
+  <p>Take a control volume enclosing a stationary normal shock, with uniform state 1 upstream and state 2 downstream. The flow is steady and adiabatic, with no body forces, and the side faces carry no shear. The integral equations of Lesson 1 reduce to</p>
+  $$\rho_1u_1 = \rho_2u_2 \qquad\text{(continuity)}$$
+  $$p_1 + \rho_1u_1^2 = p_2 + \rho_2u_2^2 \qquad\text{(momentum)}$$
+  $$h_1 + \frac{u_1^2}{2} = h_2 + \frac{u_2^2}{2} \qquad\text{(energy)}$$
+  <p>With \(p = \rho RT\) and \(h = c_pT\), these are five equations in five unknowns. Two features stand out. Momentum says that \(p + \rho u^2\), the "impulse", is conserved. Energy says total enthalpy, and so \(T_0\), is the same on both sides.</p>
+
+  <h2 id="prandtl"><span class="sec">Section 2.3</span>The Prandtl relation</h2>
+  <p>Divide the momentum equation by the continuity equation:</p>
+  $$\frac{p_1}{\rho_1u_1} - \frac{p_2}{\rho_2u_2} = u_2 - u_1 \quad\Longrightarrow\quad \frac{a_1^2}{\gamma u_1} - \frac{a_2^2}{\gamma u_2} = u_2 - u_1.$$
+  <p>Express \(a_1^2\) and \(a_2^2\) through the energy equation as \(a^2 = \tfrac{\gamma+1}{2}a^{*2} - \tfrac{\gamma-1}{2}u^2\), where \(a^*\) is common to both sides because the flow is adiabatic. Everything collapses to</p>
+  $$u_1u_2 = a^{*2} \qquad\Longleftrightarrow\qquad M_1^*M_2^* = 1.$$
+  <p>This is the <b class="term">Prandtl relation</b>. If the upstream flow is supersonic (\(M_1^* &gt; 1\)), the downstream flow must be subsonic (\(M_2^* &lt; 1\)), and vice versa.</p>
+
+  <h2 id="relations"><span class="sec">Section 2.4</span>The normal-shock relations</h2>
+  <p>Using \(M^{*2} = (\gamma+1)M^2/[2 + (\gamma-1)M^2]\) in the Prandtl relation, and then continuity and momentum, gives every downstream quantity as a function of \(M_1\) and γ alone:</p>
+  $$M_2^2 = \frac{1 + \frac{\gamma-1}{2}M_1^2}{\gamma M_1^2 - \frac{\gamma-1}{2}}$$
+  $$\frac{\rho_2}{\rho_1} = \frac{u_1}{u_2} = \frac{(\gamma+1)M_1^2}{2 + (\gamma-1)M_1^2}$$
+  $$\frac{p_2}{p_1} = 1 + \frac{2\gamma}{\gamma+1}\left(M_1^2 - 1\right)$$
+  $$\frac{T_2}{T_1} = \frac{h_2}{h_1} = \frac{p_2}{p_1}\frac{\rho_1}{\rho_2}$$
+  <p>The quantity \(M_1^2 - 1\) appears throughout. It is a natural measure of shock strength, and \((p_2 - p_1)/p_1 = \tfrac{2\gamma}{\gamma+1}(M_1^2 - 1)\) is often called the <b class="term">shock strength</b> itself.</p>
 </div>
 
 <section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">The jump across a normal shock</span><span class="live"></span></div>
   <div class="controls">
-    <div class="ctl"><label for="M1b">M₁ <output for="M1b"></output></label>
-      <input type="range" id="M1b" min="0.5" max="4" step="0.01" value="1.5"></div>
+    <div class="ctl"><label for="M1">Upstream Mach M₁ <output for="M1"></output></label>
+      <input type="range" id="M1" min="1" max="6" step="0.01" value="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"M1":1.05}'>Weak, M₁ = 1.05</button>
+      <button data-preset='{"M1":1.3}'>Transonic airfoil shock</button>
+      <button data-preset='{"M1":2}'>M₁ = 2</button>
+      <button data-preset='{"M1":5}'>Strong, M₁ = 5</button>
+    </div>
     <div id="ro2" class="readout"></div>
-    <p class="note">For M₁ &lt; 1 the "shock" would destroy entropy, so it cannot exist.</p>
   </div>
-  <div class="views"><figure><div id="plot2"></div><figcaption>Entropy rise and total-pressure ratio across a normal shock. The dashed curve is the weak-shock approximation.</figcaption></figure></div>
+  <div class="views">
+    <figure><div id="diag2"></div><figcaption>A stationary normal shock. Arrow lengths scale with velocity; bar heights show each downstream property relative to its upstream value (dashed line = 1).</figcaption></figure>
+    <figure><div id="plot2"></div><figcaption>Normal-shock ratios versus M₁ (log scale). Density ratio tends to (γ+1)/(γ−1); pressure and temperature grow without bound.</figcaption></figure>
+  </div>
 </section>
 
 <div class="prose">
-  <h2 id="limits">6. Weak and strong limits</h2>
-  <p>As \(M_1 \to 1\), every ratio tends to 1 and the shock degenerates into a Mach wave, a sound wave. As \(M_1 \to \infty\) (still with constant γ):</p>
-  $$M_2 \to \sqrt{\frac{\gamma-1}{2\gamma}} = 0.378, \qquad \frac{\rho_2}{\rho_1} \to \frac{\gamma+1}{\gamma-1} = 6, \qquad \frac{p_2}{p_1},\ \frac{T_2}{T_1} \to \infty.$$
-  <p>The density ratio is bounded: however strong the shock, a perfect gas with γ = 1.4 can be compressed by at most a factor of six. The energy goes into heating instead. In real air at very high Mach numbers, the gas absorbs energy in vibration and dissociation, which lowers the effective γ and raises the density ratio. That effect lies outside the calorically perfect model used here.</p>
-
-  <h2 id="pitot">7. Measuring velocity with a Pitot tube</h2>
-  <p>A Pitot tube brings the flow at its mouth to rest, and measures the total pressure there.</p>
-  <h3>Subsonic flow</h3>
-  <p>The deceleration is isentropic, so the probe reads \(p_0\). With a static-pressure measurement,</p>
-  $$M_1^2 = \frac{2}{\gamma-1}\left[\left(\frac{p_0}{p_1}\right)^{(\gamma-1)/\gamma} - 1\right], \qquad V_1^2 = \frac{2a_1^2}{\gamma-1}\left[\left(\frac{p_0}{p_1}\right)^{(\gamma-1)/\gamma} - 1\right].$$
-  <p>Using Bernoulli's equation instead, \(V = \sqrt{2(p_0 - p_1)/\rho}\), overestimates the velocity. The error is about 1% at M = 0.3 and grows rapidly beyond.</p>
-  <h3>Supersonic flow</h3>
-  <p>A detached bow shock stands ahead of the probe, and the part of it in front of the mouth is locally normal. The probe therefore reads the total pressure <em>behind</em> a normal shock, \(p_{0,2}\). Dividing by the freestream static pressure \(p_1\), measured separately, gives the <b>Rayleigh Pitot-tube formula</b>:</p>
-  $$\frac{p_{0,2}}{p_1} = \left[\frac{(\gamma+1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma-1)}\right]^{\gamma/(\gamma-1)}\frac{1-\gamma+2\gamma M_1^2}{\gamma+1}.$$
-  <p>It is implicit in \(M_1\), but monotonic, so the calculator below inverts it numerically. Applying the subsonic formula to a supersonic Pitot reading gives a badly wrong Mach number. The comparison shows by how much.</p>
+  <h2 id="hugoniot"><span class="sec">Section 2.5</span>The Hugoniot curve</h2>
+  <p>Eliminating the velocities from the three conservation equations leaves a relation among thermodynamic properties only, the <b class="term">Hugoniot equation</b>:</p>
+  $$e_2 - e_1 = \frac{p_1 + p_2}{2}\left(v_1 - v_2\right).$$
+  <p>It looks like the first law with the <em>average</em> pressure doing the work. For a calorically perfect gas it gives a curve in the p–v plane:</p>
+  $$\frac{p_2}{p_1} = \frac{\frac{\gamma+1}{\gamma-1} - \frac{v_2}{v_1}}{\frac{\gamma+1}{\gamma-1}\frac{v_2}{v_1} - 1}.$$
+  <p>Continuity and momentum alone give a straight line through state 1, the <b class="term">Rayleigh line</b>, with slope \(-(\rho_1u_1)^2\). In nondimensional form, \(p_2/p_1 - 1 = -\gamma M_1^2(v_2/v_1 - 1)\). The shock jumps from state 1 to the intersection of the two. Comparing the Hugoniot with the isentrope \(p v^\gamma = \text{const}\) shows the essential physics. For the same compression \(v_2/v_1\), a shock reaches a higher pressure (and temperature) than an isentropic compression. The difference is the entropy it has produced. The two curves touch at state 1, with equal slope and curvature, which is why weak shocks are nearly isentropic.</p>
 </div>
 
 <section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Hugoniot curve, isentrope and Rayleigh line</span><span class="live"></span></div>
   <div class="controls">
-    <div class="ctl"><label for="pr">Measured p<sub>Pitot</sub>/p₁ <output for="pr"></output></label>
-      <input type="range" id="pr" min="1.05" max="40" step="0.01" value="5.64"></div>
+    <div class="ctl"><label for="hM">Upstream Mach M₁ <output for="hM"></output></label>
+      <input type="range" id="hM" min="1" max="4" step="0.01" value="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"hM":1.2}'>Weak shock</button>
+      <button data-preset='{"hM":2}'>M₁ = 2</button>
+      <button data-preset='{"hM":3.5}'>Strong shock</button>
+    </div>
     <div id="ro3" class="readout"></div>
   </div>
-  <div class="views"><figure><div id="plot3"></div><figcaption>Pitot-to-static pressure ratio versus Mach number. Below M = 1 the probe reads p₀ (isentropic). Above it, a bow shock forms and the probe reads p₀,₂ (Rayleigh formula). The dashed curve continues the isentropic relation, which a supersonic probe does not follow.</figcaption></figure></div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Pressure versus specific volume. The shock state lies where the Rayleigh line (straight) meets the Hugoniot. The isentrope through state 1 lies below the Hugoniot everywhere except at state 1. The density limit v₂/v₁ = (γ−1)/(γ+1) is the vertical asymptote.</figcaption></figure></div>
 </section>
 
 <div class="prose">
-  <h2 id="moving">8. Moving shocks</h2>
-  <p>A shock moving at speed \(W\) into still gas, such as the shock from an explosion or in a shock tube, looks like a stationary shock to an observer riding with it. Upstream, that observer sees gas approaching at \(W\), so the stationary relations apply with \(M_s = W/a_1\) in place of \(M_1\). Back in the laboratory frame, the gas behind the shock is set moving after it with the induced velocity</p>
-  $$u_p = W\left(1 - \frac{\rho_1}{\rho_2}\right) = \frac{a_1}{\gamma}\left(\frac{p_2}{p_1} - 1\right)\sqrt{\frac{2\gamma/(\gamma+1)}{p_2/p_1 + (\gamma-1)/(\gamma+1)}}.$$
-  <p>Total conditions are <em>not</em> invariant under the change of frame. In the laboratory frame, a moving shock raises the total temperature of the gas it passes through, unlike a stationary one. Shock tubes use exactly this effect to produce short bursts of very hot, high-pressure gas.</p>
-  <div class="note">Use the <a href="../calculators/normal-shock.html">normal-shock calculator</a> to go from any one ratio (p₂/p₁, M₂, p₀₂/p₀₁, the Pitot ratio, …) back to M₁.</div>
+  <h2 id="entropy"><span class="sec">Section 2.6</span>Entropy and the direction of the jump</h2>
+  <p>The normal-shock relations are equally satisfied by \(M_1 &lt; 1\), which would describe an "expansion shock" that accelerates a subsonic flow to supersonic. The second law rules this out. The entropy change across the shock is</p>
+  $$\frac{s_2 - s_1}{R} = \frac{\gamma}{\gamma-1}\ln\frac{T_2}{T_1} - \ln\frac{p_2}{p_1} = -\ln\frac{p_{0,2}}{p_{0,1}},$$
+  <p>and it is negative for every \(M_1 &lt; 1\). Shocks can only compress. Expanding the relation for weak shocks gives</p>
+  $$\frac{s_2 - s_1}{R} \approx \frac{2\gamma}{(\gamma+1)^2}\frac{\left(M_1^2-1\right)^3}{3}.$$
+  <p>Entropy rises only as the <em>cube</em> of the shock strength. That is why weak shocks are almost isentropic, and why compressing a flow through several weak shocks loses far less total pressure than one strong shock (Lesson 5). The total-pressure ratio is</p>
+  $$\frac{p_{0,2}}{p_{0,1}} = \left[\frac{(\gamma+1)M_1^2}{2+(\gamma-1)M_1^2}\right]^{\frac{\gamma}{\gamma-1}}\left[\frac{\gamma+1}{2\gamma M_1^2-(\gamma-1)}\right]^{\frac{1}{\gamma-1}}.$$
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Entropy rise and total-pressure loss</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="M1b">M₁ <output for="M1b"></output></label>
+      <input type="range" id="M1b" min="0.5" max="4" step="0.01" value="1.5"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"M1b":0.8}'>Subsonic "shock"</button>
+      <button data-preset='{"M1b":1.3}'>M₁ = 1.3</button>
+      <button data-preset='{"M1b":3}'>M₁ = 3</button>
+    </div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot4"></div><figcaption>Entropy rise and total-pressure ratio across a normal shock. The dashed curve is the weak-shock (cubic) approximation.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="limits"><span class="sec">Section 2.7</span>Weak and strong limits</h2>
+  <p>As \(M_1 \to 1\), every ratio tends to 1 and the shock degenerates into a Mach wave, an infinitesimal sound wave. As \(M_1 \to \infty\), still with constant γ:</p>
+  $$M_2 \to \sqrt{\frac{\gamma-1}{2\gamma}} = 0.378, \qquad \frac{\rho_2}{\rho_1} \to \frac{\gamma+1}{\gamma-1} = 6, \qquad \frac{p_2}{p_1} \approx \frac{2\gamma}{\gamma+1}M_1^2, \qquad \frac{T_2}{T_1} \approx \frac{2\gamma(\gamma-1)}{(\gamma+1)^2}M_1^2.$$
+  <p>The density ratio is bounded: however strong the shock, a perfect gas with γ = 1.4 is compressed by at most a factor of six, and the excess energy goes into heating. At very high Mach numbers real air absorbs energy in molecular vibration and dissociation, which these relations do not include.</p>
+
+  <h2 id="structure"><span class="sec">Section 2.8</span>Inside the shock</h2>
+  <p>The jump conditions say nothing about what happens <em>within</em> the shock. Navier–Stokes theory (Becker, 1922) and kinetic theory both give a smooth but very steep profile. Its thickness δ is a few mean free paths λ for moderate shocks. For air at sea level λ ≈ 0.07 μm, so a shock is roughly 0.1–0.3 μm thick. A useful estimate is</p>
+  $$\frac{\delta}{\lambda_1} \sim \frac{4}{M_1 - 1}\quad (M_1 \text{ near } 1),$$
+  <p>which approaches a few mean free paths by M₁ ≈ 2. For strong shocks the continuum equations are no longer accurate inside the shock, but the jump conditions remain exact, because they follow from conservation alone. In practice shocks are thin enough to be surfaces of discontinuity in every aerodynamic calculation, except in very rarefied flow.</p>
+
+  <h2 id="pitot"><span class="sec">Section 2.9</span>Pitot probes</h2>
+  <p>A Pitot tube is an open-ended tube facing the flow. It brings the gas at its mouth to rest and reads the pressure there.</p>
+  <h3>Subsonic flow</h3>
+  <p>The deceleration is isentropic, so the probe reads \(p_0\). With a separate static-pressure measurement, the Mach number follows from the isentropic relation:</p>
+  $$M_1^2 = \frac{2}{\gamma-1}\left[\left(\frac{p_0}{p_1}\right)^{(\gamma-1)/\gamma} - 1\right].$$
+  <h3>Supersonic flow</h3>
+  <p>A detached bow shock stands ahead of the probe. The small part of it in front of the mouth is locally normal, so the probe reads the total pressure <em>behind a normal shock</em>, \(p_{0,2}\). Combining the normal-shock relations with the isentropic deceleration behind it gives the <b class="term">Rayleigh Pitot-tube formula</b>:</p>
+  $$\frac{p_{0,2}}{p_1} = \left[\frac{(\gamma+1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma-1)}\right]^{\frac{\gamma}{\gamma-1}}\frac{1-\gamma+2\gamma M_1^2}{\gamma+1}.$$
+  <p>It is implicit in \(M_1\) but monotonic, so it is easily inverted numerically. Applying the subsonic formula to a supersonic Pitot reading gives a badly wrong answer. In wind tunnels, the test-section Mach number is often found from the ratio of Pitot pressure to the <em>reservoir</em> pressure, \(p_{0,2}/p_{0,1}\), which is just the normal-shock total-pressure ratio (Lesson 8).</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Reading Mach number from a Pitot probe</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="pr">Measured p<sub>Pitot</sub>/p₁ <output for="pr"></output></label>
+      <input type="range" id="pr" min="1.05" max="40" step="0.01" value="5.64"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"pr":1.5}'>Subsonic reading</button>
+      <button data-preset='{"pr":1.893}'>Exactly sonic</button>
+      <button data-preset='{"pr":5.64}'>M₁ = 2 reading</button>
+      <button data-preset='{"pr":21.07}'>M₁ = 4 reading</button>
+    </div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot5"></div><figcaption>Pitot-to-static pressure ratio versus Mach number. Below M = 1 the probe reads p₀; above it, p₀ behind a normal shock. The dashed curve continues the isentropic relation, which a supersonic probe does not follow.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="moving"><span class="sec">Section 2.10</span>Moving shocks</h2>
+  <p>A shock moving at speed \(W\) into still gas looks stationary to an observer riding with it. That observer sees gas approaching at \(W\). The stationary relations therefore apply with the <b class="term">shock Mach number</b> \(M_s = W/a_1\) in place of \(M_1\). Back in the laboratory frame, the gas behind the shock is set in motion after it with the <b class="term">induced velocity</b></p>
+  $$u_p = W\left(1 - \frac{\rho_1}{\rho_2}\right) = \frac{a_1}{\gamma}\left(\frac{p_2}{p_1} - 1\right)\sqrt{\frac{\frac{2\gamma}{\gamma+1}}{\frac{p_2}{p_1} + \frac{\gamma-1}{\gamma+1}}}, \qquad M_s = \sqrt{\frac{\gamma+1}{2\gamma}\left(\frac{p_2}{p_1} - 1\right) + 1}.$$
+  <p>Static properties are the same in both frames. Total properties are not, because the velocity differs. A moving shock raises the total temperature of the gas it overtakes, since the shock does work on it. Shock tubes use this effect to produce short bursts of hot, high-pressure gas for chemical kinetics and aerodynamic testing. When the gas behind the shock moves faster than its own sound speed (\(u_p &gt; a_2\), which needs \(p_2/p_1\) above about 4.8 for air), the induced flow is itself supersonic.</p>
+</div>
+
+<section class="lab" id="lab6">
+  <div class="lab-head"><span class="num">Interactive 6</span><span class="title">A shock moving into still air</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="ms">Pressure ratio p₂/p₁ <output for="ms"></output></label>
+      <input type="range" id="ms" min="1.01" max="30" step="0.01" value="4.5"></div>
+    <div class="ctl"><label for="mT">Still-air temperature T₁ <output for="mT"></output></label>
+      <input type="range" id="mT" min="200" max="400" step="1" value="288" data-dec="0" data-unit=" K"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"ms":1.1}'>Weak (10% overpressure)</button>
+      <button data-preset='{"ms":4.5}'>Ms = 2</button>
+      <button data-preset='{"ms":10.33}'>Ms = 3</button>
+    </div>
+    <div id="ro6" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag6"></div><figcaption>Laboratory frame. The shock moves right at W into still gas; the gas behind it follows at u<sub>p</sub>.</figcaption></figure>
+    <figure><div id="plot6"></div><figcaption>Shock speed and induced velocity versus pressure ratio, as multiples of a₁. Where u<sub>p</sub> exceeds a₂ the induced flow is supersonic.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 2.11</span>Worked examples</h2>
+<p>All examples use γ = 1.4 and R = 287 J/(kg·K). Edit any given value; every line recomputes. The <a href="../calculators/normal-shock.html">normal-shock calculator</a> works backward from any ratio.</p></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 2.1 · Shock in a duct</button><button>Ex 2.2 · Supersonic Pitot</button><button>Ex 2.3 · Moving shock</button></div>
+  <div class="panel" id="ex1">
+    <p>A normal shock stands in a supersonic flow with upstream Mach number \(M_1\), pressure \(p_1\) and temperature \(T_1\). Find the downstream state, the velocities, the total-pressure loss and the entropy rise.</p>
+    <div class="given"><label>M₁<input type="number" id="a1M" value="2.5" step="any"></label><label>p₁ (kPa)<input type="number" id="a1p" value="50" step="any"></label><label>T₁ (K)<input type="number" id="a1T" value="250" step="any"></label></div>
+    <div id="a1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>A Pitot probe in a supersonic stream reads \(p_\text{Pitot}\). A wall static tap gives \(p_1\). Find \(M_1\), and the answer you would have got (wrongly) from the subsonic formula.</p>
+    <div class="given"><label>p_Pitot (kPa)<input type="number" id="a2pp" value="180" step="any"></label><label>p₁ (kPa)<input type="number" id="a2p" value="20" step="any"></label></div>
+    <div id="a2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A shock tube drives a shock with pressure ratio \(p_2/p_1\) into still air at \(T_1\). Find the shock speed, the induced gas velocity, the temperature behind the shock, and the total temperature of that gas in the laboratory frame.</p>
+    <div class="given"><label>p₂/p₁<input type="number" id="a3r" value="10" step="any"></label><label>T₁ (K)<input type="number" id="a3T" value="295" step="any"></label></div>
+    <div id="a3out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 2.12</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Conservation across the shock</h4>
+    $$\rho_1u_1 = \rho_2u_2,\quad p_1 + \rho_1u_1^2 = p_2 + \rho_2u_2^2$$
+    $$h_1 + \tfrac12u_1^2 = h_2 + \tfrac12u_2^2,\qquad u_1u_2 = a^{*2}$$</div>
+  <div><h4>Jump relations</h4>
+    $$M_2^2 = \frac{1 + \frac{\gamma-1}{2}M_1^2}{\gamma M_1^2 - \frac{\gamma-1}{2}},\quad \frac{p_2}{p_1} = 1 + \frac{2\gamma}{\gamma+1}(M_1^2-1)$$
+    $$\frac{\rho_2}{\rho_1} = \frac{(\gamma+1)M_1^2}{2 + (\gamma-1)M_1^2}$$</div>
+  <div><h4>Entropy</h4>
+    $$\frac{s_2 - s_1}{R} = -\ln\frac{p_{0,2}}{p_{0,1}} \approx \frac{2\gamma}{(\gamma+1)^2}\frac{(M_1^2-1)^3}{3}$$
+    $$T_{0,2} = T_{0,1}$$</div>
+  <div><h4>Rayleigh Pitot formula</h4>
+    $$\frac{p_{0,2}}{p_1} = \left[\frac{(\gamma+1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma-1)}\right]^{\frac{\gamma}{\gamma-1}}\frac{1-\gamma+2\gamma M_1^2}{\gamma+1}$$</div>
 </div>
 </main>
 <script src="../assets/js/gasdyn.js"></script>
 <script src="../assets/js/ui.js"></script>
 <script>
 (function () {
-  const { normalShock, isen } = GD;
+  const { normalShock, normalShockFrom, isen } = GD;
+
+  // Interactive 1: simple-wave steepening. Initial velocity u(ξ) = A sin(πξ) on 0<ξ<2 (compression front, expansion back).
   UI.wire("#lab1", () => {
+    const g = UI.gamma(), tau = UI.val("wt"), A = UI.val("wu");
+    const k = (g + 1) / 2;
+    // Pulse u = A sin(πξ/2) on 0<ξ<2; steepest compression gradient −Aπ/2 at the front → t_b = 2/(k A π) (units L/a₁)
+    const tb = 2 / (k * A * Math.PI), t = tau * tb;
+    const xi = UI.linspace(-0.5, 2.5, 600);
+    const uf = x => (x > 0 && x < 2 ? A * Math.sin(Math.PI * x / 2) : 0);
+    const x = xi.map(s => s + (1 + k * uf(s)) * t), u = xi.map(uf);
+    // detect folding: x not monotonic
+    let folded = false; for (let i = 1; i < x.length; i++) if (x[i] < x[i - 1] - 1e-9) { folded = true; break; }
+    const shift = t;
+    UI.plot("#plot1", {
+      xlabel: "x − a₁t  (pulse lengths)", ylabel: "u / a₁", xlim: [-0.5, 2.8], ylim: [-0.02, Math.max(0.42, A * 1.15)], legend: "tl",
+      series: [{ x: xi, y: xi.map(uf), label: "t = 0", c: 6, dash: true }, { x: x.map(v => v - shift), y: u, label: `t = ${tau.toFixed(2)} t_break`, c: 1, width: 3, dash: folded && tau > 1 }],
+    });
+    UI.live("#lab1", tau < 1 ? `steepening · ${(100 * tau).toFixed(0)}% of the way to a shock` : "shock has formed");
+    UI.readout("#ro1", [["Breaking time t_b (L/a₁)", tb], ["Distance to shock formation (L)", tb], ["Peak overpressure p/p₁ − 1", Math.pow(1 + (g - 1) / 2 * A, 2 * g / (g - 1)) - 1],
+      ["State", tau < 1 ? "smooth wave" : "shock"]]);
+  });
+
+  // Interactive 2: shock jump
+  UI.wire("#lab2", () => {
     const g = UI.gamma(), M1 = UI.val("M1"), ns = normalShock(M1, g);
-    // diagram: shock line + bars
-    const props = [["p", ns.p2_p1], ["ρ", ns.rho2_rho1], ["T", ns.T2_T1], ["u", ns.u2_u1], ["M", ns.M2 / M1], ["p₀", ns.p02_p01]];
-    const maxv = Math.max(...props.map(p => p[1]), 1);
+    const props = [["p", ns.p2_p1], ["ρ", ns.rho2_rho1], ["T", ns.T2_T1], ["s/R", 1 + ns.ds_R], ["u", ns.u2_u1], ["M", ns.M2 / M1], ["p₀", ns.p02_p01]];
+    const maxv = Math.max(...props.map(p => p[1]), 1.2);
     let bars = "";
     props.forEach(([k, v], i) => {
-      const x = 360 + i * 42, h = (v / maxv) * 110, h1 = (1 / maxv) * 110;
-      bars += `<rect x="${x}" y="${150 - h}" width="22" height="${h}" class="${v >= 1 ? "c1" : "c2"}" opacity=".85"/>` +
-        `<line x1="${x - 4}" x2="${x + 26}" y1="${150 - h1}" y2="${150 - h1}" class="series c6 dash" />` +
-        `<text x="${x + 11}" y="168" text-anchor="middle" class="label">${k}</text>` +
-        `<text x="${x + 11}" y="${144 - h}" text-anchor="middle" class="small">${UI.fmt(v, 3)}</text>`;
+      const x = 340 + i * 40, h = (v / maxv) * 110, h1 = (1 / maxv) * 110;
+      bars += `<rect x="${x}" y="${150 - h}" width="24" height="${h}" class="${v >= 1 ? "hotfill" : "coolfill"}" opacity=".85" rx="2"/>` +
+        `<text x="${x + 12}" y="168" text-anchor="middle" class="label">${k}</text>` +
+        `<text x="${x + 12}" y="${144 - h}" text-anchor="middle" class="small">${UI.fmt(v, 3)}</text>`;
     });
-    const arrows = n => Array.from({ length: 4 }, (_, i) => `<line x1="${n[0]}" x2="${n[0] + n[1]}" y1="${40 + i * 32}" y2="${40 + i * 32}" class="stream" marker-end="url(#ar)"/>`).join("");
-    document.getElementById("diag1").innerHTML = `<svg class="diagram" viewBox="0 0 620 180">
+    bars += `<line x1="334" x2="${340 + props.length * 40}" y1="${150 - 110 / maxv}" y2="${150 - 110 / maxv}" class="stream" style="stroke-dasharray:4 3"/>`;
+    const arrows = (x0, len) => Array.from({ length: 4 }, (_, i) => `<line x1="${x0}" x2="${x0 + len}" y1="${40 + i * 30}" y2="${40 + i * 30}" class="stream" style="stroke-width:1.6" marker-end="url(#ar)"/>`).join("");
+    document.getElementById("diag2").innerHTML = `<svg class="diagram" viewBox="0 0 640 180">
       <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
-      ${arrows([20, Math.min(100, 30 + M1 * 14)])}${arrows([190, Math.max(18, 30 + ns.M2 * 14)])}
+      ${arrows(20, 120)}${arrows(180, Math.max(14, 120 * ns.u2_u1))}
       <line x1="160" x2="160" y1="15" y2="160" class="shock"/>
-      <text x="40" y="172" class="label">M₁ = ${M1.toFixed(2)}</text><text x="185" y="172" class="label">M₂ = ${ns.M2.toFixed(3)}</text>
-      <text x="350" y="18" class="small">downstream / upstream</text>${bars}</svg>`;
-    UI.readout("#ro1", [["M₂", ns.M2], ["p₂/p₁", ns.p2_p1], ["ρ₂/ρ₁", ns.rho2_rho1], ["T₂/T₁", ns.T2_T1],
-      ["p₀₂/p₀₁", ns.p02_p01], ["p₀₂/p₁", ns.p02_p1], ["Δs/R", ns.ds_R], ["Δs (J/kg·K), air", ns.ds_R * 287]]);
+      <text x="30" y="172" class="label">M₁ = ${M1.toFixed(2)}</text><text x="178" y="172" class="label">M₂ = ${ns.M2.toFixed(3)}</text>
+      <text x="340" y="18" class="small">downstream ÷ upstream (s/R bar shows 1 + Δs/R)</text>${bars}</svg>`;
+    UI.live("#lab2", `M₂ = ${ns.M2.toFixed(4)} · p₂/p₁ = ${ns.p2_p1.toFixed(3)} · p₀₂/p₀₁ = ${ns.p02_p01.toFixed(4)}`);
+    UI.readout("#ro2", [["M₂", ns.M2], ["p₂/p₁", ns.p2_p1], ["ρ₂/ρ₁", ns.rho2_rho1], ["T₂/T₁", ns.T2_T1], ["p₀₂/p₀₁", ns.p02_p01], ["p₀₂/p₁", ns.p02_p1],
+      ["Δs/R", ns.ds_R], ["M₁*·M₂*", Math.sqrt((g + 1) * M1 * M1 / (2 + (g - 1) * M1 * M1)) * Math.sqrt((g + 1) * ns.M2 ** 2 / (2 + (g - 1) * ns.M2 ** 2)), "Prandtl relation"]]);
     const Ms = UI.linspace(1, 6, 200), S = Ms.map(m => normalShock(m, g));
-    UI.plot("#plot1", {
+    UI.plot("#plot2", {
       xlabel: "Upstream Mach number M₁", ylabel: "ratio", xlim: [1, 6], ylim: [0.1, 50], logy: true, legend: "tl",
-      series: [
-        { x: Ms, y: S.map(s => s.p2_p1), label: "p₂/p₁" }, { x: Ms, y: S.map(s => s.rho2_rho1), label: "ρ₂/ρ₁" },
-        { x: Ms, y: S.map(s => s.T2_T1), label: "T₂/T₁" }, { x: Ms, y: S.map(s => s.M2), label: "M₂" },
-        { x: Ms, y: S.map(s => s.p02_p01), label: "p₀₂/p₀₁" },
-      ],
+      series: [{ x: Ms, y: S.map(s => s.p2_p1), label: "p₂/p₁" }, { x: Ms, y: S.map(s => s.rho2_rho1), label: "ρ₂/ρ₁" },
+        { x: Ms, y: S.map(s => s.T2_T1), label: "T₂/T₁" }, { x: Ms, y: S.map(s => s.M2), label: "M₂" }, { x: Ms, y: S.map(s => s.p02_p01), label: "p₀₂/p₀₁" }],
       hlines: [{ y: (g + 1) / (g - 1), label: "(γ+1)/(γ−1)" }],
       points: [{ x: M1, y: ns.p2_p1, c: 1 }, { x: M1, y: ns.rho2_rho1, c: 2 }, { x: M1, y: ns.T2_T1, c: 3 }, { x: M1, y: ns.M2, c: 4 }, { x: M1, y: ns.p02_p01, c: 5 }],
     });
   });
 
-  UI.wire("#lab2", () => {
-    const g = UI.gamma(), M1 = UI.val("M1b");
-    const ds = m => {
-      const m2 = m * m, pr = 1 + (2 * g / (g + 1)) * (m2 - 1), rr = ((g + 1) * m2) / (2 + (g - 1) * m2);
-      return (g / (g - 1)) * Math.log(pr / rr) - Math.log(pr);
-    };
-    const Ms = UI.linspace(0.5, 4, 200);
-    UI.plot("#plot2", {
-      xlabel: "M₁", ylabel: "Δs/R  or  p₀₂/p₀₁", xlim: [0.5, 4], ylim: [-0.6, 1.6], legend: "tl",
-      series: [
-        { x: Ms, y: Ms.map(ds), label: "Δs/R", c: 1 },
-        { x: Ms.filter(m => m >= 1 && m <= 1.6), y: Ms.filter(m => m >= 1 && m <= 1.6).map(m => (2 * g / (g + 1) ** 2) * (m * m - 1) ** 3 / 3), label: "weak-shock approx.", c: 1, dash: true },
-        { x: Ms.filter(m => m >= 1), y: Ms.filter(m => m >= 1).map(m => normalShock(m, g).p02_p01), label: "p₀₂/p₀₁", c: 2 },
-      ],
-      hlines: [{ y: 0 }], vlines: [{ x: 1 }],
-      points: [{ x: M1, y: ds(M1), c: 1 }],
+  // Interactive 3: Hugoniot
+  UI.wire("#lab3", () => {
+    const g = UI.gamma(), M1 = UI.val("hM"), ns = normalShock(M1, g), G = (g + 1) / (g - 1);
+    const vmin = 1 / G, vs = UI.linspace(vmin + 0.005, 1.6, 300);
+    const hug = vs.map(v => (G - v) / (G * v - 1)), isn = vs.map(v => Math.pow(v, -g));
+    const v2 = 1 / ns.rho2_rho1;
+    UI.plot("#plot3", {
+      xlabel: "Specific volume v / v₁", ylabel: "Pressure p / p₁", xlim: [0, 1.6], ylim: [0, 20], legend: "tr",
+      series: [{ x: vs.filter((v, i) => hug[i] > 0), y: hug.filter(h => h > 0), label: "Hugoniot (shock)", c: 3, width: 3 }, { x: vs, y: isn, label: "isentrope pv^γ = const", c: 2 },
+        { x: [0, 1.6], y: [1 + g * M1 * M1, 1 + g * M1 * M1 - g * M1 * M1 * 1.6], label: "Rayleigh line", c: 4, dash: true }],
+      vlines: [{ x: vmin, label: "(γ−1)/(γ+1)" }],
+      points: [{ x: 1, y: 1, c: 6, label: "1" }, { x: v2, y: ns.p2_p1, c: 3, label: "2 (shock)" }, { x: v2, y: Math.pow(v2, -g), c: 2, label: "isentropic, same v" }],
     });
-    UI.readout("#ro2", [["Δs/R", ds(M1)], ["allowed?", M1 >= 1 ? "yes" : "no — Δs < 0"],
-      ["p₀₂/p₀₁", M1 >= 1 ? normalShock(M1, g).p02_p01 : "—"]]);
+    const pIs = Math.pow(v2, -g);
+    UI.live("#lab3", `v₂/v₁ = ${v2.toFixed(4)} · shock p₂/p₁ = ${ns.p2_p1.toFixed(3)} vs isentropic ${pIs.toFixed(3)}`);
+    UI.readout("#ro3", [["v₂/v₁ = ρ₁/ρ₂", v2], ["p₂/p₁, shock", ns.p2_p1], ["p₂/p₁, isentropic", pIs], ["T₂/T₁, shock", ns.T2_T1], ["T₂/T₁, isentropic", Math.pow(v2, 1 - g)], ["Δs/R", ns.ds_R]]);
   });
 
-  UI.wire("#lab3", () => {
-    const g = UI.gamma(), r = UI.val("pr");
-    const supCrit = isen.p0_p(1, g);
-    let Mtrue, branch;
-    if (r <= supCrit) { Mtrue = isen.M_from_p0_p(r, g); branch = "subsonic (isentropic)"; }
-    else { Mtrue = GD.normalShockFrom("p02_p1", r, g).M1; branch = "supersonic (Rayleigh)"; }
-    const Mnaive = isen.M_from_p0_p(r, g);
-    const Ms = UI.linspace(0.05, 5, 300);
-    UI.plot("#plot3", {
-      xlabel: "Freestream Mach number M₁", ylabel: "p_Pitot / p₁", xlim: [0, 5], ylim: [1, 60], logy: true, legend: "tl",
-      series: [
-        { x: Ms, y: Ms.map(m => (m < 1 ? isen.p0_p(m, g) : normalShock(m, g).p02_p1)), label: "Pitot reading", c: 1 },
-        { x: Ms.filter(m => m >= 1), y: Ms.filter(m => m >= 1).map(m => isen.p0_p(m, g)), label: "isentropic p₀/p₁", c: 2, dash: true },
-      ],
-      hlines: [{ y: r, label: "measured" }], vlines: [{ x: 1 }],
-      points: [{ x: Mtrue, y: r, c: 1, label: `M = ${Mtrue.toFixed(3)}` }, ...(r > supCrit ? [{ x: Mnaive, y: r, c: 2 }] : [])],
+  // Interactive 4: entropy
+  UI.wire("#lab4", () => {
+    const g = UI.gamma(), M1 = UI.val("M1b");
+    const ds = m => { const m2 = m * m, pr = 1 + 2 * g / (g + 1) * (m2 - 1), rr = (g + 1) * m2 / (2 + (g - 1) * m2); return (g / (g - 1)) * Math.log(pr / rr) - Math.log(pr); };
+    const Ms = UI.linspace(0.5, 4, 240), sup = Ms.filter(m => m >= 1), weak = Ms.filter(m => m >= 1 && m <= 1.6);
+    UI.plot("#plot4", {
+      xlabel: "M₁", ylabel: "Δs/R  or  p₀₂/p₀₁", xlim: [0.5, 4], ylim: [-0.6, 1.6], legend: "tl",
+      series: [{ x: Ms, y: Ms.map(ds), label: "Δs/R", c: 3, width: 3 }, { x: weak, y: weak.map(m => (2 * g / (g + 1) ** 2) * (m * m - 1) ** 3 / 3), label: "weak-shock (cubic)", c: 3, dash: true },
+        { x: sup, y: sup.map(m => normalShock(m, g).p02_p01), label: "p₀₂/p₀₁", c: 2, width: 3 }],
+      bands: [{ x0: 0.5, x1: 1, label: "forbidden: Δs < 0" }], hlines: [{ y: 0 }],
+      points: [{ x: M1, y: ds(M1), c: 3 }, ...(M1 >= 1 ? [{ x: M1, y: normalShock(M1, g).p02_p01, c: 2 }] : [])],
     });
-    UI.readout("#ro3", [["Regime", branch], ["M₁ (correct)", Mtrue],
-      ["M₁ if isentropic formula used", Mnaive], ["error (%)", 100 * (Mnaive - Mtrue) / Mtrue],
-      ["Critical ratio (M = 1)", supCrit]]);
+    UI.live("#lab4", M1 >= 1 ? `Δs/R = ${ds(M1).toFixed(5)} · ${(100 * (1 - normalShock(M1, g).p02_p01)).toFixed(2)}% of p₀ lost` : "impossible: entropy would decrease");
+    UI.readout("#ro4", [["Δs/R", ds(M1)], ["Δs, air (J/kg·K)", ds(M1) * 287], ["allowed?", M1 >= 1 ? "yes" : "no, Δs < 0"], ["p₀₂/p₀₁", M1 >= 1 ? normalShock(M1, g).p02_p01 : "—"]]);
   });
+
+  // Interactive 5: Pitot
+  UI.wire("#lab5", () => {
+    const g = UI.gamma(), r = UI.val("pr"), crit = isen.p0_p(1, g);
+    let Mtrue, branch;
+    if (r <= crit) { Mtrue = isen.M_from_p0_p(r, g); branch = "subsonic (isentropic)"; }
+    else { Mtrue = normalShockFrom("p02_p1", r, g).M1; branch = "supersonic (Rayleigh)"; }
+    const Mnaive = isen.M_from_p0_p(r, g), Ms = UI.linspace(0.05, 5, 300);
+    UI.plot("#plot5", {
+      xlabel: "Freestream Mach number M₁", ylabel: "p_Pitot / p₁", xlim: [0, 5], ylim: [1, 60], logy: true, legend: "tl",
+      series: [{ x: Ms, y: Ms.map(m => (m < 1 ? isen.p0_p(m, g) : normalShock(m, g).p02_p1)), label: "Pitot reading", c: 1, width: 3 },
+        { x: Ms.filter(m => m >= 1), y: Ms.filter(m => m >= 1).map(m => isen.p0_p(m, g)), label: "isentropic p₀/p₁ (wrong above M = 1)", c: 3, dash: true }],
+      hlines: [{ y: r, label: "measured" }], vlines: [{ x: 1 }],
+      points: [{ x: Mtrue, y: r, c: 1, label: `M = ${Mtrue.toFixed(3)}` }, ...(r > crit ? [{ x: Mnaive, y: r, c: 3 }] : [])],
+    });
+    UI.live("#lab5", `M₁ = ${Mtrue.toFixed(4)} (${branch})`);
+    UI.readout("#ro5", [["Regime", branch], ["M₁ (correct)", Mtrue], ["M₁ from isentropic formula", Mnaive], ["error", (100 * (Mnaive - Mtrue) / Mtrue).toFixed(1) + " %"], ["Sonic ratio", crit]]);
+  });
+
+  // Interactive 6: moving shock
+  UI.wire("#lab6", () => {
+    const g = UI.gamma(), pr = UI.val("ms"), T1 = UI.val("mT"), R = 287.05, a1 = Math.sqrt(g * R * T1);
+    const Msk = Math.sqrt((g + 1) / (2 * g) * (pr - 1) + 1), ns = normalShock(Msk, g);
+    const W = Msk * a1, up = W * (1 - 1 / ns.rho2_rho1), T2 = T1 * ns.T2_T1, a2 = Math.sqrt(g * R * T2), cp = g * R / (g - 1);
+    const T02lab = T2 + up * up / (2 * cp);
+    const xs = 420, wlen = 40 + 40 * Math.min(Msk, 4), ulen = 30 + 120 * (up / W);
+    document.getElementById("diag6").innerHTML = `<svg class="diagram" viewBox="0 0 640 150">
+      <defs><marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--hot)"/></marker>
+      <marker id="ar7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+      <rect x="10" y="30" width="${xs - 10}" height="90" fill="var(--hot)" opacity=".12"/>
+      <line x1="10" x2="630" y1="30" y2="30" class="body"/><line x1="10" x2="630" y1="120" y2="120" class="body"/>
+      <line x1="${xs}" x2="${xs}" y1="30" y2="120" class="shock"/>
+      <line x1="${xs + 6}" x2="${xs + 6 + wlen}" y1="22" y2="22" style="stroke:var(--hot);stroke-width:2" marker-end="url(#ar6)"/><text x="${xs + 10}" y="14" class="small">W = ${W.toFixed(0)} m/s</text>
+      ${[55, 75, 95].map(y => `<line x1="${xs - 30 - ulen}" x2="${xs - 30}" y1="${y}" y2="${y}" class="stream" style="stroke-width:1.6" marker-end="url(#ar7)"/>`).join("")}
+      <text x="30" y="142" class="label">2: p₂ = ${pr.toFixed(2)} p₁, T₂ = ${T2.toFixed(0)} K, u_p = ${up.toFixed(0)} m/s</text>
+      <text x="${xs + 20}" y="80" class="label">1: still air, ${T1.toFixed(0)} K</text></svg>`;
+    const prs = UI.linspace(1.01, 30, 200);
+    const curve = prs.map(p => { const m = Math.sqrt((g + 1) / (2 * g) * (p - 1) + 1), n = normalShock(m, g); return { W: m, up: m * (1 - 1 / n.rho2_rho1), a2: Math.sqrt(n.T2_T1) }; });
+    UI.plot("#plot6", {
+      xlabel: "Shock pressure ratio p₂/p₁", ylabel: "speed / a₁", xlim: [1, 30], ylim: [0, 6], legend: "tl", h: 300,
+      series: [{ x: prs, y: curve.map(c => c.W), label: "shock speed W/a₁ = M_s", c: 3 }, { x: prs, y: curve.map(c => c.up), label: "induced velocity u_p/a₁", c: 1 }, { x: prs, y: curve.map(c => c.a2), label: "sound speed behind, a₂/a₁", c: 2, dash: true }],
+      points: [{ x: pr, y: Msk, c: 3 }, { x: pr, y: up / a1, c: 1 }, { x: pr, y: a2 / a1, c: 2 }],
+    });
+    UI.live("#lab6", `M_s = ${Msk.toFixed(3)} · u_p = ${up.toFixed(1)} m/s · M behind = ${(up / a2).toFixed(3)}`);
+    UI.readout("#ro6", [["Shock Mach M_s", Msk], ["W (m/s)", W], ["u_p (m/s)", up], ["T₂ (K)", T2], ["Mach of induced flow u_p/a₂", up / a2], ["T₀ behind, lab frame (K)", T02lab], ["ρ₂/ρ₁", ns.rho2_rho1]]);
+  });
+
+  // Worked examples
+  const g = 1.4, R = 287, cp = g * R / (g - 1);
+  UI.wire("#ex1", () => {
+    const M1 = UI.val("a1M"), p1 = UI.val("a1p"), T1 = UI.val("a1T");
+    if (!(M1 >= 1)) { document.getElementById("a1out").innerHTML = "<p class='status bad'>M₁ must be at least 1.</p>"; return; }
+    const ns = normalShock(M1, g), a1 = Math.sqrt(g * R * T1), u1 = M1 * a1, T2 = T1 * ns.T2_T1, u2 = u1 / ns.rho2_rho1;
+    const p01 = p1 * isen.p0_p(M1, g), p02 = p01 * ns.p02_p01, T0 = T1 * isen.T0_T(M1, g);
+    UI.table("#a1out", ["Quantity", "Relation used", "Result"], [
+      ["M₂", "normal-shock M₂(M₁)", ns.M2], ["p₂ (kPa)", "p₁ · [1 + 2γ/(γ+1)(M₁² − 1)]", p1 * ns.p2_p1], ["T₂ (K)", "T₁ · (p₂/p₁)(ρ₁/ρ₂)", T2], ["ρ₂/ρ₁", "(γ+1)M₁²/(2 + (γ−1)M₁²)", ns.rho2_rho1],
+      { sub: "Velocities" }, ["u₁ (m/s)", "M₁√(γRT₁)", u1], ["u₂ (m/s)", "u₁ ρ₁/ρ₂", u2], ["check: u₂ (m/s)", "M₂√(γRT₂)", ns.M2 * Math.sqrt(g * R * T2)],
+      { sub: "Total conditions" }, ["T₀ (K), both sides", "T₁(1 + 0.2M₁²)", T0], ["p₀₁ (kPa)", "isentropic", p01], ["p₀₂ (kPa)", "p₀₁ · p₀₂/p₀₁", p02],
+      ["Δs (J/kg·K)", "−R ln(p₀₂/p₀₁)", -R * Math.log(ns.p02_p01)]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const pp = UI.val("a2pp"), p = UI.val("a2p"), r = pp / p;
+    const crit = isen.p0_p(1, g);
+    const M = r > crit ? normalShockFrom("p02_p1", r, g).M1 : isen.M_from_p0_p(r, g), Mn = isen.M_from_p0_p(r, g);
+    UI.table("#a2out", ["Quantity", "Relation used", "Result"], [
+      ["p_Pitot/p₁", "", r], ["Supersonic?", `ratio > ${crit.toFixed(4)} (value at M = 1)`, r > crit ? "yes" : "no"],
+      ["M₁", r > crit ? "invert Rayleigh Pitot formula" : "isentropic", M], { sub: "If the subsonic formula were misapplied" }, ["M₁ (wrong)", "isentropic p₀/p", Mn], ["error", "", (100 * (Mn - M) / M).toFixed(1) + " %"]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const pr = UI.val("a3r"), T1 = UI.val("a3T");
+    const Msk = Math.sqrt((g + 1) / (2 * g) * (pr - 1) + 1), ns = normalShock(Msk, g), a1 = Math.sqrt(g * R * T1), W = Msk * a1, up = W * (1 - 1 / ns.rho2_rho1), T2 = T1 * ns.T2_T1;
+    UI.table("#a3out", ["Quantity", "Relation used", "Result"], [
+      ["M_s", "√[(γ+1)/(2γ)(p₂/p₁ − 1) + 1]", Msk], ["a₁ (m/s)", "√(γRT₁)", a1], ["W (m/s)", "M_s a₁", W], ["ρ₂/ρ₁", "normal shock at M_s", ns.rho2_rho1],
+      ["u_p (m/s)", "W(1 − ρ₁/ρ₂)", up], ["T₂ (K)", "T₁ · T₂/T₁", T2], ["M of gas behind", "u_p/√(γRT₂)", up / Math.sqrt(g * R * T2)],
+      ["T₀ behind, lab (K)", "T₂ + u_p²/(2c_p)", T2 + up * up / (2 * cp)], ["T₀ ahead, lab (K)", "still gas", T1]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "Across a stationary normal shock, which quantity is unchanged?", opts: ["Static pressure", "Total pressure", "Total temperature", "Entropy"], a: 2, why: "The shock is adiabatic, so h₀ = c_pT₀ is conserved. Total pressure falls and entropy rises." },
+    { q: "The Prandtl relation for a normal shock is…", opts: ["u₁u₂ = a*²", "p₁p₂ = p₀²", "M₁M₂ = 1", "T₁T₂ = T₀²"], a: 0, why: "u₁u₂ = a*², equivalently M₁*M₂* = 1. Note it is M*, not M, whose product is 1." },
+    { q: "Behind a normal shock the flow is…", opts: ["always supersonic", "always subsonic", "sonic", "subsonic or supersonic depending on γ"], a: 1, why: "From M₁*M₂* = 1, M₁* > 1 forces M₂* < 1, so M₂ < 1." },
+    { q: "As M₁ → ∞ with γ = 1.4, the density ratio ρ₂/ρ₁ tends to…", opts: ["∞", "6", "2.4", "1"], a: 1, why: "ρ₂/ρ₁ → (γ+1)/(γ−1) = 2.4/0.4 = 6. Pressure and temperature ratios are unbounded." },
+    { q: "Why can't an expansion shock (M₁ < 1 → M₂ > 1) exist?", opts: ["It would violate continuity", "It would decrease entropy", "It would violate momentum", "It would increase total temperature"], a: 1, why: "All three conservation laws allow it, but Δs < 0 for M₁ < 1, which the second law forbids in an adiabatic process." },
+    { q: "For a weak shock, the entropy rise is proportional to…", opts: ["(M₁² − 1)", "(M₁² − 1)²", "(M₁² − 1)³", "M₁²"], a: 2, why: "Δs/R ≈ 2γ/(γ+1)² · (M₁² − 1)³/3: third order in shock strength, so weak shocks are nearly isentropic." },
+    { q: "On the p–v diagram, a shock compression to a given v₂ reaches…", opts: ["a lower pressure than the isentrope", "the same pressure as the isentrope", "a higher pressure than the isentrope", "a pressure set only by M₁"], a: 2, why: "The Hugoniot lies above the isentrope; the extra pressure (and temperature) at the same density reflects the entropy produced." },
+    { q: "A Pitot tube in supersonic flow measures…", opts: ["the freestream total pressure p₀₁", "the static pressure p₁", "the total pressure behind a normal shock, p₀₂", "the dynamic pressure"], a: 2, why: "A bow shock forms ahead of the tube; the part in front of the mouth is normal, so the tube reads p₀₂." },
+    { q: "A supersonic Pitot reading is interpreted with the subsonic isentropic formula. The Mach number obtained is…", opts: ["too low", "correct", "too high", "imaginary"], a: 0, why: "p₀₂ < p₀₁, so the reading is lower than the isentropic p₀ for the true M; the isentropic formula therefore returns a Mach number that is too low." },
+    { q: "A shock moves into still air. In the laboratory frame, the gas behind it…", opts: ["stays at rest", "moves toward the shock's origin", "moves in the same direction as the shock, more slowly", "moves faster than the shock"], a: 2, why: "u_p = W(1 − ρ₁/ρ₂), which is positive and smaller than W." },
+    { q: "A moving shock changes the laboratory-frame total temperature of the gas because…", opts: ["the shock is not adiabatic", "the shock does work on the gas in that frame", "entropy increases", "γ changes"], a: 1, why: "Total temperature depends on the frame. In the shock frame T₀ is constant; in the lab frame the gas is accelerated from rest and heated, so its T₀ rises." },
+    { q: "A typical normal shock in sea-level air is about how thick?", opts: ["1 mm", "0.1–0.3 μm", "1 cm", "1 nm"], a: 1, why: "A few mean free paths; λ ≈ 0.07 μm at sea level." },
+  ]);
 })();
 </script>
 </body>

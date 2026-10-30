@@ -1,5 +1,5 @@
 /*
- * gasdyn.js — compressible-flow relations and the standard atmosphere.
+ * gasdyn.js — compressible-flow relations, the standard atmosphere, and supersonic wind-tunnel models.
  * Calorically perfect gas unless noted. Angles in radians unless a name ends in "Deg".
  * Works in the browser (window.GD) and in Node (module.exports) for testing.
  */
@@ -282,12 +282,78 @@
     ackeretCp: (theta, M) => 2 * theta / Math.sqrt(M * M - 1),
   };
 
-  const GD = {
+  // ---------- supersonic wind tunnels ----------
+  const sutherland = T => 1.458e-6 * Math.pow(T, 1.5) / (T + 110.4);
+  // Test-section state for reservoir p0 [Pa], T0 [K], nozzle Mach M, throat area At [m^2],
+  // and diffuser second-throat ratio At2/At1 (defaults to the minimum that will start the tunnel).
+  function tunnel(M, p0, T0, g = 1.4, R = R_AIR, At = 0.01, At2ratio) {
+    const T = T0 / isen.T0_T(M, g), p = p0 / isen.p0_p(M, g), rho = p / (R * T);
+    const a = Math.sqrt(g * R * T), V = M * a, mu = sutherland(T);
+    const mdot = isen.massFlowParam(1, g, R) * At * p0 / Math.sqrt(T0);
+    const ns = M > 1 ? normalShock(M, g) : null;
+    const startRatio = ns ? 1 / ns.p02_p01 : 1;             // At2/At1 needed to swallow the starting shock
+    const r2 = At2ratio === undefined ? startRatio : At2ratio;
+    const started = r2 >= startRatio - 1e-12;
+    // After starting, the weakest shock sits just downstream of the second throat at its supersonic Mach number
+    const M2t = r2 > 1 ? isen.M_from_A_Astar(r2, g, "sup") : 1;
+    return {
+      T, p, rho, a, V, mu, q: 0.5 * rho * V * V, Re_per_m: (rho * V) / mu, mdot, T0, p0,
+      AR: isen.A_Astar(M, g), Atest: At * isen.A_Astar(M, g),
+      At2_At1_min: startRatio, At2_At1: r2, started, M2t,
+      p0_pb_start: startRatio,                                // normal shock at the test-section exit
+      p0_pb_run: started ? 1 / normalShock(Math.max(M2t, 1), g).p02_p01 : startRatio,
+      pitot: ns ? ns.p02_p1 * p : p0,
+      power: mdot * (1004.5 * T0) * (1 - Math.pow(1 / startRatio, (g - 1) / g)), // isentropic compressor power to restore p0 (estimate)
+    };
+  }
+  // Blowdown run with a pressure regulator holding p0 constant.
+  //   o: { V tank m^3, pi initial tank Pa, p0 regulated Pa, margin (tank must stay above p0*(1+margin)),
+  //        Ti tank K, At m^2, g, R, process: "isothermal" | "adiabatic" }
+  // Returns the run time and a time history of tank pressure and supply temperature.
+  function blowdown(o) {
+    const g = o.g, R = o.R, K = isen.massFlowParam(1, g, R) * o.At * o.p0;
+    const pmin = o.p0 * (1 + (o.margin || 0));
+    if (o.pi <= pmin) return { t: 0, hist: [{ t: 0, p: o.pi, T: o.Ti, mdot: 0 }] };
+    let m = (o.pi * o.V) / (R * o.Ti), p = o.pi, T = o.Ti, t = 0;
+    const mi = m, hist = [{ t, p, T, mdot: K / Math.sqrt(T) }];
+    const dt0 = (m / (K / Math.sqrt(T))) / 4000;
+    while (p > pmin && t < 1e5) {
+      const mdot = K / Math.sqrt(T);                       // regulated: supply total temperature = tank temperature
+      m -= mdot * dt0; t += dt0;
+      if (o.process === "adiabatic") { p = o.pi * Math.pow(m / mi, g); T = o.Ti * Math.pow(m / mi, g - 1); }
+      else p = (m * R * o.Ti) / o.V;
+      if (hist.length < 2000 && (hist.length < 2 || t - hist[hist.length - 1].t > dt0 * 8)) hist.push({ t, p, T, mdot });
+    }
+    hist.push({ t, p, T, mdot: K / Math.sqrt(T) });
+    return { t, mi, mf: m, used: mi - m, hist };
+  }
+  // Indraft (vacuum-tank) run: atmospheric supply p0, T0; tank of volume V starting at pv.
+  // The tunnel runs until the tank pressure exceeds p0 / (p0/pb running ratio).
+  function indraft(o) {
+    const K = isen.massFlowParam(1, o.g, o.R) * o.At * o.p0 / Math.sqrt(o.T0);
+    const pbMax = o.p0 / o.runRatio;
+    // Isothermal tank at T0: p rises linearly with mass
+    const t = pbMax > o.pv ? ((pbMax - o.pv) * o.V) / (o.R * o.T0) / K : 0;
+    return { t, mdot: K, pbMax };
+  }
+  // Saturation vapor pressure of water over ice (T < 273.16 K) or liquid (Murphy & Koop 2005), Pa.
+  function pSatWater(T) {
+    if (T < 273.16) return Math.exp(9.550426 - 5723.265 / T + 3.53068 * Math.log(T) - 0.00728332 * T);
+    return Math.exp(54.842763 - 6763.22 / T - 4.21 * Math.log(T) + 0.000367 * T +
+      Math.tanh(0.0415 * (T - 218.8)) * (53.878 - 1331.22 / T - 9.44523 * Math.log(T) + 0.014025 * T));
+  }
+  // Frost/dew point (K) for a given water-vapor partial pressure
+  const dewPoint = pv => bisect(T => pSatWater(T) - pv, 120, 373);
+  // Water vapor partial pressure from specific humidity w (kg water / kg dry air) at total pressure p
+  const vaporPressure = (w, p) => (p * w) / (0.622 + w);
+
+    const GD = {
     DEG, R_AIR, G0, SIGMA, bisect, goldenMax, invert,
     isen, normalShock, normalShockFrom,
     theta_from_beta, beta_from_theta, betaMax, M_from_theta_beta, obliqueShock,
     nu, nuMax, M_from_nu, turn, diamondAirfoil,
     rayleigh, rayleighHeat, fanno, atmosphere, linear,
+    sutherland, tunnel, blowdown, indraft, pSatWater, dewPoint, vaporPressure,
   };
   if (typeof module !== "undefined" && module.exports) module.exports = GD;
   else root.GD = GD;
