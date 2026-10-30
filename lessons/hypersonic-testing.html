@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hypersonic Ground Testing · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="hypersonic-testing">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 15 · Part VII</div>
+  <h1>Hypersonic Ground Testing</h1>
+  <p class="lead">No wind tunnel can reproduce hypersonic flight. A facility that matches the Mach number usually misses the velocity, the enthalpy and the chemistry. One that matches the enthalpy runs for milliseconds, and one that runs for minutes is either cold or small. Hypersonic testing is therefore the art of choosing which parameters to duplicate for the question being asked. This lesson develops that logic and the physics of the main facility types: heated Mach-6 tunnels, Ludwieg tubes and quiet tunnels such as Purdue's BAM6QT, and shock tubes and reflected-shock tunnels. It closes with the fast instruments that capture heating and instability waves.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#dup">Duplication versus simulation</a></li>
+    <li><a href="#liq">Heating the air: the liquefaction limit</a></li>
+    <li><a href="#ludwieg">Ludwieg tubes and quiet tunnels</a></li>
+    <li><a href="#shock">Shock tubes and reflected-shock tunnels</a></li>
+    <li><a href="#other">Expansion tubes, arc jets and ballistic ranges</a></li>
+    <li><a href="#instr">Instrumentation for short, fast flows</a></li>
+    <li><a href="#heat">Measuring heat flux with surface gauges</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="dup"><span class="sec">Section 15.1</span>Duplication versus simulation</h2>
+  <p>A hypersonic flow is governed by more parameters than the supersonic flows of Lesson 8. Matching them all at once in a ground facility is called <b class="term">duplication</b>. In practice we settle for <b class="term">simulation</b>: matching the parameters that control the phenomenon of interest.</p>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Parameter</th><th>Controls</th><th>Typical facility</th></tr></thead><tbody>
+  <tr><td>Mach number M</td><td>Shock and expansion geometry, inviscid pressures (Mach-number independence helps above ≈ 6)</td><td>Conventional and quiet blowdown or Ludwieg tunnels, M 5–20</td></tr>
+  <tr><td>Reynolds number Re</td><td>Boundary layers, transition, separation</td><td>High-pressure tunnels; quiet tunnels for transition</td></tr>
+  <tr><td>Stagnation enthalpy h₀ (velocity)</td><td>Real-gas chemistry, catalysis, radiation</td><td>Reflected-shock tunnels, expansion tubes, arc jets</td></tr>
+  <tr><td>Binary scaling ρL</td><td>Nonequilibrium dissociation (Lesson 11)</td><td>Shock tunnels with small models at high density</td></tr>
+  <tr><td>T<sub>w</sub>/T₀ (wall temperature ratio)</td><td>Heat transfer, transition, viscous–inviscid interaction</td><td>Heated models, or accept and correct</td></tr>
+  <tr><td>Freestream noise</td><td>Transition</td><td>Quiet tunnels only</td></tr>
+  <tr><td>Test time</td><td>Thermal soak, structures, combustion</td><td>Blowdown tunnels (seconds to minutes), arc jets (minutes)</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <p>A cold Mach-6 tunnel reaches Mach 6 by expanding air from a reservoir at about 430 K to a static temperature near 53 K. The speed of sound is then only about 145 m/s, so the test velocity is about 870 m/s, less than half the flight velocity at Mach 6 (about 1,800 m/s at 28 km). It matches M and can match Re, but not h₀ or \(T_w/T_0\). Interactive 1 makes the comparison for any flight point and tunnel.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">What does a tunnel test duplicate?</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="dM">Flight Mach number <output for="dM"></output></label>
+      <input type="range" id="dM" min="4" max="20" step="0.1" value="6" data-dec="1"></div>
+    <div class="ctl"><label for="dz">Flight altitude (km) <output for="dz"></output></label>
+      <input type="range" id="dz" min="15" max="60" step="0.5" value="28" data-dec="1"></div>
+    <div class="ctl"><label for="dL">Vehicle length (m) <output for="dL"></output></label>
+      <input type="range" id="dL" min="0.5" max="30" step="0.5" value="4" data-dec="1"></div>
+    <div class="ctl"><label for="dT0">Tunnel stagnation temperature T₀ (K) <output for="dT0"></output></label>
+      <input type="range" id="dT0" min="300" max="1200" step="5" value="430" data-dec="0"></div>
+    <div class="ctl"><label for="dp0">Tunnel stagnation pressure p₀ (MPa) <output for="dp0"></output></label>
+      <input type="range" id="dp0" min="0.1" max="10" step="0.05" value="1" data-dec="2"></div>
+    <div class="ctl"><label for="ds">Model scale (model/vehicle) <output for="ds"></output></label>
+      <input type="range" id="ds" min="0.01" max="1" step="0.01" value="0.1" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"dM":6,"dz":28,"dL":4,"dT0":430,"dp0":1,"ds":0.1}'>BAM6QT vs Mach 6 flight</button>
+      <button data-preset='{"dM":6,"dz":28,"dL":4,"dT0":430,"dp0":1,"ds":0.25}'>Larger model</button>
+      <button data-preset='{"dM":10,"dz":40,"dL":10,"dT0":1000,"dp0":8,"ds":0.05}'>Mach 10 heated tunnel</button>
+    </div>
+    <div id="status1" class="status"></div>
+  </div>
+  <div class="views"><div id="tab1" style="overflow-x:auto"></div>
+    <figure><div id="plot1"></div><figcaption>Ratio of tunnel value to flight value for each similarity parameter (log scale; 1 = duplicated). The tunnel Mach number is set equal to the flight Mach number.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="liq"><span class="sec">Section 15.2</span>Heating the air: the liquefaction limit</h2>
+  <p>Expanding air to high Mach number cools it enormously: \(T = T_0/(1 + 0.2M^2)\). If the static temperature falls below the saturation temperature at the static pressure, the air's nitrogen and oxygen begin to condense, just as water vapor does in a supersonic tunnel (Lesson 8). Condensation releases heat into the stream and ruins the flow. Hypersonic tunnels must therefore heat their air. Some supersaturation is tolerated in practice, because condensation needs time to nucleate, but the saturation line is the standard design guide. This site uses the saturation curve of nitrogen, which lies close to that of air: ln p is interpolated linearly in 1/T between the triple point (63.15 K, 12.5 kPa), the normal boiling point (77.36 K, 1 atm) and the critical point, with sublimation below the triple point.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Minimum reservoir temperature</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="lM">Test Mach number <output for="lM"></output></label>
+      <input type="range" id="lM" min="4" max="20" step="0.1" value="6" data-dec="1"></div>
+    <div class="ctl"><label for="lp">Reservoir pressure p₀ (MPa) <output for="lp"></output></label>
+      <input type="range" id="lp" min="0.1" max="20" step="0.05" value="1" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"lM":6,"lp":1}'>BAM6QT, ≈ 1 MPa</button><button data-preset='{"lM":8,"lp":4}'>Mach 8</button><button data-preset='{"lM":14,"lp":10}'>Mach 14</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot2"></div><figcaption>Minimum stagnation temperature to keep the test section above the N₂ saturation line, against Mach number, for several reservoir pressures (the chosen one thick). Above about Mach 10, the reservoir must be heated past 1,000 K.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="ludwieg"><span class="sec">Section 15.3</span>Ludwieg tubes and quiet tunnels</h2>
+  <p>A <b class="term">Ludwieg tube</b> is a long, high-pressure tube (the driver) connected through a fast valve or diaphragm to a nozzle, test section and vacuum tank. When the flow starts, an unsteady expansion wave travels up the tube at the speed of sound. Behind it, the gas moves toward the nozzle at a low Mach number \(M_t\), set by the ratio of tube area to throat area, in a uniform state that feeds the nozzle a constant reservoir pressure and temperature. The expansion reflects from the closed upstream end and returns. The steady run lasts until it reaches the nozzle,</p>
+  $$\Delta t \approx \frac{L}{a_i} + \frac{L}{u + a} \approx \frac{2L}{a_i},$$
+  <p>after which the cycle repeats at a slightly lower pressure. The reservoir state follows from the unsteady expansion (the Riemann invariant \(u + 2a/(\gamma-1)\) is constant):</p>
+  $$\frac{a}{a_i} = \frac{1}{1 + \frac{\gamma-1}{2}M_t},\qquad \frac{p}{p_i} = \left(\frac{a}{a_i}\right)^{\frac{2\gamma}{\gamma-1}},\qquad \frac{p_0}{p_i} = \frac{p}{p_i}\left(1 + \frac{\gamma-1}{2}M_t^2\right)^{\frac{\gamma}{\gamma-1}}.$$
+  <p>Ludwieg tubes are simple and cheap to run, give clean flow without a pressure regulator, and are ideal for <b class="term">quiet tunnels</b>. The Boeing/AFOSR Mach-6 Quiet Tunnel at Purdue is a Ludwieg tube with a heated driver tube, a long polished nozzle that keeps its wall boundary layer laminar, and bleed slots at the throat that remove the incoming boundary layer. Its test-section noise is below about 0.05% of the mean pressure, compared with 1–3% in conventional tunnels. Each run consists of a few seconds of repeated cycles of a few tenths of a second.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">A Mach-6 Ludwieg tube</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="gL">Driver-tube length L (m) <output for="gL"></output></label>
+      <input type="range" id="gL" min="5" max="60" step="0.5" value="37" data-dec="1"></div>
+    <div class="ctl"><label for="gD">Driver-tube diameter (m) <output for="gD"></output></label>
+      <input type="range" id="gD" min="0.1" max="0.8" step="0.005" value="0.445" data-dec="3"></div>
+    <div class="ctl"><label for="gE">Nozzle-exit diameter (m) <output for="gE"></output></label>
+      <input type="range" id="gE" min="0.1" max="0.6" step="0.005" value="0.24" data-dec="3"></div>
+    <div class="ctl"><label for="gp">Initial driver pressure p<sub>i</sub> (MPa) <output for="gp"></output></label>
+      <input type="range" id="gp" min="0.1" max="2.5" step="0.01" value="1" data-dec="2"></div>
+    <div class="ctl"><label for="gT">Initial driver temperature T<sub>i</sub> (K) <output for="gT"></output></label>
+      <input type="range" id="gT" min="300" max="500" step="1" value="433" data-dec="0"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"gL":37,"gD":0.445,"gE":0.24,"gp":1,"gT":433}'>BAM6QT-like</button>
+      <button data-preset='{"gL":37,"gD":0.445,"gE":0.24,"gp":0.3,"gT":433}'>Low-Re quiet run</button>
+      <button data-preset='{"gL":15,"gD":0.2,"gE":0.24,"gp":1,"gT":433}'>Narrow tube</button>
+    </div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Reservoir pressure during a run (first cycles from the unsteady expansion; later cycles repeat the same fractional drop, an approximation). Each step is one round trip of the expansion wave.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="shock"><span class="sec">Section 15.4</span>Shock tubes and reflected-shock tunnels</h2>
+  <p>To reach flight enthalpies, the test gas must be heated to thousands of kelvin, which a heater cannot do. A <b class="term">shock tube</b> does it with a shock wave. A high-pressure driver (region 4) is separated from low-pressure test gas (region 1) by a diaphragm. When the diaphragm bursts, a shock runs into the test gas, heating and accelerating it (region 2), while an expansion runs back into the driver. The driver gas behind the expansion (region 3) is separated from the shocked test gas by a contact surface. Matching pressure and velocity across the contact surface gives the shock-tube equation:</p>
+  $$\frac{p_4}{p_1} = \frac{p_2}{p_1}\left[1 - \frac{(\gamma_4-1)(a_1/a_4)(p_2/p_1 - 1)}{\sqrt{2\gamma_1\left[2\gamma_1 + (\gamma_1+1)(p_2/p_1 - 1)\right]}}\right]^{-2\gamma_4/(\gamma_4-1)}.$$
+  <p>A light, hot driver (helium or hydrogen, large \(a_4\)) gives a much stronger shock for the same pressure ratio. In a <b class="term">reflected-shock tunnel</b> the incident shock reflects from the end wall, bringing the test gas to rest at very high pressure and temperature (region 5). That gas then expands through a nozzle as the reservoir of a short-duration hypersonic tunnel. Facilities of this kind, including free-piston "Stalker" tunnels (T4 and T5 at Caltech, HEG at DLR) and detonation-driven tunnels, reach stagnation enthalpies of 10–25 MJ/kg for test times of about a millisecond. The reflected shock satisfies</p>
+  $$\frac{M_R}{M_R^2 - 1} = \frac{M_s}{M_s^2-1}\sqrt{1 + \frac{2(\gamma-1)}{(\gamma+1)^2}(M_s^2-1)\left(\gamma + \frac{1}{M_s^2}\right)}.$$
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Shock tube: wave diagram and reflected-shock reservoir</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sp">Diaphragm pressure ratio, log₁₀(p₄/p₁) <output for="sp"></output></label>
+      <input type="range" id="sp" min="0.3" max="5" step="0.05" value="2" data-dec="2"></div>
+    <div class="ctl inline"><span>Driver gas</span>
+      <div class="seg" id="sG" data-value="He"><button data-value="air" aria-pressed="false">air</button><button data-value="He" aria-pressed="true">helium</button><button data-value="H2" aria-pressed="false">hydrogen</button></div></div>
+    <div class="ctl"><label for="sT">Driver temperature T₄/T₁ <output for="sT"></output></label>
+      <input type="range" id="sT" min="1" max="10" step="0.1" value="1" data-dec="1"></div>
+    <div class="ctl"><label for="sx">Test station from the diaphragm (m) <output for="sx"></output></label>
+      <input type="range" id="sx" min="1" max="20" step="0.5" value="6" data-dec="1"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"sp":1,"sG":"air","sT":1}'>Air/air, p₄/p₁ = 10</button>
+      <button data-preset='{"sp":3,"sG":"He","sT":1}'>Helium, 1000</button>
+      <button data-preset='{"sp":3.5,"sG":"He","sT":8}'>Hot helium (free-piston-like)</button>
+    </div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="diag4"></div><figcaption>x–t diagram: incident shock (red), contact surface (dashed), expansion fan (blue), and the shock reflected from the end wall at the test station. Test gas in region 2 passes the station between shock and contact; region 5 is the reflected-shock reservoir.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="other"><span class="sec">Section 15.5</span>Expansion tubes, arc jets and ballistic ranges</h2>
+  <ul>
+    <li><b>Expansion tubes</b> add a second, low-pressure acceleration tube downstream of the shock tube. The test gas is accelerated by an unsteady expansion rather than stagnated, which avoids dissociating it in a reservoir. They reach orbital and super-orbital velocities for tens to hundreds of microseconds (for example, the X-series tubes at the University of Queensland).</li>
+    <li><b>Arc-jet facilities</b> heat air with an electric arc and expand it over a material sample for minutes. They duplicate the stagnation enthalpy and heat flux, not the flow field, and they are where heat-shield materials such as PICA and tile coatings are qualified (for example, NASA Ames and JSC arc jets).</li>
+    <li><b>Ballistic ranges</b> fire a model from a light-gas gun into still or counter-flowing gas. Flight is duplicated around a free-flying model, with photography and radiation measurement, at the cost of very limited instrumentation on the model itself.</li>
+    <li><b>Flight experiments</b> (HIFiRE, X-43A, X-51A, BOLT, and sounding-rocket transition experiments) remain the final check, which is why ground facilities and CFD are validated against them.</li>
+  </ul>
+
+  <h2 id="instr"><span class="sec">Section 15.6</span>Instrumentation for short, fast flows</h2>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Measurement</th><th>Technique</th><th>Notes</th></tr></thead><tbody>
+  <tr><td>Instability waves</td><td>High-frequency piezoelectric pressure sensors (PCB 132 type)</td><td>Bandwidth of order 1 MHz: resolves second-mode waves at 100–500 kHz (Lesson 12)</td></tr>
+  <tr><td>Mean and fluctuating pressure</td><td>Piezoresistive transducers (Kulite type)</td><td>Flat response to tens of kHz; also used in Pitot probes for noise measurement</td></tr>
+  <tr><td>Heat flux, short tests</td><td>Platinum thin-film gauges on insulating substrates; coaxial thermocouples</td><td>Microsecond response; heat flux from surface temperature history (Section 15.7)</td></tr>
+  <tr><td>Heat-flux maps</td><td>Temperature-sensitive paint (TSP), infrared thermography, phosphor thermography</td><td>Global surface temperature; resolves transition fronts and streaks</td></tr>
+  <tr><td>Flow visualization</td><td>High-speed schlieren and shadowgraph (Lesson 8)</td><td>Hundreds of thousands of frames per second capture wave packets</td></tr>
+  <tr><td>Freestream disturbances</td><td>Focused laser differential interferometry (FLDI); hot wires</td><td>Non-intrusive, focused measurements of density fluctuations</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <h2 id="heat"><span class="sec">Section 15.7</span>Measuring heat flux with surface gauges</h2>
+  <p>A thin-film gauge measures the surface temperature of an insulating substrate. Over a short test the substrate behaves as a semi-infinite solid, and the one-dimensional heat equation links the surface temperature rise to the heat flux. For a constant heat flux q applied at t = 0,</p>
+  $$\Delta T_s(t) = \frac{2q}{\sqrt\pi}\frac{\sqrt t}{\sqrt{\rho ck}},$$
+  <p>where \(\sqrt{\rho ck}\) is the thermal effusivity of the substrate. For a measured history \(T_s(t)\), the heat flux follows from the Cook–Felderman integral:</p>
+  $$q(t) = \frac{\sqrt{\rho ck}}{\sqrt\pi}\int_0^t \frac{dT_s/d\tau}{\sqrt{t - \tau}}\,d\tau.$$
+  <p>A low-effusivity substrate (polymer, glass ceramic) gives a large, easily measured temperature rise. A high-effusivity one (metal) gives a small rise but disturbs the model's own wall temperature less. Interactive 5 shows the trade.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Thin-film gauge response</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="hq">Heat flux q (kW/m²) <output for="hq"></output></label>
+      <input type="range" id="hq" min="1" max="2000" step="1" value="50" data-dec="0"></div>
+    <div class="ctl"><label for="ht">Test duration (ms) <output for="ht"></output></label>
+      <input type="range" id="ht" min="0.5" max="500" step="0.5" value="200" data-dec="1"></div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot5"></div><figcaption>Surface temperature rise against time for a constant heat flux on four substrates. Dots: the temperature rise recovered from the Cook–Felderman integral applied to the sampled signal (it returns the imposed q).</figcaption></figure></div>
+</section>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 15.8</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 15.1 · Tunnel vs flight</button><button>Ex 15.2 · Liquefaction</button><button>Ex 15.3 · Shock tube</button><button>Ex 15.4 · Ludwieg run time</button></div>
+  <div class="panel" id="ex1">
+    <p>A vehicle of length L flies at Mach M at altitude z. A model at scale s is tested in a Mach-M tunnel with \(T_0\) and \(p_0\). Compare the length Reynolds number, velocity and stagnation enthalpy.</p>
+    <div class="given"><label>M<input type="number" id="e1M" value="6" step="any"></label><label>z (km)<input type="number" id="e1z" value="28" step="any"></label><label>L (m)<input type="number" id="e1L" value="4" step="any"></label><label>T₀ (K)<input type="number" id="e1T" value="430" step="any"></label><label>p₀ (MPa)<input type="number" id="e1p" value="1" step="any"></label><label>s<input type="number" id="e1s" value="0.1" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>Find the minimum reservoir temperature for a Mach M tunnel with reservoir pressure \(p_0\) to stay above the nitrogen saturation line.</p>
+    <div class="given"><label>M<input type="number" id="e2M" value="8" step="any"></label><label>p₀ (MPa)<input type="number" id="e2p" value="4" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A shock tube with air as test gas at \(T_1\) = 300 K uses a driver at pressure ratio \(p_4/p_1\) and the same temperature. Compare air and helium drivers: shock Mach number, region-2 temperature, and the reflected-shock reservoir temperature \(T_5\).</p>
+    <div class="given"><label>p₄/p₁<input type="number" id="e3p" value="500" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>A Ludwieg tube of length L and diameter D, initially at \(p_i\) and \(T_i\), feeds a Mach-6 nozzle of exit diameter \(D_e\). Find the tube Mach number, the reservoir pressure and temperature during the first cycle, and its duration.</p>
+    <div class="given"><label>L (m)<input type="number" id="e4L" value="37" step="any"></label><label>D (m)<input type="number" id="e4D" value="0.445" step="any"></label><label>D_e (m)<input type="number" id="e4E" value="0.24" step="any"></label><label>p_i (MPa)<input type="number" id="e4p" value="1" step="any"></label><label>T_i (K)<input type="number" id="e4T" value="433" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 15.9</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Liquefaction</h4>
+    $$T = \frac{T_0}{1 + \frac{\gamma-1}{2}M^2} &gt; T_\text{sat}(p),\quad p = \frac{p_0}{(p_0/p)_M}$$</div>
+  <div><h4>Ludwieg tube</h4>
+    $$\frac{a}{a_i} = \frac{1}{1 + \frac{\gamma-1}{2}M_t},\quad \frac{p}{p_i} = \left(\frac{a}{a_i}\right)^{\frac{2\gamma}{\gamma-1}},\quad \Delta t \approx \frac{2L}{a_i}$$</div>
+  <div><h4>Shock tube</h4>
+    $$\frac{p_4}{p_1} = \frac{p_2}{p_1}\left[1 - \frac{(\gamma_4-1)(a_1/a_4)(p_2/p_1-1)}{\sqrt{2\gamma_1[2\gamma_1+(\gamma_1+1)(p_2/p_1-1)]}}\right]^{\frac{-2\gamma_4}{\gamma_4-1}}$$</div>
+  <div><h4>Surface heat-flux gauges</h4>
+    $$\Delta T_s = \frac{2q\sqrt t}{\sqrt{\pi\rho ck}},\quad q = \sqrt{\frac{\rho ck}{\pi}}\int_0^t\frac{\dot T_s\,d\tau}{\sqrt{t-\tau}}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen, normalShock, DEG, bisect } = GD;
+  const { atmosphere, minT0Liquefaction, pSatN2, ludwieg, shockTube } = HY;
+  const R = 287.05, g = 1.4, cp = g * R / (g - 1);
+
+  function compare(M, z, L, T0, p0, s) {
+    const a = atmosphere(z), V = M * a.a, ReF = a.rho * V * L / a.mu, h0F = cp * a.T + 0.5 * V * V;
+    const T = T0 / isen.T0_T(M, g), p = p0 / isen.p0_p(M, g), rho = p / (R * T), Vt = M * Math.sqrt(g * R * T), mu = GD.sutherland(T), ReT = rho * Vt * L * s / mu;
+    return { a, V, ReF, h0F, T, p, rho, Vt, ReT, h0T: cp * T0, rhoLF: a.rho * L, rhoLT: rho * L * s, TwT0F: 1000 / (h0F / cp), TwT0T: 300 / T0, liq: minT0Liquefaction(M, p0).T0min };
+  }
+  // ---------- 1 ----------
+  UI.wire("#lab1", () => {
+    const M = UI.val("dM"), z = UI.val("dz") * 1000, L = UI.val("dL"), T0 = UI.val("dT0"), p0 = UI.val("dp0") * 1e6, s = UI.val("ds");
+    const c = compare(M, z, L, T0, p0, s);
+    UI.table("#tab1", ["Parameter", "Flight", "Tunnel", "Tunnel / flight"], [
+      ["Mach number", M, M, 1], ["Velocity (m/s)", c.V, c.Vt, c.Vt / c.V], ["Static temperature (K)", c.a.T, c.T, c.T / c.a.T], ["Length Reynolds number", c.ReF, c.ReT, c.ReT / c.ReF],
+      ["Stagnation enthalpy (MJ/kg)", c.h0F / 1e6, c.h0T / 1e6, c.h0T / c.h0F], ["Binary scaling ρL (kg/m²)", c.rhoLF, c.rhoLT, c.rhoLT / c.rhoLF], ["T_w/T₀ (1000 K wall in flight, 300 K model)", c.TwT0F, c.TwT0T, c.TwT0T / c.TwT0F]]);
+    const labels = ["V", "Re_L", "h₀", "ρL", "T_w/T₀"], vals = [c.Vt / c.V, c.ReT / c.ReF, c.h0T / c.h0F, c.rhoLT / c.rhoLF, c.TwT0T / c.TwT0F];
+    const W = 620, H = 220, x0 = 110, sc = 120, y0 = 20;
+    let svg = `<line x1="${x0 + 2 * sc}" x2="${x0 + 2 * sc}" y1="10" y2="${H - 20}" stroke="var(--text)"/>`;
+    vals.forEach((v, i) => {
+      const lv = Math.max(-2, Math.min(1.9, Math.log10(v))), y = y0 + i * 38, xA = x0 + 2 * sc, xB = x0 + (2 + lv) * sc;
+      svg += `<rect x="${Math.min(xA, xB)}" y="${y}" width="${Math.abs(xB - xA)}" height="24" fill="${Math.abs(lv) < 0.1 ? "var(--good)" : "var(--accent)"}" opacity=".8"/><text x="${x0 - 10}" y="${y + 17}" text-anchor="end" class="label">${labels[i]}</text><text x="${xB + (lv >= 0 ? 6 : -6)}" y="${y + 17}" text-anchor="${lv >= 0 ? "start" : "end"}" class="small">${GD && UI.fmt(v, 3)}</text>`;
+    });
+    [0.01, 0.1, 1, 10].forEach(t => svg += `<text x="${x0 + (2 + Math.log10(t)) * sc}" y="${H - 4}" text-anchor="middle" class="small">${t}</text>`);
+    document.getElementById("plot1").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+    const st = document.getElementById("status1");
+    st.className = "status " + (T0 < c.liq ? "bad" : "good");
+    st.innerHTML = T0 < c.liq ? `Below the liquefaction limit: T₀ must be at least ${c.liq.toFixed(0)} K at this Mach number and p₀.` : `Test-section static state above the N₂ saturation line (limit T₀ = ${c.liq.toFixed(0)} K).`;
+  });
+
+  // ---------- 2 ----------
+  UI.wire("#lab2", () => {
+    const M = UI.val("lM"), p0 = UI.val("lp") * 1e6, Ms = UI.linspace(4, 20, 81);
+    const series = [0.1, 1, 10].map((pp, k) => ({ x: Ms, y: Ms.map(m => minT0Liquefaction(m, pp * 1e6).T0min), c: k + 1, width: 1.2, dash: true, label: `p₀ = ${pp} MPa` }));
+    series.push({ x: Ms, y: Ms.map(m => minT0Liquefaction(m, p0).T0min), c: 4, width: 3, label: `p₀ = ${(p0 / 1e6).toFixed(2)} MPa` });
+    const r = minT0Liquefaction(M, p0);
+    UI.plot("#plot2", { xlabel: "Test Mach number", ylabel: "Minimum T₀ (K)", xlim: [4, 20], ylim: [0, 3000], series, points: [{ x: M, y: r.T0min, c: 4, label: `${r.T0min.toFixed(0)} K` }, { x: 6, y: 433, c: 5, label: "BAM6QT, T₀ ≈ 430 K" }],
+      legend: "tl", legendWidth: 140 });
+    UI.readout("#ro2", [["Test static p (Pa)", r.p], ["Saturation T at p (K)", r.Tsat], ["Minimum T₀ (K)", r.T0min], ["Test velocity at that T₀ (m/s)", M * Math.sqrt(g * R * r.Tsat)]]);
+  });
+
+  // ---------- 3 ----------
+  UI.wire("#lab3", () => {
+    const L = UI.val("gL"), D = UI.val("gD"), De = UI.val("gE"), pi = UI.val("gp") * 1e6, Ti = UI.val("gT");
+    const Dt = De / Math.sqrt(isen.A_Astar(6, g)), AR = (D / Dt) ** 2;
+    const lw = ludwieg({ L, Ti, pi, AR });
+    if (!isFinite(lw.Mt)) { UI.readout("#ro3", [["Status", "tube narrower than the throat"]]); return; }
+    // staircase: each later cycle lowers the tube pressure by the same factor p/p_i (approximation)
+    const ts = [], ps = [];
+    let p = lw.p0, t = 0;
+    for (let k = 0; k < 20; k++) { ts.push(t, t + lw.t); ps.push(p / 1e6, p / 1e6); t += lw.t; p *= lw.p0_pi / isen.p0_p(lw.Mt, g); }
+    const T = lw.T0 / isen.T0_T(6, g), pt = lw.p0 / isen.p0_p(6, g), rho = pt / (R * T), V = 6 * Math.sqrt(g * R * T), Re = rho * V / GD.sutherland(T);
+    UI.plot("#plot3", { xlabel: "Time (s)", ylabel: "Reservoir p₀ (MPa)", xlim: [0, ts[ts.length - 1]], ylim: [0, pi / 1e6 * 1.05],
+      series: [{ x: ts, y: ps, c: 1 }], hlines: [{ y: pi / 1e6, label: "initial driver pressure", c: 6 }], legend: false });
+    UI.readout("#ro3", [["Throat diameter (mm)", Dt * 1000], ["Tube/throat area ratio", AR], ["Tube Mach M_t", lw.Mt], ["First-cycle p₀ (MPa)", lw.p0 / 1e6], ["First-cycle p₀ below p_i (%)", 100 * (1 - lw.p0_pi)], ["Later drop per cycle (%)", 100 * (1 - lw.p0_pi / isen.p0_p(lw.Mt, g))],
+      ["T₀ (K)", lw.T0], ["Cycle time (s)", lw.t], ["Test unit Re (10⁶/m)", Re / 1e6], ["Test velocity (m/s)", V], ["Test static T (K)", T]]);
+    UI.live("#lab3", `liquefaction limit T₀ ≥ ${minT0Liquefaction(6, lw.p0).T0min.toFixed(0)} K`);
+  });
+
+  // ---------- 4: shock tube ----------
+  const GAS = { air: { g: 1.4, R: 287.05 }, He: { g: 5 / 3, R: 2077.1 }, H2: { g: 1.405, R: 4124.2 } };
+  UI.wire("#lab4", () => {
+    const p41 = Math.pow(10, UI.val("sp")), gas = GAS[UI.seg("sG")], T41 = UI.val("sT"), xs = UI.val("sx"), T1 = 300;
+    const a1 = Math.sqrt(g * R * T1), a4 = Math.sqrt(gas.g * gas.R * T1 * T41), st = shockTube(p41, g, gas.g, a1 / a4);
+    const W = st.Ms * a1, u2 = st.up_a1 * a1, T2 = T1 * st.T2T1, a2 = Math.sqrt(g * R * T2);
+    const a3 = a4 * Math.pow(st.p3p4, (gas.g - 1) / (2 * gas.g)), tail = u2 - a3;
+    const WR = st.MR * a2 - u2;                   // reflected shock speed (lab frame, moving left)
+    const tHit = xs / W, tC = xs / u2, test2 = tC - tHit;
+    // reflected shock meets the contact surface at time t*: xs − WR(t − tHit) = u2 t
+    const tI = (xs + WR * tHit) / (u2 + WR), xI = u2 * tI;
+    const tMax = Math.max(tC, tI) * 1.4, Wd = 620, Hd = 300, x0 = 140, scx = (Wd - x0 - 20) / xs, xL = Math.min(4, xs);
+    const X = x => x0 + x * scx, T = t => Hd - 20 - (t / tMax) * (Hd - 40);
+    let svg = `<line x1="${X(-xL)}" x2="${X(xs)}" y1="${T(0)}" y2="${T(0)}" stroke="var(--text)"/><line x1="${X(xs)}" x2="${X(xs)}" y1="${T(0)}" y2="${T(tMax)}" stroke="var(--text)" stroke-width="3"/>`;
+    for (let k = 0; k <= 6; k++) { const sp = -a4 + (tail + a4) * k / 6, t1 = Math.min(tMax, xL / Math.max(1e-9, -sp)); svg += `<line x1="${X(0)}" y1="${T(0)}" x2="${X(sp < 0 ? -Math.min(xL, -sp * tMax) : Math.min(xs, sp * tMax))}" y2="${T(sp < 0 ? Math.min(tMax, xL / -sp) : tMax)}" class="fan"/>`; }
+    svg += `<line x1="${X(0)}" y1="${T(0)}" x2="${X(xs)}" y2="${T(tHit)}" class="shock"/>`;
+    svg += `<line x1="${X(0)}" y1="${T(0)}" x2="${X(Math.min(xs, xI))}" y2="${T(Math.min(tC, tI))}" stroke="var(--text)" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+    svg += `<line x1="${X(xs)}" y1="${T(tHit)}" x2="${X(xI)}" y2="${T(tI)}" class="shock"/>`;
+    const x2 = 0.6 * Math.min(xs, xI), x3 = 0.3 * Math.min(xs, xI);
+    svg += `<text x="${X(xs * 0.6)}" y="${T(0.3 * xs * 0.6 / W)}" class="label">1</text><text x="${X(x2)}" y="${T(0.5 * (x2 / W + x2 / u2)) + 5}" class="label">2</text>` +
+      `<text x="${X(xs) - 24}" y="${T((tHit + tI) / 2) - 4}" class="label">5</text><text x="${X(-xL * 0.4)}" y="${T(tMax * 0.2)}" class="label">4</text><text x="${X(x3)}" y="${T(Math.min(0.95 * tMax, x3 / u2 + 0.25 * tMax))}" class="label">3</text>` +
+      `<text x="${X(xs) - 4}" y="${T(tMax) + 12}" text-anchor="end" class="small">end wall / test station x = ${xs} m</text><text x="${X(0)}" y="${Hd - 4}" text-anchor="middle" class="small">diaphragm</text>`;
+    document.getElementById("diag4").innerHTML = `<svg class="diagram" viewBox="0 0 ${Wd} ${Hd}">${svg}</svg>`;
+    UI.readout("#ro4", [["Shock Mach M_s", st.Ms], ["Shock speed (m/s)", W], ["p₂/p₁", st.p2p1], ["T₂ (K)", T2], ["u₂ (m/s)", u2], ["M₂ (flow)", st.M2], ["Region-2 test time at x (ms)", test2 * 1000],
+      ["Reflected M_R", st.MR], ["p₅/p₁", st.p5p1], ["T₅ (K, perfect gas)", T1 * st.T5T1], ["h₀ in region 5 (MJ/kg)", cp * T1 * st.T5T1 / 1e6], ["Reservoir duration est. (ms)", (tI - tHit) * 1000]]);
+    UI.live("#lab4", `p₄/p₁ = ${p41.toPrecision(3)}${T1 * st.T5T1 > 2500 ? " · real-gas effects would lower T₅" : ""}`);
+  });
+
+  // ---------- 5: thin-film gauges ----------
+  const SUB = [["PEEK", 1320, 1340, 0.25], ["Fused quartz", 2200, 740, 1.38], ["Macor", 2520, 790, 1.46], ["Stainless steel", 8000, 500, 16.2]];
+  UI.wire("#lab5", () => {
+    const q = UI.val("hq") * 1000, tE = UI.val("ht") / 1000, ts = UI.linspace(0, tE, 200);
+    const series = SUB.map(([n, r, c, k], i) => { const e = Math.sqrt(r * c * k); return { x: ts.map(t => t * 1000), y: ts.map(t => 2 * q * Math.sqrt(t) / (Math.sqrt(Math.PI) * e)), c: i + 1, label: `${n} (e = ${e.toFixed(0)})` }; });
+    // Cook–Felderman on the sampled Macor signal (piecewise-linear form), as a check
+    const e = Math.sqrt(2520 * 790 * 1.46), N = 60, tt = UI.linspace(0, tE, N + 1), Ts = tt.map(t => 2 * q * Math.sqrt(t) / (Math.sqrt(Math.PI) * e));
+    const qCF = n => { let s = 0; for (let i = 1; i <= n; i++) s += (Ts[i] - Ts[i - 1]) / (Math.sqrt(tt[n] - tt[i]) + Math.sqrt(tt[n] - tt[i - 1])); return 2 * e / Math.sqrt(Math.PI) * s; };
+    const pts = [15, 30, 45, 60].map(n => ({ x: tt[n] * 1000, y: Ts[n], c: 3, label: `q = ${(qCF(n) / 1000).toFixed(1)} kW/m²` }));
+    UI.plot("#plot5", { xlabel: "Time (ms)", ylabel: "Surface temperature rise ΔT (K)", logy: false, xlim: [0, tE * 1000], series, points: pts, legend: "tl", legendWidth: 190, h: 380 });
+    UI.readout("#ro5", SUB.map(([n, r, c, k]) => [`ΔT at end, ${n} (K)`, 2 * q * Math.sqrt(tE) / (Math.sqrt(Math.PI) * Math.sqrt(r * c * k))]));
+  });
+
+  // ---------- examples ----------
+  UI.wire("#ex1", () => {
+    const c = compare(UI.val("e1M"), UI.val("e1z") * 1000, UI.val("e1L"), UI.val("e1T"), UI.val("e1p") * 1e6, UI.val("e1s"));
+    UI.table("#e1out", ["Quantity", "Flight", "Tunnel"], [["Static T (K)", c.a.T, c.T], ["Static p (Pa)", c.a.p, c.p], ["Velocity (m/s)", c.V, c.Vt], ["Re_L", c.ReF, c.ReT], ["h₀ (MJ/kg)", c.h0F / 1e6, c.h0T / 1e6], ["ρL (kg/m²)", c.rhoLF, c.rhoLT]]);
+  });
+  UI.wire("#ex2", () => {
+    const M = UI.val("e2M"), p0 = UI.val("e2p") * 1e6, r = minT0Liquefaction(M, p0);
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [["p₀/p", "isentropic", isen.p0_p(M, g)], ["Static p (Pa)", "p₀/(p₀/p)", r.p], ["T_sat at p (K)", "N₂ saturation curve", r.Tsat],
+      ["T₀,min (K)", "T_sat (1 + 0.2M²)", r.T0min], ["Check: p_sat(T_sat) (Pa)", "", pSatN2(r.Tsat)]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const p41 = UI.val("e3p"), T1 = 300, a1 = Math.sqrt(g * R * T1);
+    const rows = [["air", GAS.air], ["helium", GAS.He]].map(([n, G]) => { const st = shockTube(p41, g, G.g, a1 / Math.sqrt(G.g * G.R * T1)); return [n, st]; });
+    UI.table("#e3out", ["Quantity", "Air driver", "Helium driver"], [["a₁/a₄", 1, a1 / Math.sqrt(GAS.He.g * GAS.He.R * T1)], ["M_s", rows[0][1].Ms, rows[1][1].Ms], ["p₂/p₁", rows[0][1].p2p1, rows[1][1].p2p1],
+      ["T₂ (K)", T1 * rows[0][1].T2T1, T1 * rows[1][1].T2T1], ["M_R", rows[0][1].MR, rows[1][1].MR], ["p₅/p₁", rows[0][1].p5p1, rows[1][1].p5p1], ["T₅ (K, perfect gas)", T1 * rows[0][1].T5T1, T1 * rows[1][1].T5T1]]);
+  });
+  UI.wire("#ex4", () => {
+    const L = UI.val("e4L"), D = UI.val("e4D"), De = UI.val("e4E"), pi = UI.val("e4p") * 1e6, Ti = UI.val("e4T"), Dt = De / Math.sqrt(isen.A_Astar(6, g)), AR = (D / Dt) ** 2, lw = ludwieg({ L, Ti, pi, AR });
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [["A/A* at M 6", "area–Mach", isen.A_Astar(6, g)], ["Throat diameter (mm)", "D_e/√(A/A*)", Dt * 1000], ["A_tube/A*", "(D/D_t)²", AR],
+      ["M_t", "subsonic A/A*", lw.Mt], ["a_i (m/s)", "√(γRT_i)", lw.a_i], ["p₀/p_i", "unsteady expansion + isentropic", lw.p0_pi], ["T₀ (K)", "", lw.T0], ["Cycle time (s)", "L/a_i + L/(u + a)", lw.t]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "A cold Mach-6 tunnel matches which flight parameter exactly?", opts: ["Velocity", "Mach number", "Stagnation enthalpy", "Wall temperature ratio"], a: 1, why: "The nozzle sets M, but the low static temperature means the velocity and enthalpy are far below flight values." },
+    { q: "Why must a Mach-10 tunnel heat its air to over 1,000 K?", opts: ["To match flight enthalpy", "To keep the static temperature above the liquefaction (saturation) line", "To reduce Reynolds number", "To dry it"], a: 1, why: "T = T₀/(1 + 0.2M²) = T₀/21 at Mach 10; T₀ must be high enough to keep T above the saturation temperature of air." },
+    { q: "In a Ludwieg tube, the reservoir state during a cycle is set by…", opts: ["a pressure regulator", "the unsteady expansion wave running up the tube", "a heater", "the vacuum tank"], a: 1, why: "Behind the expansion the gas is uniform, at a state fixed by the tube Mach number through the Riemann invariant." },
+    { q: "The duration of one Ludwieg-tube cycle is about…", opts: ["L/a_i", "2L/a_i", "L/u", "the nozzle length divided by the test velocity"], a: 1, why: "The expansion travels up the tube and back: about 2L/a_i (≈ 0.2 s for a 37 m tube at 430 K)." },
+    { q: "What makes a quiet tunnel quiet?", opts: ["A larger vacuum tank", "A laminar nozzle-wall boundary layer, kept laminar by throat bleed, polishing and clean air", "Lower Mach number", "Acoustic foam in the test section"], a: 1, why: "Conventional tunnel noise is radiated by turbulent nozzle-wall boundary layers; keeping them laminar drops the noise by more than an order of magnitude." },
+    { q: "For the same diaphragm pressure ratio, a helium driver gives…", opts: ["a weaker shock", "a stronger shock", "the same shock", "no shock"], a: 1, why: "A light gas has a high speed of sound a₄, so the a₁/a₄ term is smaller and the shock is stronger." },
+    { q: "In a reflected-shock tunnel, the nozzle reservoir is…", opts: ["region 2", "region 3", "region 5, behind the reflected shock", "the driver gas"], a: 2, why: "The reflected shock brings the test gas to rest at high pressure and temperature (region 5), which then expands through the nozzle." },
+    { q: "Arc-jet facilities are mainly used to…", opts: ["measure transition", "qualify heat-shield materials at flight heat flux and enthalpy for minutes", "duplicate full flight flow fields", "test scramjets"], a: 1, why: "Arc jets reproduce stagnation enthalpy and heat flux on material samples, but not the vehicle flow field." },
+    { q: "A thin-film gauge on a low-effusivity substrate shows…", opts: ["a small temperature rise", "a large temperature rise for the same heat flux", "no temperature change", "negative heat flux"], a: 1, why: "ΔT_s = 2q√t/√(πρck): low effusivity √(ρck) gives a large, easily measured rise." },
+    { q: "Second-mode waves in a Mach-6 tunnel are measured mainly with…", opts: ["thermocouples", "high-frequency piezoelectric pressure sensors", "Pitot rakes", "oil flow"], a: 1, why: "Second-mode frequencies of 100–500 kHz need sensors with megahertz bandwidth." },
+  ]);
+})();
+</script>
+</body>
+</html>
