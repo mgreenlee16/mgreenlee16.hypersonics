@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nozzles &amp; Choked Flow · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="nozzles">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 3 · Part I</div>
+  <h1>Nozzles, Diffusers &amp; Choked Flow</h1>
+  <p class="lead">Why does a nozzle have to converge and then diverge to make supersonic flow? What happens when the downstream pressure is too high, or too low? Quasi-one-dimensional flow answers both questions with surprisingly simple algebra.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#quasi">Quasi-one-dimensional flow</a></li>
+    <li><a href="#av">The area–velocity relation</a></li>
+    <li><a href="#am">The area–Mach relation</a></li>
+    <li><a href="#choke">Mass flow and choking</a></li>
+    <li><a href="#cd">The converging–diverging nozzle at every back pressure</a></li>
+    <li><a href="#exit">Over- and under-expanded jets</a></li>
+    <li><a href="#diffusers">Supersonic diffusers</a></li>
+  </ol></nav>
+
+  <h2 id="quasi">1. Quasi-one-dimensional flow</h2>
+  <p>In a duct whose area \(A(x)\) changes gradually, the flow properties vary mainly along the axis. We assume they are uniform across each section and depend only on \(x\). This is <b>quasi-one-dimensional</b> flow. It is an approximation, since the walls turn the flow, but an excellent one for slender nozzles. Applying the integral equations to a slice of the duct gives</p>
+  $$\rho_1 u_1 A_1 = \rho_2 u_2 A_2,$$
+  $$p_1A_1 + \rho_1u_1^2A_1 + \int_{A_1}^{A_2} p\,dA = p_2A_2 + \rho_2u_2^2A_2,$$
+  $$h_1 + \frac{u_1^2}{2} = h_2 + \frac{u_2^2}{2}.$$
+  <p>The integral is the axial force of the walls on the gas. The differential forms are \(d(\rho uA) = 0\), \(dp = -\rho u\,du\) (Euler's equation) and \(dh + u\,du = 0\).</p>
+
+  <h2 id="av">2. The area–velocity relation</h2>
+  <p>Write continuity logarithmically, \(d\rho/\rho + du/u + dA/A = 0\). Then eliminate \(d\rho\) using \(dp = a^2 d\rho\) (isentropic) and Euler's equation:</p>
+  $$\boxed{\frac{dA}{A} = \left(M^2 - 1\right)\frac{du}{u}}$$
+  <ul>
+    <li><b>Subsonic</b> (M &lt; 1): an increase in velocity needs a <em>decrease</em> in area, as in a garden hose nozzle.</li>
+    <li><b>Supersonic</b> (M &gt; 1): an increase in velocity needs an <em>increase</em> in area. The density falls faster than the velocity rises, so the area has to grow to carry the same mass flow.</li>
+    <li><b>Sonic</b> (M = 1): \(dA = 0\), so M = 1 can occur only at a minimum area, the <b>throat</b>.</li>
+  </ul>
+  <p>To expand a gas from rest to supersonic speed, the duct must converge to a throat where M = 1, and then diverge. This is the de Laval nozzle. Read the relation backwards and it describes a <b>diffuser</b>: to slow a supersonic flow, the duct must converge, and once subsonic, it must diverge.</p>
+
+  <h2 id="am">3. The area–Mach relation</h2>
+  <p>Take \(A^*\) as the area where the flow would be sonic. Continuity between a general section and the sonic one, with the isentropic relations, gives</p>
+  $$\left(\frac{A}{A^*}\right)^2 = \frac{1}{M^2}\left[\frac{2}{\gamma+1}\left(1 + \frac{\gamma-1}{2}M^2\right)\right]^{(\gamma+1)/(\gamma-1)}.$$
+  <p>For every \(A/A^* &gt; 1\) there are two solutions, one subsonic and one supersonic. Which one occurs depends on the pressures imposed at the ends of the duct, which is the subject of the simulator below. \(A^*\) need not physically exist in the duct. It is a reference area, and it changes across a shock, since \(p_0 A^*\) is constant for a choked flow.</p>
+
+  <h2 id="choke">4. Mass flow and choking</h2>
+  <p>The mass flow through any section, written in terms of total conditions, is</p>
+  $$\dot m = \rho u A = \frac{p_0 A}{\sqrt{T_0}}\sqrt{\frac{\gamma}{R}}\,M\left(1 + \frac{\gamma-1}{2}M^2\right)^{-\frac{\gamma+1}{2(\gamma-1)}}.$$
+  <p>For fixed \(p_0\) and \(T_0\), the mass flow per unit area is greatest at M = 1. When the throat becomes sonic, the mass flow reaches its maximum and the nozzle is <b>choked</b>:</p>
+  $$\dot m_\text{max} = \frac{p_0 A^*}{\sqrt{T_0}}\sqrt{\frac{\gamma}{R}\left(\frac{2}{\gamma+1}\right)^{(\gamma+1)/(\gamma-1)}} \;\approx\; 0.0404\,\frac{p_0 A^*}{\sqrt{T_0}} \ \ (\text{air, SI}).$$
+  <p>Once choked, lowering the back pressure further cannot increase the flow. The information that the back pressure has changed cannot travel upstream through the sonic throat. Increasing \(p_0\), or cooling the reservoir, still raises the flow.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="ae">Exit area ratio Aₑ/A<sub>t</sub> <output for="ae"></output></label>
+      <input type="range" id="ae" min="1.1" max="6" step="0.01" value="2" data-dec="2"></div>
+    <div class="ctl"><label for="pb">Back pressure p<sub>b</sub>/p₀ <output for="pb"></output></label>
+      <input type="range" id="pb" min="0.01" max="1" step="0.001" value="0.6" data-dec="3"></div>
+    <div id="status1" class="status"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag1"></div><figcaption>Nozzle shape, normal shock (if inside), and the wave pattern at the exit. Inlet area is 3 A<sub>t</sub>.</figcaption></figure>
+    <figure><div id="plot1"></div><figcaption>Static pressure along the nozzle. The thin dashed curves are the two isentropic solutions; the thick curve is the actual solution for this back pressure.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="cd">5. The converging–diverging nozzle at every back pressure</h2>
+  <p>Fix the reservoir at \(p_0\) and slowly lower the back pressure \(p_b\). Three critical pressure ratios, all set by \(A_e/A_t\) and γ, divide the behavior:</p>
+  <ol>
+    <li><b>\(p_b/p_0 &gt; p_{e,1}/p_0\): subsonic throughout.</b> The flow accelerates to the throat and decelerates after it, like a venturi. The throat is not sonic, and the mass flow depends on \(p_b\).</li>
+    <li><b>\(p_b = p_{e,1}\): choked, subsonic exit.</b> The throat just reaches M = 1, and the diverging section stays on the subsonic branch.</li>
+    <li><b>\(p_{e,2} &lt; p_b &lt; p_{e,1}\): normal shock inside the diverging section.</b> The flow is supersonic from the throat up to a normal shock, then subsonic to the exit. The exit is subsonic, so \(p_e = p_b\). As \(p_b\) falls, the shock moves downstream. Its position is found by requiring that the subsonic flow behind it, with the new reference area \(A_2^* = A_t\,p_{0,1}/p_{0,2}\), exits at exactly \(p_b\).</li>
+    <li><b>\(p_b = p_{e,2}\): normal shock at the exit plane.</b></li>
+    <li><b>\(p_{e,3} &lt; p_b &lt; p_{e,2}\): over-expanded.</b> The nozzle flow is fully supersonic and shock-free, and \(p_e = p_{e,3} &lt; p_b\). Oblique shocks at the lip raise the jet pressure to \(p_b\).</li>
+    <li><b>\(p_b = p_{e,3}\): design condition</b> (perfectly expanded). The jet leaves parallel and at ambient pressure.</li>
+    <li><b>\(p_b &lt; p_{e,3}\): under-expanded.</b> Expansion fans at the lip lower the jet pressure to \(p_b\).</li>
+  </ol>
+  <p>From case 2 onward the mass flow is fixed at its choked value, and nothing downstream of the throat can change it. Use the simulator to walk through all seven cases. The second figure shows the mass flow levelling off as the nozzle chokes.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="ae2">Aₑ/A<sub>t</sub> <output for="ae2"></output></label>
+      <input type="range" id="ae2" min="1" max="6" step="0.01" value="2"></div>
+    <div id="ro2" class="readout"></div>
+    <p class="note">At Aₑ/A<sub>t</sub> = 1 the nozzle is purely converging. It chokes at p<sub>b</sub>/p₀ = (2/(γ+1))<sup>γ/(γ−1)</sup> = 0.528 for γ = 1.4.</p>
+  </div>
+  <div class="views"><figure><div id="plot2"></div><figcaption>Mass flow, as a fraction of the choked value, versus back-pressure ratio.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="exit">6. Over- and under-expanded jets</h2>
+  <p>A supersonic jet that leaves at the wrong pressure adjusts outside the nozzle through a repeating pattern of waves. In an <b>over-expanded</b> jet, oblique shocks from the lip turn the flow inward and raise its pressure. The shocks reflect from the axis, or form a Mach disk if they are strong enough, and then reflect from the jet boundary as expansion waves. The result is the train of "shock diamonds" familiar from afterburning engines and rocket plumes. An <b>under-expanded</b> jet starts with expansion fans that turn the flow outward, and the jet bulges before the pattern repeats.</p>
+  <p>If the back pressure is too high relative to \(p_{e,3}\), the boundary layer cannot withstand the adverse pressure gradient at the lip. It separates inside the nozzle, typically when \(p_e/p_b\) drops below about 0.3–0.4 (the Summerfield criterion). The flow then becomes unsteady and asymmetric. The one-dimensional theory cannot predict this, but it is important in practice.</p>
+
+  <h2 id="diffusers">7. Supersonic diffusers</h2>
+  <p>A diffuser decelerates a stream while recovering as much total pressure as possible. Reversing an ideal nozzle would decelerate a supersonic flow isentropically to M = 1 at a throat and then to low speed, recovering all of \(p_0\). In practice this is unattainable. The isentropic solution is unstable, and a supersonic flow cannot be started through a throat that small. A real supersonic diffuser uses a converging section to weaken the flow through oblique shocks, then a weak normal shock near the throat, then subsonic diffusion. Its figure of merit is the total-pressure recovery \(p_{0,\text{exit}}/p_{0,\infty}\), compared with that of a single normal shock:</p>
+  $$\eta_\text{normal} = \frac{p_{0,2}}{p_{0,1}}\bigg|_{M_\infty}.$$
+  <p>The ideas of shock efficiency, multi-shock compression and starting are developed further in <a href="oblique-shock.html">Lesson 5</a>.</p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen, normalShock, bisect } = GD;
+  const Ai = 3;
+
+  // Solve the C-D nozzle for exit area ratio Ae and back pressure pb (both /p0, /At).
+  function solveNozzle(Ae, pb, g) {
+    const Msub = isen.M_from_A_Astar(Ae, g, "sub"), Msup = isen.M_from_A_Astar(Ae, g, "sup");
+    const p1 = 1 / isen.p0_p(Msub, g), p3 = 1 / isen.p0_p(Msup, g);
+    const p2 = p3 * normalShock(Msup, g).p2_p1;
+    const exitP = As => {
+      const ns = normalShock(isen.M_from_A_Astar(As, g, "sup"), g);
+      const Me = isen.M_from_A_Astar(Ae * ns.p02_p01, g, "sub");
+      return ns.p02_p01 / isen.p0_p(Me, g);
+    };
+    const r = { p1, p2, p3, Msub, Msup, As: null, Astar: 1, choked: true };
+    if (pb >= 1) { r.regime = "No flow: back pressure equals reservoir pressure."; r.choked = false; r.Me = 0; r.pe = 1; r.flow = 0; return r; }
+    if (pb > p1) {
+      const Me = isen.M_from_p0_p(1 / pb, g);
+      r.choked = false; r.Me = Me; r.pe = pb; r.Astar = Ae / isen.A_Astar(Me, g);
+      r.regime = "Subsonic throughout: throat not sonic, mass flow below the choked value.";
+    } else if (pb > p2) {
+      r.As = bisect(As => exitP(As) - pb, 1 + 1e-9, Ae);
+      const ns = normalShock(isen.M_from_A_Astar(r.As, g, "sup"), g);
+      r.p02 = ns.p02_p01; r.Me = isen.M_from_A_Astar(Ae * ns.p02_p01, g, "sub"); r.pe = pb; r.Mshock = ns.M1;
+      r.regime = `Normal shock inside the nozzle at A/A<sub>t</sub> = ${r.As.toFixed(3)} (M₁ = ${ns.M1.toFixed(3)}); subsonic exit.`;
+    } else {
+      r.Me = Msup; r.pe = p3;
+      if (Math.abs(pb - p3) / p3 < 0.01) r.regime = "Design condition: perfectly expanded jet.";
+      else if (pb > p3) r.regime = "Over-expanded: shock-free nozzle, oblique shocks at the exit lip raise the jet to p<sub>b</sub>.";
+      else r.regime = "Under-expanded: shock-free nozzle, expansion fans at the exit lip lower the jet to p<sub>b</sub>.";
+      if (Math.abs(pb - p2) / p2 < 0.005) r.regime = "Normal shock standing at the exit plane.";
+    }
+    r.flow = r.choked ? 1 : (isen.massFlowParam(r.Me, g) * Ae) / isen.massFlowParam(1, g);
+    return r;
+  }
+
+  const area = (x, Ae) => (x < 0 ? 1 + (Ai - 1) * x * x : 1 + (Ae - 1) * x * x);
+
+  function distribution(sol, Ae, g) {
+    const xs = UI.linspace(-1, 1, 241), p = [], M = [];
+    const xs_shock = sol.As ? Math.sqrt((sol.As - 1) / (Ae - 1)) : null;
+    xs.forEach(x => {
+      const A = area(x, Ae);
+      let m, p0loc = 1;
+      if (!sol.choked) m = isen.M_from_A_Astar(A / sol.Astar, g, "sub");
+      else if (x <= 0) m = isen.M_from_A_Astar(A, g, "sub");
+      else if (xs_shock !== null && x > xs_shock) { p0loc = sol.p02; m = isen.M_from_A_Astar(A * sol.p02, g, "sub"); }
+      else m = isen.M_from_A_Astar(A, g, "sup");
+      M.push(m); p.push(p0loc / isen.p0_p(m, g));
+    });
+    return { xs, p, M, xs_shock };
+  }
+
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), Ae = UI.val("ae"), pb = UI.val("pb");
+    const sol = solveNozzle(Ae, pb, g), d = distribution(sol, Ae, g);
+    document.getElementById("status1").innerHTML = sol.regime;
+    // isentropic reference curves
+    const subC = d.xs.map(x => 1 / isen.p0_p(isen.M_from_A_Astar(area(x, Ae), g, "sub"), g));
+    const supC = d.xs.map(x => 1 / isen.p0_p(isen.M_from_A_Astar(area(x, Ae), g, x <= 0 ? "sub" : "sup"), g));
+    UI.plot("#plot1", {
+      xlabel: "axial position (throat at 0)", ylabel: "p / p₀", xlim: [-1, 1.25], ylim: [0, 1.02], legend: "bl",
+      series: [
+        { x: d.xs, y: subC, c: 6, dash: true }, { x: d.xs, y: supC, c: 6, dash: true },
+        { x: d.xs, y: d.p, label: "p / p₀ in nozzle", c: 1, width: 3 },
+        { x: [1, 1.25], y: [pb, pb], label: "back pressure", c: 2, width: 3 },
+        { x: d.xs, y: d.M.map(m => m / 4), label: "M / 4", c: 3 },
+      ],
+      hlines: [{ y: sol.p1, label: `pₑ₁ = ${sol.p1.toFixed(3)}` }, { y: sol.p2, label: `pₑ₂ = ${sol.p2.toFixed(3)}` }, { y: sol.p3, label: `pₑ₃ = ${sol.p3.toFixed(3)}` }],
+    });
+    // diagram
+    const W = 620, H = 200, cy = 100, k = 72 / Math.sqrt(Math.max(Ai, Ae)), sx = x => 40 + (x + 1) * 240, sr = A => k * Math.sqrt(A);
+    let up = "", lo = "";
+    d.xs.forEach((x, i) => { const r = sr(area(x, Ae)); up += (i ? "L" : "M") + sx(x) + " " + (cy - r); lo += (i ? "L" : "M") + sx(x) + " " + (cy + r); });
+    const re = sr(Ae), xe = sx(1);
+    let extra = "";
+    if (d.xs_shock !== null) { const r = sr(sol.As); extra += `<line x1="${sx(d.xs_shock)}" x2="${sx(d.xs_shock)}" y1="${cy - r}" y2="${cy + r}" class="shock"/>`; }
+    if (sol.choked && !sol.As) {
+      if (Math.abs(pb - sol.p2) / sol.p2 < 0.005) extra += `<line x1="${xe}" x2="${xe}" y1="${cy - re}" y2="${cy + re}" class="shock"/>`;
+      else if (pb > sol.p3 * 1.01) extra += `<path d="M${xe} ${cy - re} L${xe + 70} ${cy - re * 0.25} L${xe + 140} ${cy - re * 0.9} M${xe} ${cy + re} L${xe + 70} ${cy + re * 0.25} L${xe + 140} ${cy + re * 0.9}" class="shock" style="stroke-width:1.8"/>`;
+      else if (pb < sol.p3 * 0.99) for (let k = 0; k < 4; k++) extra += `<line x1="${xe}" y1="${cy - re}" x2="${xe + 50 + k * 20}" y2="${cy - re + 40 + k * 6}" class="fan"/><line x1="${xe}" y1="${cy + re}" x2="${xe + 50 + k * 20}" y2="${cy + re - 40 - k * 6}" class="fan"/>`;
+      const spread = pb < sol.p3 * 0.99 ? 1.35 : pb > sol.p3 * 1.01 ? 0.75 : 1;
+      extra += `<path d="M${xe} ${cy - re} Q${xe + 70} ${cy - re * spread} ${xe + 150} ${cy - re * spread} M${xe} ${cy + re} Q${xe + 70} ${cy + re * spread} ${xe + 150} ${cy + re * spread}" class="stream" style="stroke-dasharray:3 3"/>`;
+    }
+    document.getElementById("diag1").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">
+      <path d="${up}" class="body" style="fill:none"/><path d="${lo}" class="body" style="fill:none"/>
+      <line x1="${sx(0)}" x2="${sx(0)}" y1="${cy - 20}" y2="${cy + 20}" class="stream" style="stroke-dasharray:2 3"/>
+      <text x="${sx(0)}" y="${cy + 40}" text-anchor="middle" class="small">throat</text>
+      <text x="20" y="${cy + 4}" class="label">p₀</text><text x="${xe + 20}" y="16" class="label">p_b/p₀ = ${pb.toFixed(3)}</text>${extra}</svg>`;
+    UI.readout("#ro1", [["Exit Mach Mₑ", sol.Me], ["pₑ/p₀", sol.pe], ["ṁ / ṁ_choked", sol.flow],
+      ["pₑ₁/p₀ (choke)", sol.p1], ["pₑ₂/p₀ (shock at exit)", sol.p2], ["pₑ₃/p₀ (design)", sol.p3],
+      ["Shock p₀₂/p₀₁", sol.p02 || "—"]]);
+  });
+
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), Ae = UI.val("ae2");
+    const pbs = UI.linspace(0.01, 1, 300);
+    const flow = pbs.map(pb => Ae <= 1.0001
+      ? (pb <= 1 / isen.p0_p(1, g) ? 1 : isen.massFlowParam(isen.M_from_p0_p(1 / pb, g), g) / isen.massFlowParam(1, g))
+      : solveNozzle(Ae, pb, g).flow);
+    const pcrit = Ae <= 1.0001 ? 1 / isen.p0_p(1, g) : 1 / isen.p0_p(isen.M_from_A_Astar(Ae, g, "sub"), g);
+    UI.plot("#plot2", {
+      xlabel: "back pressure p_b / p₀", ylabel: "ṁ / ṁ_choked", xlim: [0, 1], ylim: [0, 1.1],
+      series: [{ x: pbs, y: flow, c: 2, width: 3 }], vlines: [{ x: pcrit, label: "chokes" }],
+    });
+    UI.readout("#ro2", [["Choking p_b/p₀", pcrit], ["Exit Mach (design)", Ae > 1 ? isen.M_from_A_Astar(Ae, g, "sup") : 1]]);
+  });
+})();
+</script>
+</body>
+</html>

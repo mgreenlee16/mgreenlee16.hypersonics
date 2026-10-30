@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fanno Flow Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Friction</div>
+  <h1>Fanno Flow</h1>
+  <p class="lead">Adiabatic, constant-area flow with wall friction. Get 4f̄L*/D and the starred ratios from any one quantity, or the exit state for a given duct length.</p>
+</div>
+<div class="calc-grid"><section id="c1"></section>
+<section class="calc" id="c2"><h3>Process: inlet M₁ and duct length</h3>
+  <div class="inputs">
+    <label>Inlet M₁<input type="number" id="fM" value="0.3" step="any"></label>
+    <label>Friction coeff. f̄<input type="number" id="ff" value="0.005" step="any"></label>
+    <label>Length L / D<input type="number" id="fL" value="20" step="any"></label>
+  </div><div class="err" id="ferr"></div><div class="results" id="fout"></div></section></div>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$\frac{4\bar fL^*}{D} = \frac{1-M^2}{\gamma M^2} + \frac{\gamma+1}{2\gamma}\ln\frac{(\gamma+1)M^2}{2+(\gamma-1)M^2},\quad \frac{T}{T^*} = \frac{\gamma+1}{2+(\gamma-1)M^2},\quad \frac{p}{p^*} = \frac{1}{M}\sqrt{\frac{T}{T^*}}$$
+  <p>f̄ is the Fanning friction coefficient (one quarter of the Darcy factor). See <a href="../lessons/duct-flow.html">Lesson 4</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { fanno } = GD;
+  const inv = (f, v, a, b, inc) => GD.invert(inc ? f : m => -f(m), inc ? v : -v, a, b);
+  const fmax = g => ((g + 1) / (2 * g)) * Math.log((g + 1) / (g - 1)) - 1 / g;
+  Calc.build("#c1", {
+    title: "Starred ratios",
+    modes: [
+      { key: "M", label: "Mach number M", value: 2, solve: v => (v > 0 ? v : null) },
+      { key: "Lsub", label: "4f̄L*/D, subsonic", value: 1.069, solve: (v, g) => (v >= 0 ? inv(m => fanno.fLD(m, g), v, 1e-4, 1, false) : null) },
+      { key: "Lsup", label: "4f̄L*/D, supersonic", value: 0.305, solve: (v, g) => (v >= 0 && v < fmax(g) ? inv(m => fanno.fLD(m, g), v, 1, 1e4, true) : { error: `Supersonic 4f̄L*/D must be below its M → ∞ limit, ${fmax(g).toFixed(4)}.` }) },
+      { key: "T", label: "T/T*", value: 0.6667, solve: (v, g) => (v > 0 && v < (g + 1) / 2 ? Math.sqrt(((g + 1) / v - 2) / (g - 1)) : null) },
+      { key: "p", label: "p/p*", value: 0.4082, solve: (v, g) => (v > 0 ? inv(m => fanno.p_ps(m, g), v, 1e-4, 1e4, false) : null) },
+      { key: "p0sub", label: "p₀/p₀*, subsonic", value: 1.3398, solve: (v, g) => (v >= 1 ? inv(m => fanno.p0_p0s(m, g), v, 1e-4, 1, false) : null) },
+      { key: "p0sup", label: "p₀/p₀*, supersonic", value: 1.6875, solve: (v, g) => (v >= 1 ? inv(m => fanno.p0_p0s(m, g), v, 1, 1e3, true) : null) },
+    ],
+    results: (M, g) => [["M", M], ["4f̄L*/D", fanno.fLD(M, g)], ["T/T*", fanno.T_Ts(M, g)], ["p/p*", fanno.p_ps(M, g)], ["ρ/ρ*", fanno.rho_rhos(M, g)], ["V/V*", 1 / fanno.rho_rhos(M, g)], ["p₀/p₀*", fanno.p0_p0s(M, g)]],
+    table: { name: "fanno", from: 0.1, to: 3, step: 0.1, head: ["M", "4f̄L*/D", "T/T*", "p/p*", "V/V*", "p₀/p₀*"],
+      row: (M, g) => [M, fanno.fLD(M, g), fanno.T_Ts(M, g), fanno.p_ps(M, g), 1 / fanno.rho_rhos(M, g), fanno.p0_p0s(M, g)] },
+  });
+  function proc() {
+    const g = UI.gamma(), M1 = UI.val("fM"), f = UI.val("ff"), L = UI.val("fL");
+    const err = document.getElementById("ferr"), out = document.getElementById("fout");
+    if (!(M1 > 0) || !(f >= 0) || !(L >= 0)) { err.textContent = "Need M₁ > 0, f̄ ≥ 0 and L/D ≥ 0."; out.innerHTML = ""; return; }
+    const L1 = fanno.fLD(M1, g), need = 4 * f * L, rem = L1 - need;
+    if (rem < 0) { err.textContent = `Frictionally choked: this inlet reaches M = 1 after L*/D = ${(L1 / (4 * f)).toFixed(3)}, shorter than the duct.`; out.innerHTML = ""; return; }
+    err.textContent = "";
+    const M2 = rem === 0 ? 1 : M1 < 1 ? inv(m => fanno.fLD(m, g), rem, 1e-4, 1, false) : inv(m => fanno.fLD(m, g), rem, 1, 1e4, true);
+    UI.table(out, ["Quantity", "Value"], [["4f̄L/D", need], ["4f̄L*/D at inlet", L1], ["L*/D at inlet", L1 / (4 * f)], ["M₂", M2],
+      ["p₂/p₁", fanno.p_ps(M2, g) / fanno.p_ps(M1, g)], ["T₂/T₁", fanno.T_Ts(M2, g) / fanno.T_Ts(M1, g)], ["V₂/V₁", fanno.rho_rhos(M1, g) / fanno.rho_rhos(M2, g)], ["p₀₂/p₀₁", fanno.p0_p0s(M2, g) / fanno.p0_p0s(M1, g)]]);
+  }
+  ["fM", "ff", "fL"].forEach(id => document.getElementById(id).addEventListener("input", proc));
+  UI.onGamma(proc); proc();
+})();
+</script>
+</body>
+</html>

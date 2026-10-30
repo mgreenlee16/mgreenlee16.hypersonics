@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heat Addition &amp; Friction · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="duct-flow">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 4 · Part I</div>
+  <h1>Heat Addition &amp; Friction in Ducts</h1>
+  <p class="lead">Area change is only one way to change the Mach number of a duct flow. Adding heat and wall friction are two more. Both push the flow toward M = 1, from either side, and both can choke the duct. The idealized cases are named after Rayleigh (heat, no friction) and Fanno (friction, no heat).</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#rayleigh-eq">Rayleigh flow: constant-area heat addition</a></li>
+    <li><a href="#rayleigh-star">Starred reference conditions</a></li>
+    <li><a href="#rayleigh-ts">The Rayleigh line and thermal choking</a></li>
+    <li><a href="#fanno-eq">Fanno flow: adiabatic flow with friction</a></li>
+    <li><a href="#fanno-choke">The Fanno line and frictional choking</a></li>
+    <li><a href="#compare">Comparison and generalized one-dimensional flow</a></li>
+  </ol></nav>
+
+  <h2 id="rayleigh-eq">1. Rayleigh flow: constant-area heat addition</h2>
+  <p>Consider steady, inviscid flow in a constant-area duct, with heat \(q\) per unit mass added between stations 1 and 2, from combustion, a heater, or condensation. Continuity and momentum are unchanged from the normal shock, and only energy picks up a source term:</p>
+  $$\rho_1u_1 = \rho_2u_2, \qquad p_1 + \rho_1u_1^2 = p_2 + \rho_2u_2^2, \qquad q = c_p\left(T_{0,2} - T_{0,1}\right).$$
+  <p>So heat addition is, by definition, a change of total temperature. Using \(\rho u^2 = \gamma p M^2\), momentum gives the pressure ratio at once, and the rest follows:</p>
+  $$\frac{p_2}{p_1} = \frac{1+\gamma M_1^2}{1+\gamma M_2^2}, \qquad \frac{T_2}{T_1} = \left(\frac{1+\gamma M_1^2}{1+\gamma M_2^2}\right)^2\frac{M_2^2}{M_1^2},$$
+  $$\frac{T_{0,2}}{T_{0,1}} = \frac{(1+\gamma M_1^2)^2}{(1+\gamma M_2^2)^2}\frac{M_2^2}{M_1^2}\frac{1+\frac{\gamma-1}{2}M_2^2}{1+\frac{\gamma-1}{2}M_1^2}.$$
+
+  <h2 id="rayleigh-star">2. Starred reference conditions</h2>
+  <p>As with the area–Mach relation, it is convenient to refer every state to the one where the flow would reach M = 1 under the same process, here by adding just enough heat. Setting \(M_2 = 1\):</p>
+  $$\frac{p}{p^*} = \frac{1+\gamma}{1+\gamma M^2}, \qquad \frac{T}{T^*} = \frac{(1+\gamma)^2M^2}{(1+\gamma M^2)^2}, \qquad \frac{\rho^*}{\rho} = \frac{u}{u^*} = \frac{(1+\gamma)M^2}{1+\gamma M^2},$$
+  $$\frac{T_0}{T_0^*} = \frac{(\gamma+1)M^2\left[2+(\gamma-1)M^2\right]}{(1+\gamma M^2)^2}, \qquad \frac{p_0}{p_0^*} = \frac{1+\gamma}{1+\gamma M^2}\left[\frac{2+(\gamma-1)M^2}{\gamma+1}\right]^{\gamma/(\gamma-1)}.$$
+  <p>For a process from 1 to 2, a ratio is a quotient of starred ratios: \(T_{0,2}/T_{0,1} = (T_0/T_0^*)_2\,/\,(T_0/T_0^*)_1\). The <a href="../calculators/rayleigh.html">Rayleigh calculator</a> does this for you.</p>
+
+  <h2 id="rayleigh-ts">3. The Rayleigh line and thermal choking</h2>
+  <p>Plot every state reachable from a given inlet by adding or removing heat on a temperature–entropy diagram, and you get the <b>Rayleigh line</b>. Since \(ds = \delta q/T\) for reversible heating, adding heat raises entropy. The line has its maximum entropy at M = 1, and the second law tells us which way the state can move:</p>
+  <ul>
+    <li><b>Heating</b> drives a subsonic flow <em>up</em> toward M = 1 (it accelerates, and its pressure falls), and drives a supersonic flow <em>down</em> toward M = 1 (it decelerates, and its pressure rises).</li>
+    <li><b>Cooling</b> does the reverse, moving the flow away from M = 1.</li>
+    <li>Total pressure always falls when heat is added. The loss is small at low Mach number and large in supersonic flow. Heat added to a fast-moving stream is less useful.</li>
+    <li>On the subsonic branch between \(M = 1/\sqrt{\gamma}\) (0.845 for air) and 1, adding heat actually <em>lowers</em> the static temperature. The flow accelerates so much that the extra kinetic energy exceeds the heat added.</li>
+  </ul>
+  <p>Once the exit reaches M = 1, the flow is <b>thermally choked</b>. The heat added equals the maximum \(c_p T_{0,1}(1/(T_0/T_0^*)_1 - 1)\). Adding more cannot be accommodated with the same inlet state. A subsonic flow responds by reducing its inlet Mach number, so less mass flows. A supersonic flow responds by forming a shock that moves upstream and makes the flow subsonic. This limit is central to the design of any combustor.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="rM1">Inlet Mach M₁ <output for="rM1"></output></label>
+      <input type="range" id="rM1" min="0.1" max="4" step="0.01" value="0.3"></div>
+    <div class="ctl"><label for="rTt">Total-temperature ratio T₀₂/T₀₁ <output for="rTt"></output></label>
+      <input type="range" id="rTt" min="0.5" max="4" step="0.01" value="1.8"></div>
+    <div id="status1" class="status"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot1"></div><figcaption>The Rayleigh line on a T–s diagram, normalized by the sonic state. The arrow runs from inlet (1) to exit (2). Solid: subsonic branch; dashed: supersonic branch.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="fanno-eq">4. Fanno flow: adiabatic flow with friction</h2>
+  <p>Now take a constant-area duct with no heat transfer, but with wall shear stress \(\tau_w\). Total temperature is constant. Momentum gains a friction term. With the Darcy–Fanning friction coefficient \(f = \tau_w/(\tfrac12\rho u^2)\) and hydraulic diameter \(D\):</p>
+  $$dp + \rho u\,du = -\frac{4\tau_w}{D}dx \quad\Longrightarrow\quad \frac{4f\,dx}{D} = \frac{2(1-M^2)}{\gamma M^2\left[1+\frac{\gamma-1}{2}M^2\right]}\frac{dM}{M}.$$
+  <p>Integrating from M to the sonic point gives the length of duct needed to reach M = 1:</p>
+  $$\frac{4\bar f L^*}{D} = \frac{1-M^2}{\gamma M^2} + \frac{\gamma+1}{2\gamma}\ln\frac{(\gamma+1)M^2}{2+(\gamma-1)M^2},$$
+  <p>and the starred ratios</p>
+  $$\frac{T}{T^*} = \frac{\gamma+1}{2+(\gamma-1)M^2}, \qquad \frac{p}{p^*} = \frac{1}{M}\sqrt{\frac{\gamma+1}{2+(\gamma-1)M^2}}, \qquad \frac{p_0}{p_0^*} = \frac{1}{M}\left[\frac{2+(\gamma-1)M^2}{\gamma+1}\right]^{\frac{\gamma+1}{2(\gamma-1)}}.$$
+  <p>For a duct of length \(L\) between stations 1 and 2, \(4\bar fL/D = (4\bar fL^*/D)_1 - (4\bar fL^*/D)_2\). For turbulent flow in smooth ducts, \(\bar f \approx 0.0025\)–\(0.005\), only weakly dependent on Reynolds number.</p>
+
+  <h2 id="fanno-choke">5. The Fanno line and frictional choking</h2>
+  <p>Friction is irreversible, so entropy can only rise. Like heating, it drives subsonic flow up toward M = 1 and supersonic flow down toward M = 1. Unlike heating, it can never be reversed, because there is no "negative friction". The Fanno line on a T–s diagram also has its maximum entropy at M = 1.</p>
+  <p>The function \(4\bar fL^*/D\) is bounded for supersonic flow: it tends to 0.822 as M → ∞ for γ = 1.4. However high the Mach number, a supersonic flow reaches M = 1 within about 82 diameters divided by 4f̄, which is only a few dozen diameters in practice. If the actual duct is longer than \(L^*\), it is <b>frictionally choked</b>. A subsonic inlet flow then reduces its mass flow. A supersonic one forms a shock inside the duct, and the subsonic flow behind it then chokes at the exit.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="fM1">Inlet Mach M₁ <output for="fM1"></output></label>
+      <input type="range" id="fM1" min="0.1" max="4" step="0.01" value="2.5"></div>
+    <div class="ctl"><label for="fL">Duct length 4f̄L/D <output for="fL"></output></label>
+      <input type="range" id="fL" min="0" max="2" step="0.005" value="0.2" data-dec="3"></div>
+    <div id="status2" class="status"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot2"></div><figcaption>The Fanno line on a T–s diagram, normalized by the sonic state, with the path from inlet (1) to exit (2).</figcaption></figure>
+    <figure><div id="plot3"></div><figcaption>The choking length 4f̄L*/D versus M. Subsonic values are unbounded as M → 0; supersonic values approach 0.822 (γ = 1.4).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="compare">6. Comparison and generalized one-dimensional flow</h2>
+  <table class="data">
+    <thead><tr><th>Effect in a subsonic flow</th><th>Area decrease</th><th>Heat addition</th><th>Friction</th></tr></thead>
+    <tbody>
+      <tr><td>Mach number</td><td>↑</td><td>↑ (toward 1)</td><td>↑ (toward 1)</td></tr>
+      <tr><td>Static pressure</td><td>↓</td><td>↓</td><td>↓</td></tr>
+      <tr><td>Total temperature</td><td>const</td><td>↑</td><td>const</td></tr>
+      <tr><td>Total pressure</td><td>const</td><td>↓</td><td>↓</td></tr>
+      <tr><td>Entropy</td><td>const</td><td>↑</td><td>↑</td></tr>
+    </tbody>
+  </table>
+  <p>In a supersonic flow every arrow except those for total temperature, total pressure and entropy reverses. Shapiro's generalized one-dimensional flow combines all of these drivers, together with mass injection and molecular-weight change, into one influence-coefficient equation:</p>
+  $$\frac{dM^2}{M^2} = \frac{1+\frac{\gamma-1}{2}M^2}{1-M^2}\left[-2\frac{dA}{A} + (1+\gamma M^2)\frac{dT_0}{T_0} + \gamma M^2\frac{4f\,dx}{D} + \dots\right].$$
+  <p>The common factor \(1/(1-M^2)\) explains everything in this lesson. The bracket must change sign exactly where M = 1, so to pass smoothly through sonic speed, a nozzle needs a throat, a heated duct needs to switch from heating to cooling, and a duct with friction needs some other driver to oppose it. Real combustors often combine heat addition with a diverging area, which lets more heat be added before the flow chokes.</p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { rayleigh, rayleighHeat, fanno, isen, bisect } = GD;
+  // Entropy relative to the sonic state, in units of cp
+  const sR = (M, g) => Math.log(rayleigh.T_Ts(M, g)) - ((g - 1) / g) * Math.log(rayleigh.p_ps(M, g));
+  const sF = (M, g) => Math.log(fanno.T_Ts(M, g)) - ((g - 1) / g) * Math.log(fanno.p_ps(M, g));
+
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), M1 = UI.val("rM1"), tr = UI.val("rTt");
+    const sub = UI.linspace(0.05, 1, 200), sup = UI.linspace(1, 5, 200);
+    const res = rayleighHeat(M1, tr, g);
+    let M2 = res.choked ? 1 : res.M2;
+    // path from 1 to 2
+    const path = UI.linspace(M1, M2, 60);
+    UI.plot("#plot1", {
+      xlabel: "(s − s*) / cp", ylabel: "T / T*", xlim: [-2.5, 0.2], ylim: [0, 1.15], legend: "bl",
+      series: [
+        { x: sub.map(m => sR(m, g)), y: sub.map(m => rayleigh.T_Ts(m, g)), label: "subsonic", c: 2 },
+        { x: sup.map(m => sR(m, g)), y: sup.map(m => rayleigh.T_Ts(m, g)), label: "supersonic", c: 2, dash: true },
+        { x: path.map(m => sR(m, g)), y: path.map(m => rayleigh.T_Ts(m, g)), label: "process 1 → 2", c: 1, width: 4 },
+      ],
+      points: [
+        { x: sR(M1, g), y: rayleigh.T_Ts(M1, g), c: 1, label: "1" },
+        { x: sR(M2, g), y: rayleigh.T_Ts(M2, g), c: 1, label: "2" },
+        { x: 0, y: 1, c: 6, label: "M = 1" },
+        { x: sR(1 / Math.sqrt(g), g), y: rayleigh.T_Ts(1 / Math.sqrt(g), g), c: 4, label: "M = 1/√γ (T max)" },
+      ],
+    });
+    const st = document.getElementById("status1");
+    if (res.choked) {
+      st.className = "status bad";
+      st.innerHTML = `Thermally choked. The largest T₀₂/T₀₁ this inlet can accept is ${res.maxTtRatio.toFixed(3)}. More heat would force the inlet Mach number down (subsonic) or a shock into the duct (supersonic).`;
+      UI.readout("#ro1", [["max T₀₂/T₀₁", res.maxTtRatio], ["T₀/T₀* at inlet", rayleigh.T0_T0s(M1, g)]]);
+    } else {
+      st.className = "status good";
+      st.innerHTML = tr >= 1 ? (M1 < 1 ? "Heating a subsonic flow: it accelerates toward M = 1." : "Heating a supersonic flow: it decelerates toward M = 1.")
+        : "Cooling: the flow moves away from M = 1.";
+      UI.readout("#ro1", [["M₂", res.M2], ["p₂/p₁", res.p2_p1], ["T₂/T₁", res.T2_T1], ["p₀₂/p₀₁", res.p02_p01],
+        ["u₂/u₁", res.u2_u1], ["max T₀₂/T₀₁", res.maxTtRatio], ["q/(cp T₀₁)", tr - 1]]);
+    }
+  });
+
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M1 = UI.val("fM1"), L = UI.val("fL");
+    const L1 = fanno.fLD(M1, g), Lr = L1 - L;
+    let M2, choked = false;
+    if (Lr <= 0) { M2 = 1; choked = L > L1 + 1e-9; }
+    else M2 = M1 < 1 ? GD.invert(m => -fanno.fLD(m, g), -Lr, 1e-4, 1) : GD.invert(m => fanno.fLD(m, g), Lr, 1, 1e4);
+    const sub = UI.linspace(0.1, 1, 200), sup = UI.linspace(1, 5, 200), path = UI.linspace(M1, M2, 60);
+    UI.plot("#plot2", {
+      xlabel: "(s − s*) / cp", ylabel: "T / T*", xlim: [-1.2, 0.1], ylim: [0.3, 1.25], legend: "bl",
+      series: [
+        { x: sub.map(m => sF(m, g)), y: sub.map(m => fanno.T_Ts(m, g)), label: "subsonic", c: 3 },
+        { x: sup.map(m => sF(m, g)), y: sup.map(m => fanno.T_Ts(m, g)), label: "supersonic", c: 3, dash: true },
+        { x: path.map(m => sF(m, g)), y: path.map(m => fanno.T_Ts(m, g)), label: "process 1 → 2", c: 1, width: 4 },
+      ],
+      points: [{ x: sF(M1, g), y: fanno.T_Ts(M1, g), c: 1, label: "1" }, { x: sF(M2, g), y: fanno.T_Ts(M2, g), c: 1, label: "2" }, { x: 0, y: 1, c: 6, label: "M = 1" }],
+    });
+    const Ms = UI.linspace(0.2, 5, 300);
+    UI.plot("#plot3", {
+      xlabel: "M", ylabel: "4f̄L*/D", xlim: [0.2, 5], ylim: [0, 2.5],
+      series: [{ x: Ms, y: Ms.map(m => fanno.fLD(m, g)), c: 3 }],
+      hlines: [{ y: ((g + 1) / (2 * g)) * Math.log((g + 1) / (g - 1)) - 1 / g, label: "M → ∞ limit" }],
+      points: [{ x: M1, y: L1, c: 1, label: "1" }, { x: M2, y: Math.max(Lr, 0), c: 1, label: "2" }],
+    });
+    const st = document.getElementById("status2");
+    st.className = "status " + (choked ? "bad" : "good");
+    st.innerHTML = choked
+      ? `Frictionally choked: the duct is longer than L* (4f̄L*/D = ${L1.toFixed(4)}). ${M1 < 1 ? "The inlet flow must slow down, reducing the mass flow." : "A normal shock forms inside the duct."}`
+      : `Exit reached with M₂ = ${M2.toFixed(4)}. Remaining length to choke: 4f̄L*/D = ${Lr.toFixed(4)}.`;
+    UI.readout("#ro2", [["4f̄L*/D at inlet", L1], ["M₂", M2],
+      ["p₂/p₁", fanno.p_ps(M2, g) / fanno.p_ps(M1, g)], ["T₂/T₁", fanno.T_Ts(M2, g) / fanno.T_Ts(M1, g)],
+      ["p₀₂/p₀₁", fanno.p0_p0s(M2, g) / fanno.p0_p0s(M1, g)]]);
+  });
+})();
+</script>
+</body>
+</html>

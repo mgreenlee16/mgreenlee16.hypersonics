@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compressible Flow Lab</title>
+<meta name="description" content="Interactive lessons and calculators for compressible aerodynamics: isentropic flow, shocks, expansion waves, nozzles, duct flow and compressible airfoils.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-root="./" data-gamma="off">
+<main>
+  <section class="hero">
+    <div class="eyebrow">Compressible aerodynamics</div>
+    <h1>Compressible Flow Lab</h1>
+    <p class="lead">Interactive lessons and calculators for compressible aerodynamics. Each lesson pairs the derivations with figures computed live from the exact relations for a calorically perfect gas. Change the Mach number, the geometry or the back pressure, and the wave pattern, pressure distribution and forces update at once.</p>
+  </section>
+
+  <section id="lessons" class="section-head">
+    <div class="eyebrow">Learn</div>
+    <h2>Lessons</h2>
+    <p class="prose">The lessons build on one another. Part I covers one-dimensional flow, Part II turns to two-dimensional supersonic waves, and Part III applies both to airfoils from high subsonic to supersonic speeds.</p>
+    <div id="lessonCards"></div>
+  </section>
+
+  <section id="calculators" class="section-head">
+    <div class="eyebrow">For homework and exams</div>
+    <h2>Calculators</h2>
+    <p class="prose">Enter one known quantity and read the rest, in place of compressible-flow tables. The calculators run the same code as the lessons and are checked against the standard tables.</p>
+    <div id="calcCards"></div>
+  </section>
+
+  <section class="section-head prose">
+    <div class="eyebrow">Notes</div>
+    <h2>Using the site</h2>
+    <p>The ratio of specific heats, γ, in the top bar of each lesson and calculator applies to every figure and value on that page, and is remembered between pages. Theme and text size are remembered too.</p>
+    <p>Everything assumes a calorically perfect gas (constant γ and c<sub>p</sub>). That is accurate for air up to stagnation temperatures of roughly 800–1000 K. Corrections and suggestions are welcome through the repository's issue tracker.</p>
+  </section>
+</main>
+<script src="assets/js/gasdyn.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>UI.cards("#lessonCards", "lessons"); UI.cards("#calcCards", "calcs");</script>
+</body>
+</html>

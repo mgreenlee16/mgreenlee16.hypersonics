@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compressibility Corrections · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="linearized">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 7 · Part III</div>
+  <h1>Compressibility Corrections &amp; Critical Mach Number</h1>
+  <p class="lead">How do the pressures on an airfoil change as it flies faster, and at what speed does a shock first appear on it? Linearized potential-flow theory gives simple answers for thin bodies. They explain why airliners cruise just below Mach 0.85, and why their wings are swept.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#potential">The velocity potential equation</a></li>
+    <li><a href="#linear">Linearization</a></li>
+    <li><a href="#pg">The Prandtl–Glauert rule</a></li>
+    <li><a href="#improved">Improved rules: Kármán–Tsien and Laitone</a></li>
+    <li><a href="#critical">Critical Mach number</a></li>
+    <li><a href="#divergence">Drag divergence and the sound barrier</a></li>
+    <li><a href="#sweep">Swept wings</a></li>
+    <li><a href="#supersonic">Supersonic linear theory and the lift-curve slope</a></li>
+    <li><a href="#area">Supercritical airfoils and the area rule</a></li>
+  </ol></nav>
+
+  <h2 id="potential">1. The velocity potential equation</h2>
+  <p>For steady, inviscid, irrotational flow, the velocity is the gradient of a potential, \(\mathbf V = \nabla\Phi\). Combining continuity, momentum and the isentropic relation \(dp = a^2d\rho\) gives a single equation for Φ. In two dimensions:</p>
+  $$\left(1 - \frac{\Phi_x^2}{a^2}\right)\Phi_{xx} + \left(1 - \frac{\Phi_y^2}{a^2}\right)\Phi_{yy} - \frac{2\Phi_x\Phi_y}{a^2}\Phi_{xy} = 0,$$
+  <p>with \(a^2 = a_0^2 - \tfrac{\gamma-1}{2}(\Phi_x^2 + \Phi_y^2)\). It is exact for irrotational isentropic flow, but nonlinear. Across a curved shock entropy changes, so the flow behind it is rotational and the equation strictly fails there. For weak shocks the error is small.</p>
+
+  <h2 id="linear">2. Linearization</h2>
+  <p>For a thin body at small incidence, write the velocity as the freestream plus small perturbations, \(u = V_\infty + \hat u,\ v = \hat v\), with a perturbation potential φ. Keeping only first-order terms (valid when \(M_\infty\) is not near 1 and not hypersonic) leaves</p>
+  $$\left(1 - M_\infty^2\right)\phi_{xx} + \phi_{yy} = 0, \qquad C_p = -\frac{2\hat u}{V_\infty}.$$
+  <p>For \(M_\infty &lt; 1\) this is elliptic: a stretched Laplace equation. For \(M_\infty &gt; 1\) it is the hyperbolic wave equation, whose solutions are simple waves along Mach lines. That is the origin of Ackeret theory in <a href="expansion.html">Lesson 6</a>. Near \(M_\infty = 1\) the neglected terms matter and the equation is no longer valid: transonic flow is essentially nonlinear.</p>
+
+  <h2 id="pg">3. The Prandtl–Glauert rule</h2>
+  <p>Let \(\beta = \sqrt{1 - M_\infty^2}\) and transform \(\xi = x,\ \eta = \beta y\). The subsonic equation becomes Laplace's equation, which is incompressible flow over an affinely related body. Working through the boundary conditions shows that, for the same airfoil,</p>
+  $$C_p = \frac{C_{p,0}}{\sqrt{1 - M_\infty^2}}, \qquad c_l = \frac{c_{l,0}}{\sqrt{1-M_\infty^2}}, \qquad c_m = \frac{c_{m,0}}{\sqrt{1-M_\infty^2}},$$
+  <p>where the subscript 0 denotes low-speed (incompressible) values. Compressibility amplifies every pressure coefficient, both suctions and overpressures, by \(1/\beta\). Lift-curve slope increases, while the location of the aerodynamic center does not change.</p>
+
+  <h2 id="improved">4. Improved rules: Kármán–Tsien and Laitone</h2>
+  <p>Prandtl–Glauert underestimates the effect of compressibility at higher subsonic Mach numbers. Two better-known rules include some nonlinear effects of the local Mach number:</p>
+  $$C_p = \frac{C_{p,0}}{\sqrt{1-M_\infty^2} + \dfrac{M_\infty^2}{1+\sqrt{1-M_\infty^2}}\dfrac{C_{p,0}}{2}} \quad\text{(Kármán–Tsien)}$$
+  $$C_p = \frac{C_{p,0}}{\sqrt{1-M_\infty^2} + \dfrac{M_\infty^2\left(1+\frac{\gamma-1}{2}M_\infty^2\right)}{2\sqrt{1-M_\infty^2}}C_{p,0}} \quad\text{(Laitone)}$$
+  <p>Kármán–Tsien is the most widely used, and agrees well with experiment up to the critical Mach number.</p>
+
+  <h2 id="critical">5. Critical Mach number</h2>
+  <p>As the flow accelerates over an airfoil, the highest local Mach number occurs at the point of minimum pressure. The <b>critical Mach number</b> \(M_\text{cr}\) is the freestream Mach number at which that local Mach number just reaches 1. The pressure coefficient at a point where the local flow is sonic follows from the isentropic relations alone:</p>
+  $$C_{p,\text{cr}} = \frac{2}{\gamma M_\infty^2}\left[\left(\frac{2+(\gamma-1)M_\infty^2}{\gamma+1}\right)^{\gamma/(\gamma-1)} - 1\right].$$
+  <p>This curve depends only on \(M_\infty\), not on the airfoil. The airfoil's minimum-pressure curve, \(C_{p,\min}(M_\infty)\) from a compressibility rule, rises as \(M_\infty\) increases. Where the two cross is \(M_\text{cr}\). Thinner airfoils have smaller suction peaks, so their \(C_{p,0,\min}\) is less negative and their \(M_\text{cr}\) is higher. For example, the NACA 0012 at zero lift has \(C_{p,0,\min} \approx -0.43\), giving \(M_\text{cr} \approx 0.74\).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="cp0">Low-speed C<sub>p,0,min</sub> <output for="cp0"></output></label>
+      <input type="range" id="cp0" min="-1.5" max="-0.1" step="0.01" value="-0.43"></div>
+    <div class="ctl"><label for="Mi">Freestream Mach M∞ <output for="Mi"></output></label>
+      <input type="range" id="Mi" min="0" max="0.95" step="0.005" value="0.6" data-dec="3"></div>
+    <div id="status1" class="status"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot1"></div><figcaption>Minimum pressure coefficient predicted by three compressibility rules, and the critical pressure coefficient. Each crossing marks a critical Mach number. Note the reversed C<sub>p</sub> axis (suction up), as is customary.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="divergence">6. Drag divergence and the sound barrier</h2>
+  <p>Just above \(M_\text{cr}\), a pocket of supersonic flow forms on the upper surface, terminated by a weak shock. Drag barely changes at first. As the pocket grows, the shock strengthens, and its adverse pressure gradient thickens and eventually separates the boundary layer. Drag then climbs steeply. The <b>drag-divergence Mach number</b> \(M_\text{dd}\), usually defined where \(dc_d/dM = 0.1\), lies a little above \(M_\text{cr}\). Drag peaks near M = 1 and then falls in supersonic flow, toward the wave drag of Lesson 6.</p>
+  <p>The Prandtl–Glauert factor \(1/\sqrt{1-M_\infty^2}\) goes to infinity at M = 1. That was once read as proof of a "sound barrier" that no aircraft could pass. In reality the singularity only shows that linear theory fails in the transonic range. Forces stay finite, and the X-1 passed Mach 1 in 1947.</p>
+
+  <h2 id="sweep">7. Swept wings</h2>
+  <p>On an infinite swept wing, only the velocity component normal to the leading edge, \(M_\infty\cos\Lambda\), controls the pressure distribution. The spanwise component just slides along the wing. To first order, the wing behaves as its normal section would at the reduced Mach number. So sweeping a wing by Λ raises its critical Mach number:</p>
+  $$M_{\text{cr,wing}} \approx \frac{M_{\text{cr,airfoil}}}{\cos\Lambda}.$$
+  <p>Real wings of finite span realize only part of this gain. A common estimate replaces cos Λ with \(\sqrt{\cos\Lambda}\). Sweep also reduces lift-curve slope, and causes tip stall and spanwise flow that must be managed. At supersonic speeds, sweeping the leading edge behind the Mach cone (a "subsonic leading edge", \(M_\infty\cos\Lambda &lt; 1\)) allows round leading edges and subsonic-like flow over the normal section. That is the reason for delta wings.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="sw">Sweep angle Λ <output for="sw"></output></label>
+      <input type="range" id="sw" min="0" max="60" step="0.5" value="30" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="cp0b">Airfoil C<sub>p,0,min</sub> (normal section) <output for="cp0b"></output></label>
+      <input type="range" id="cp0b" min="-1.5" max="-0.1" step="0.01" value="-0.43"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot2"></div><figcaption>Critical Mach number of a swept wing versus sweep: ideal infinite-wing theory (cos Λ) and the common finite-wing estimate (√cos Λ).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="supersonic">8. Supersonic linear theory and the lift-curve slope</h2>
+  <p>Combining the subsonic and supersonic linear results gives the classical picture of thin-airfoil lift-curve slope versus Mach number:</p>
+  $$\frac{dc_l}{d\alpha} = \frac{2\pi}{\sqrt{1-M_\infty^2}}\ (M_\infty &lt; 1), \qquad \frac{dc_l}{d\alpha} = \frac{4}{\sqrt{M_\infty^2-1}}\ (M_\infty &gt; 1).$$
+  <p>Both expressions diverge at M = 1, where neither is valid. Measured values peak at high subsonic speed, drop through the transonic range, and join the supersonic curve above roughly M = 1.2–1.4. The aerodynamic center moves aft from about the quarter chord to about the half chord. That large shift in pitching moment is a major stability-and-control concern for aircraft that cross Mach 1.</p>
+</div>
+
+<section class="lab stack" id="lab3">
+  <div class="views">
+    <figure><div id="plot3"></div><figcaption>Thin-airfoil lift-curve slope per radian from linear theory. Between the dashed lines (the transonic range) neither branch applies.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="area">9. Supercritical airfoils and the area rule</h2>
+  <p>Two design ideas from the 1950s–60s push the drag rise to higher Mach numbers.</p>
+  <ul>
+    <li><b>Supercritical airfoils</b> (Whitcomb, NASA) have a flat upper surface that keeps the supersonic pocket weak and its terminating shock almost isentropic, plus aft camber to recover lift. They accept flight above \(M_\text{cr}\) but delay \(M_\text{dd}\), allowing thicker wings at the same cruise Mach number.</li>
+    <li>The <b>transonic area rule</b> (Whitcomb, 1952) states that near Mach 1, the wave drag of a slender configuration depends mainly on the axial distribution of its total cross-sectional area. Smoothing that distribution, for example by narrowing the fuselage where the wing joins it ("Coke-bottling"), sharply reduces transonic drag rise. The supersonic area rule generalizes this using oblique cuts along Mach planes. The minimum-drag body for given length and volume is the Sears–Haack body, with \(D/q = 128V^2/(\pi L^4)\).</li>
+  </ul>
+  <div class="note">Every result in this lesson is for inviscid flow. Boundary-layer thickening and shock-induced separation change the details, especially near and beyond \(M_\text{dd}\), and are part of why transonic aerodynamics still relies heavily on computation and experiment.</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { linear } = GD;
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), c0 = UI.val("cp0"), M = UI.val("Mi");
+    const Ms = UI.linspace(0.01, 0.98, 300);
+    const rules = [["Prandtl–Glauert", "prandtlGlauert", 2], ["Kármán–Tsien", "karmanTsien", 1], ["Laitone", "laitone", 4]];
+    const f = (r, m) => r === "prandtlGlauert" ? linear.prandtlGlauert(c0, m) : r === "karmanTsien" ? linear.karmanTsien(c0, m) : linear.laitone(c0, m, g);
+    // Plot -Cp so suction is up
+    const series = rules.map(([lab, r, c]) => ({ x: Ms, y: Ms.map(m => { const v = f(r, m); return v < 0 && v > -6 ? -v : NaN; }), label: lab, c }));
+    series.push({ x: Ms.filter(m => m > 0.2), y: Ms.filter(m => m > 0.2).map(m => -linear.CpCritical(m, g)), label: "−C_p,cr", c: 6, width: 2.5 });
+    const crit = rules.map(([lab, r]) => [lab, linear.criticalMach(c0, g, r)]);
+    UI.plot("#plot1", {
+      xlabel: "Freestream Mach number M∞", ylabel: "−C_p,min", xlim: [0, 1], ylim: [0, 3], legend: "tl", series,
+      points: crit.map(([lab, m], i) => ({ x: m, y: -linear.CpCritical(m, g), c: rules[i][2] })).concat([{ x: M, y: -linear.karmanTsien(c0, M), c: 5, label: "M∞" }]),
+      vlines: [{ x: M }],
+    });
+    const Mkt = crit[1][1], st = document.getElementById("status1");
+    const super_ = M > Mkt;
+    st.className = "status " + (super_ ? "bad" : "good");
+    st.innerHTML = super_ ? `M∞ is above M<sub>cr</sub> (Kármán–Tsien ${Mkt.toFixed(3)}): a supersonic pocket and shock exist on the airfoil, and these rules are no longer reliable.`
+      : `Subcritical: the flow is subsonic everywhere on the airfoil.`;
+    UI.readout("#ro1", [["C_p,min (P–G)", linear.prandtlGlauert(c0, M)], ["C_p,min (K–T)", linear.karmanTsien(c0, M)], ["C_p,min (Laitone)", linear.laitone(c0, M, g)],
+      ["C_p,cr", M > 0.05 ? linear.CpCritical(M, g) : "—"], ...crit.map(([lab, m]) => [`M_cr (${lab})`, m])]);
+  });
+
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), L = UI.val("sw"), c0 = UI.val("cp0b");
+    const Mcr = linear.criticalMach(c0, g);
+    const Ls = UI.linspace(0, 60, 121);
+    UI.plot("#plot2", {
+      xlabel: "Sweep angle Λ (deg)", ylabel: "M_cr,wing", xlim: [0, 60], ylim: [0.4, 1.6], legend: "tl",
+      series: [{ x: Ls, y: Ls.map(l => Mcr / Math.cos(l * GD.DEG)), label: "M_cr / cos Λ (ideal)", c: 2 },
+        { x: Ls, y: Ls.map(l => Mcr / Math.sqrt(Math.cos(l * GD.DEG))), label: "M_cr / √cos Λ (finite wing)", c: 1 }],
+      hlines: [{ y: 1, label: "M = 1" }],
+      points: [{ x: L, y: Mcr / Math.cos(L * GD.DEG), c: 2 }, { x: L, y: Mcr / Math.sqrt(Math.cos(L * GD.DEG)), c: 1 }],
+    });
+    UI.readout("#ro2", [["Airfoil M_cr (K–T)", Mcr], ["Wing M_cr, ideal", Mcr / Math.cos(L * GD.DEG)], ["Wing M_cr, finite", Mcr / Math.sqrt(Math.cos(L * GD.DEG))]]);
+  });
+
+  UI.wire("#lab3", () => {
+    const sub = UI.linspace(0, 0.95, 100), sup = UI.linspace(1.08, 4, 150);
+    const r = UI.plot("#plot3", {
+      xlabel: "Freestream Mach number M∞", ylabel: "dc_l/dα (per rad)", xlim: [0, 4], ylim: [0, 20], legend: "tr",
+      series: [{ x: sub, y: sub.map(m => 2 * Math.PI / Math.sqrt(1 - m * m)), label: "2π/√(1−M²)", c: 2 },
+        { x: sup, y: sup.map(m => 4 / Math.sqrt(m * m - 1)), label: "4/√(M²−1)", c: 1 }],
+      vlines: [{ x: 0.8 }, { x: 1.2, label: "transonic" }],
+      h: 300,
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standard Atmosphere Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Standard atmosphere</div>
+  <h1>Standard Atmosphere</h1>
+  <p class="lead">Properties of the 1976 U.S. Standard Atmosphere from sea level to 86 km, and the flight condition at a given Mach number: velocity, dynamic pressure, total conditions and Reynolds number.</p>
+</div>
+<section class="calc" id="c1">
+  <div class="inputs">
+    <label>Altitude<input type="number" id="z" value="11000" step="any"></label>
+    <label>Units<select id="zu"><option value="m">m</option><option value="ft">ft</option><option value="km">km</option></select></label>
+    <label>Mach number<input type="number" id="am" value="0.85" step="any"></label>
+    <label>Reference length (m)<input type="number" id="al" value="1" step="any"></label>
+  </div>
+  <div class="err" id="aerr"></div>
+  <div class="calc-grid results"><div id="aout1"></div><div id="aout2"></div></div>
+</section>
+<section class="lab stack" id="lab"><div class="views"><figure><div id="aplot"></div><figcaption>Temperature and pressure through the standard atmosphere; the dot marks the selected altitude.</figcaption></figure></div></section>
+<div class="prose">
+  <h2>Model</h2>
+  <p>The 1976 U.S. Standard Atmosphere represents the atmosphere up to 86 km as seven layers in which temperature varies linearly with geopotential altitude \(h = r_0z/(r_0+z)\). Pressure follows from hydrostatic balance with the perfect-gas law:</p>
+  $$\frac{p}{p_b} = \left(\frac{T}{T_b}\right)^{-g_0/(RL)}\ \ (L\ne0), \qquad \frac{p}{p_b} = \exp\left[-\frac{g_0(h-h_b)}{RT_b}\right]\ \ (L=0).$$
+  <p>Viscosity uses Sutherland's law, \(\mu = 1.458\times10^{-6}\,T^{3/2}/(T+110.4)\). The flight-condition values use the γ set in the top bar for total conditions; the speed of sound uses γ = 1.4. The Pitot reading assumes a normal shock ahead of the probe when M &gt; 1.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { atmosphere, isen, normalShock } = GD;
+  function run() {
+    const g = UI.gamma(), u = document.getElementById("zu").value;
+    const z = UI.val("z") * (u === "ft" ? 0.3048 : u === "km" ? 1000 : 1), M = UI.val("am"), L = UI.val("al");
+    const err = document.getElementById("aerr");
+    if (!(z >= 0 && z <= 86000)) { err.textContent = "Altitude must be between 0 and 86 km (282 152 ft)."; return; }
+    err.textContent = "";
+    const a = atmosphere(z), V = M * a.a, q = 0.5 * a.rho * V * V;
+    UI.table("#aout1", ["Atmosphere", "Value"], [["Geometric altitude (m)", a.z], ["Geopotential altitude (m)", a.h], ["Temperature T (K)", a.T], ["Pressure p (Pa)", a.p],
+      ["Density ρ (kg/m³)", a.rho], ["Speed of sound a (m/s)", a.a], ["Viscosity μ (Pa·s)", a.mu], ["Kinematic viscosity ν (m²/s)", a.nu],
+      ["p / p_SL", a.p / 101325], ["ρ / ρ_SL", a.rho / 1.225], ["T / T_SL", a.T / 288.15]]);
+    const rows = [["Velocity V (m/s)", V], ["Velocity (km/h)", V * 3.6], ["Velocity (kt)", V / 0.514444], ["Dynamic pressure q (Pa)", q],
+      ["Total temperature T₀ (K)", a.T * isen.T0_T(M, g)], ["Total pressure p₀ (Pa)", a.p * isen.p0_p(M, g)],
+      ["Pitot reading (Pa)", M > 1 ? a.p * normalShock(M, g).p02_p1 : a.p * isen.p0_p(M, g)], ["Reynolds number (per m)", a.rho * V / a.mu], ["Reynolds number (length L)", a.rho * V * L / a.mu]];
+    UI.table("#aout2", ["Flight condition", "Value"], rows);
+    const zs = UI.linspace(0, 86000, 200), A = zs.map(atmosphere);
+    UI.plot("#aplot", { xlabel: "Altitude (km)", ylabel: "T / 288.15 K   and   p / 101 325 Pa", xlim: [0, 86], ylim: [1e-6, 1.2], logy: true, legend: "bl",
+      series: [{ x: zs.map(x => x / 1000), y: A.map(s => s.T / 288.15), label: "T / T_SL", c: 1 }, { x: zs.map(x => x / 1000), y: A.map(s => s.p / 101325), label: "p / p_SL", c: 2 },
+        { x: zs.map(x => x / 1000), y: A.map(s => s.rho / 1.225), label: "ρ / ρ_SL", c: 3, dash: true }],
+      points: [{ x: z / 1000, y: a.T / 288.15, c: 1 }, { x: z / 1000, y: a.p / 101325, c: 2 }] });
+  }
+  ["z", "zu", "am", "al"].forEach(id => document.getElementById(id).addEventListener("input", run));
+  document.getElementById("zu").addEventListener("change", run);
+  UI.onGamma(run); run();
+})();
+</script>
+</body>
+</html>

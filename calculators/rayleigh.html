@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rayleigh Flow Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Heat addition</div>
+  <h1>Rayleigh Flow</h1>
+  <p class="lead">Constant-area, frictionless flow with heat addition. Get the starred ratios from any one quantity, or the exit state for a given total-temperature rise.</p>
+</div>
+<div class="calc-grid"><section id="c1"></section>
+<section class="calc" id="c2"><h3>Process: inlet M₁ and T₀₂/T₀₁</h3>
+  <div class="inputs">
+    <label>Inlet M₁<input type="number" id="rM" value="0.3" step="any"></label>
+    <label>T₀₂/T₀₁<input type="number" id="rT" value="1.5" step="any"></label>
+    <label>c_p (J/kg·K)<input type="number" id="rcp" value="1005" step="any"></label>
+    <label>T₀₁ (K)<input type="number" id="rT0" value="300" step="any"></label>
+  </div><div class="err" id="rerr"></div><div class="results" id="rout"></div></section></div>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$\frac{p}{p^*} = \frac{1+\gamma}{1+\gamma M^2},\quad \frac{T}{T^*} = \frac{(1+\gamma)^2M^2}{(1+\gamma M^2)^2},\quad \frac{T_0}{T_0^*} = \frac{(\gamma+1)M^2[2+(\gamma-1)M^2]}{(1+\gamma M^2)^2},\quad \frac{p_0}{p_0^*} = \frac{1+\gamma}{1+\gamma M^2}\left[\frac{2+(\gamma-1)M^2}{\gamma+1}\right]^{\frac{\gamma}{\gamma-1}}$$
+  <p>Heat added per unit mass: \(q = c_p(T_{0,2}-T_{0,1})\). See <a href="../lessons/duct-flow.html">Lesson 4</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { rayleigh, rayleighHeat } = GD;
+  const inv = (f, v, sub) => GD.invert(sub ? f : m => -f(m), sub ? v : -v, sub ? 1e-6 : 1, sub ? 1 : 1e4);
+  Calc.build("#c1", {
+    title: "Starred ratios",
+    modes: [
+      { key: "M", label: "Mach number M", value: 0.5, solve: v => (v > 0 ? v : null) },
+      { key: "T0sub", label: "T₀/T₀*, subsonic", value: 0.6914, solve: (v, g) => (v > 0 && v <= 1 ? rayleigh.M_from_T0_T0s(v, g, "sub") : null) },
+      { key: "T0sup", label: "T₀/T₀*, supersonic", value: 0.7934, solve: (v, g) => (v > (g * g - 1) / (g * g) && v <= 1 ? rayleigh.M_from_T0_T0s(v, g, "sup") : { error: `Supersonic T₀/T₀* must lie between (γ²−1)/γ² = ${((g * g - 1) / (g * g)).toFixed(4)} and 1.` }) },
+      { key: "p", label: "p/p*", value: 1.7778, solve: (v, g) => (v > 0 && v < 1 + g ? Math.sqrt(((1 + g) / v - 1) / g) : null) },
+      { key: "usub", label: "V/V* = ρ*/ρ, subsonic", value: 0.4444, solve: (v, g) => (v > 0 && v <= 1 ? inv(m => (1 + g) * m * m / (1 + g * m * m), v, true) : null) },
+      { key: "usup", label: "V/V* = ρ*/ρ, supersonic", value: 1.4545, solve: (v, g) => (v >= 1 && v < (1 + g) / g ? inv(m => (1 + g) * m * m / (1 + g * m * m), v, false) : null) },
+    ],
+    results: (M, g) => [["M", M], ["p/p*", rayleigh.p_ps(M, g)], ["T/T*", rayleigh.T_Ts(M, g)], ["ρ/ρ*", rayleigh.rho_rhos(M, g)], ["V/V*", 1 / rayleigh.rho_rhos(M, g)],
+      ["T₀/T₀*", rayleigh.T0_T0s(M, g)], ["p₀/p₀*", rayleigh.p0_p0s(M, g)]],
+    table: { name: "rayleigh", from: 0.1, to: 3, step: 0.1, head: ["M", "p/p*", "T/T*", "V/V*", "T₀/T₀*", "p₀/p₀*"],
+      row: (M, g) => [M, rayleigh.p_ps(M, g), rayleigh.T_Ts(M, g), 1 / rayleigh.rho_rhos(M, g), rayleigh.T0_T0s(M, g), rayleigh.p0_p0s(M, g)] },
+  });
+  function proc() {
+    const g = UI.gamma(), M1 = UI.val("rM"), tr = UI.val("rT"), cp = UI.val("rcp"), T01 = UI.val("rT0");
+    const err = document.getElementById("rerr"), out = document.getElementById("rout");
+    if (!(M1 > 0) || !(tr > 0)) { err.textContent = "Need M₁ > 0 and T₀₂/T₀₁ > 0."; out.innerHTML = ""; return; }
+    const r = rayleighHeat(M1, tr, g);
+    if (r.choked) { err.textContent = `Thermally choked: the largest T₀₂/T₀₁ for M₁ = ${M1} is ${r.maxTtRatio.toFixed(4)}, i.e. q_max = ${UI.fmt(cp * T01 * (r.maxTtRatio - 1))} J/kg.`; out.innerHTML = ""; return; }
+    err.textContent = "";
+    UI.table(out, ["Quantity", "Value"], [["M₂", r.M2], ["p₂/p₁", r.p2_p1], ["T₂/T₁", r.T2_T1], ["V₂/V₁", r.u2_u1], ["p₀₂/p₀₁", r.p02_p01],
+      ["Heat added q (J/kg)", cp * T01 * (tr - 1)], ["q to choke (J/kg)", cp * T01 * (r.maxTtRatio - 1)], ["Δs/c_p", Math.log(r.T2_T1) - ((g - 1) / g) * Math.log(r.p2_p1)]]);
+  }
+  ["rM", "rT", "rcp", "rT0"].forEach(id => document.getElementById(id).addEventListener("input", proc));
+  UI.onGamma(proc); proc();
+})();
+</script>
+</body>
+</html>

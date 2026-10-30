@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prandtl–Meyer Function Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Expansion</div>
+  <h1>Prandtl–Meyer Function</h1>
+  <p class="lead">The Prandtl–Meyer function and Mach angle for one Mach number, and the flow after a turn: an expansion around a convex corner, or a gradual isentropic compression.</p>
+</div>
+<div class="calc-grid"><section id="c1"></section>
+<section class="calc" id="c2"><h3>Flow after a turn</h3>
+  <div class="inputs">
+    <label>Upstream M₁<input type="number" id="tM" value="2" step="any"></label>
+    <label>Turn θ (deg)<input type="number" id="tt" value="10" step="any"></label>
+    <label>Type<select id="tk"><option value="exp">expansion (convex)</option><option value="comp">isentropic compression</option></select></label>
+  </div><div class="err" id="terr"></div><div class="results" id="tout"></div></section></div>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$\nu(M) = \sqrt{\frac{\gamma+1}{\gamma-1}}\tan^{-1}\sqrt{\frac{\gamma-1}{\gamma+1}(M^2-1)} - \tan^{-1}\sqrt{M^2-1},\qquad \nu(M_2) = \nu(M_1)\pm\theta$$
+  <p>Plus for expansion, minus for isentropic compression. Pressure, temperature and density ratios follow from the isentropic relations, since p₀ and T₀ are constant. See <a href="../lessons/expansion.html">Lesson 6</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { nu, nuMax, M_from_nu, isen } = GD;
+  Calc.build("#c1", {
+    title: "ν, μ and M",
+    modes: [
+      { key: "M", label: "Mach number M (≥ 1)", value: 2, solve: v => (v >= 1 ? v : null) },
+      { key: "nu", label: "Prandtl–Meyer angle ν (deg)", value: 26.38, solve: (v, g) => (v >= 0 && v < nuMax(g) / D ? M_from_nu(v * D, g) : { error: `ν must lie between 0 and ν_max = ${(nuMax(g) / D).toFixed(3)}°.` }) },
+      { key: "mu", label: "Mach angle μ (deg)", value: 30, solve: v => (v > 0 && v <= 90 ? 1 / Math.sin(v * D) : null) },
+    ],
+    results: (M, g) => [["M", M], ["ν (deg)", nu(M, g) / D], ["μ (deg)", Math.asin(1 / M) / D], ["ν_max (deg)", nuMax(g) / D], ["Remaining turn to vacuum (deg)", (nuMax(g) - nu(M, g)) / D], ["p₀/p", isen.p0_p(M, g)], ["T₀/T", isen.T0_T(M, g)]],
+    table: { name: "prandtl_meyer", from: 1, to: 5, step: 0.1, head: ["M", "ν (°)", "μ (°)"], row: (M, g) => [M, nu(M, g) / D, Math.asin(1 / M) / D] },
+  });
+  function turn() {
+    const g = UI.gamma(), M1 = UI.val("tM"), th = UI.val("tt") * D, comp = document.getElementById("tk").value === "comp";
+    const err = document.getElementById("terr"), out = document.getElementById("tout");
+    if (!(M1 >= 1) || !(th >= 0)) { err.textContent = "Need M₁ ≥ 1 and θ ≥ 0."; out.innerHTML = ""; return; }
+    const nu2 = nu(M1, g) + (comp ? -th : th);
+    if (nu2 < 0) { err.textContent = `Compression by more than ν₁ = ${(nu(M1, g) / D).toFixed(3)}° would make the flow subsonic; a shock forms instead.`; out.innerHTML = ""; return; }
+    if (nu2 >= nuMax(g)) { err.textContent = `Expansion exceeds the maximum turn (${((nuMax(g) - nu(M1, g)) / D).toFixed(3)}°): the flow expands to vacuum.`; out.innerHTML = ""; return; }
+    err.textContent = "";
+    const M2 = M_from_nu(nu2, g);
+    UI.table(out, ["Quantity", "Value"], [["ν₁ (deg)", nu(M1, g) / D], ["ν₂ (deg)", nu2 / D], ["M₂", M2], ["p₂/p₁", isen.p0_p(M1, g) / isen.p0_p(M2, g)],
+      ["T₂/T₁", isen.T0_T(M1, g) / isen.T0_T(M2, g)], ["ρ₂/ρ₁", isen.rho0_rho(M1, g) / isen.rho0_rho(M2, g)], ["μ₁ (deg)", Math.asin(1 / M1) / D], ["μ₂ (deg)", Math.asin(1 / M2) / D]]);
+  }
+  ["tM", "tt", "tk"].forEach(id => document.getElementById(id).addEventListener("input", turn));
+  document.getElementById("tk").addEventListener("change", turn);
+  UI.onGamma(turn); turn();
+})();
+</script>
+</body>
+</html>

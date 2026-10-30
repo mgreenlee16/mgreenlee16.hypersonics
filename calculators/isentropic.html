@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isentropic Flow Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Isentropic flow</div>
+  <h1>Isentropic Flow</h1>
+  <p class="lead">Enter any one quantity to get the Mach number and every isentropic ratio, in place of the isentropic-flow table (NACA 1135, Table I; Anderson, Appendix A).</p>
+</div>
+<section id="c1"></section>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$\frac{T_0}{T} = 1+\frac{\gamma-1}{2}M^2,\quad \frac{p_0}{p} = \left(\frac{T_0}{T}\right)^{\frac{\gamma}{\gamma-1}},\quad \frac{\rho_0}{\rho} = \left(\frac{T_0}{T}\right)^{\frac{1}{\gamma-1}},\quad \frac{A}{A^*} = \frac{1}{M}\left[\frac{2}{\gamma+1}\frac{T_0}{T}\right]^{\frac{\gamma+1}{2(\gamma-1)}}$$
+  <p>Area ratio and Prandtl–Meyer inputs are inverted by bisection. Area ratio has a subsonic and a supersonic root, so pick the branch. See <a href="../lessons/isentropic.html">Lesson 1</a> and <a href="../lessons/nozzles.html">Lesson 3</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { isen, nu, M_from_nu } = GD;
+  const res = (M, g) => [["Mach number M", M], ["p/p₀", 1 / isen.p0_p(M, g)], ["ρ/ρ₀", 1 / isen.rho0_rho(M, g)], ["T/T₀", 1 / isen.T0_T(M, g)],
+    ["p₀/p", isen.p0_p(M, g)], ["ρ₀/ρ", isen.rho0_rho(M, g)], ["T₀/T", isen.T0_T(M, g)], ["A/A*", isen.A_Astar(M, g)],
+    ["p/p*", isen.p0_p(1, g) / isen.p0_p(M, g)], ["T/T*", isen.T0_T(1, g) / isen.T0_T(M, g)],
+    ["M* = V/a*", Math.sqrt((g + 1) * M * M / (2 + (g - 1) * M * M))], ["Mach angle μ (°)", M >= 1 ? Math.asin(1 / M) / D : "—"],
+    ["Prandtl–Meyer ν (°)", M >= 1 ? nu(M, g) / D : "—"], ["Dynamic pressure q/p = γM²/2", g * M * M / 2], ["q/p₀", g * M * M / 2 / isen.p0_p(M, g)]];
+  const ok = M => (isFinite(M) && M >= 0 ? M : null);
+  Calc.build("#c1", {
+    modes: [
+      { key: "M", label: "Mach number M", value: 2, solve: v => ok(v) },
+      { key: "T", label: "T₀/T  (≥ 1)", value: 1.8, solve: (v, g) => (v >= 1 ? ok(isen.M_from_T0_T(v, g)) : null) },
+      { key: "p", label: "p₀/p  (≥ 1)", value: 7.824, solve: (v, g) => (v >= 1 ? ok(isen.M_from_p0_p(v, g)) : null) },
+      { key: "r", label: "ρ₀/ρ  (≥ 1)", value: 4.347, solve: (v, g) => (v >= 1 ? ok(isen.M_from_rho0_rho(v, g)) : null) },
+      { key: "pp", label: "p/p₀  (0–1)", value: 0.1278, solve: (v, g) => (v > 0 && v <= 1 ? ok(isen.M_from_p0_p(1 / v, g)) : null) },
+      { key: "Tt", label: "T/T₀  (0–1)", value: 0.5556, solve: (v, g) => (v > 0 && v <= 1 ? ok(isen.M_from_T0_T(1 / v, g)) : null) },
+      { key: "Asub", label: "A/A*, subsonic root", value: 1.688, solve: (v, g) => ok(isen.M_from_A_Astar(v, g, "sub")) },
+      { key: "Asup", label: "A/A*, supersonic root", value: 1.688, solve: (v, g) => ok(isen.M_from_A_Astar(v, g, "sup")) },
+      { key: "mu", label: "Mach angle μ (deg)", value: 30, solve: v => (v > 0 && v <= 90 ? 1 / Math.sin(v * D) : null) },
+      { key: "nu", label: "Prandtl–Meyer angle ν (deg)", value: 26.38, solve: (v, g) => (v >= 0 && v < GD.nuMax(g) / D ? ok(M_from_nu(v * D, g)) : null) },
+    ],
+    results: res,
+    table: { name: "isentropic", from: 0, to: 5, step: 0.1, head: ["M", "p/p₀", "ρ/ρ₀", "T/T₀", "A/A*", "ν (°)", "μ (°)"],
+      row: (M, g) => [M, 1 / isen.p0_p(M, g), 1 / isen.rho0_rho(M, g), 1 / isen.T0_T(M, g), M > 0 ? isen.A_Astar(M, g) : "∞", M >= 1 ? nu(M, g) / D : "—", M >= 1 ? Math.asin(1 / M) / D : "—"] },
+  });
+})();
+</script>
+</body>
+</html>

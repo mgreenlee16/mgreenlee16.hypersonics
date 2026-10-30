@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Normal Shock Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Normal shock</div>
+  <h1>Normal Shock</h1>
+  <p class="lead">Enter any one quantity to get the upstream Mach number and every ratio across a normal shock, in place of the normal-shock table (NACA 1135, Table II; Anderson, Appendix B).</p>
+</div>
+<section id="c1"></section>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$M_2^2 = \frac{1+\frac{\gamma-1}{2}M_1^2}{\gamma M_1^2-\frac{\gamma-1}{2}},\quad \frac{p_2}{p_1} = 1+\frac{2\gamma}{\gamma+1}(M_1^2-1),\quad \frac{\rho_2}{\rho_1} = \frac{(\gamma+1)M_1^2}{2+(\gamma-1)M_1^2}$$
+  <p>The Pitot ratio p₀₂/p₁ is the Rayleigh Pitot-tube formula. Every ratio is monotonic in M₁, so any one fixes the shock. See <a href="../lessons/normal-shock.html">Lesson 2</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { normalShock, normalShockFrom } = GD;
+  const lim = g => ({ M2: Math.sqrt((g - 1) / (2 * g)), rho: (g + 1) / (g - 1) });
+  Calc.build("#c1", {
+    modes: [
+      { key: "M1", label: "Upstream Mach M₁ (≥ 1)", value: 2, solve: (v, g) => (v >= 1 ? normalShock(v, g) : null) },
+      { key: "M2", label: "Downstream Mach M₂", value: 0.5774, solve: (v, g) => (v <= 1 && v > lim(g).M2 ? normalShockFrom("M2", v, g) : { error: `M₂ must lie between ${lim(g).M2.toFixed(4)} and 1.` }) },
+      { key: "p2_p1", label: "Static pressure ratio p₂/p₁", value: 4.5, solve: (v, g) => (v >= 1 ? normalShockFrom("p2_p1", v, g) : null) },
+      { key: "rho2_rho1", label: "Density ratio ρ₂/ρ₁", value: 2.667, solve: (v, g) => (v >= 1 && v < lim(g).rho ? normalShockFrom("rho2_rho1", v, g) : { error: `ρ₂/ρ₁ must lie between 1 and (γ+1)/(γ−1) = ${lim(g).rho.toFixed(3)}.` }) },
+      { key: "T2_T1", label: "Temperature ratio T₂/T₁", value: 1.687, solve: (v, g) => (v >= 1 ? normalShockFrom("T2_T1", v, g) : null) },
+      { key: "p02_p01", label: "Total-pressure ratio p₀₂/p₀₁", value: 0.7209, solve: (v, g) => (v > 0 && v <= 1 ? normalShockFrom("p02_p01", v, g) : null) },
+      { key: "p02_p1", label: "Pitot ratio p₀₂/p₁", value: 5.640, solve: (v, g) => (v >= GD.isen.p0_p(1, g) ? normalShockFrom("p02_p1", v, g) : { error: `A supersonic Pitot ratio must be at least ${GD.isen.p0_p(1, g).toFixed(4)} (the value at M = 1).` }) },
+    ],
+    results: (s, g) => [["M₁", s.M1], ["M₂", s.M2], ["p₂/p₁", s.p2_p1], ["ρ₂/ρ₁ = u₁/u₂", s.rho2_rho1], ["T₂/T₁", s.T2_T1],
+      ["p₀₂/p₀₁", s.p02_p01], ["p₀₂/p₁ (Pitot)", s.p02_p1], ["Δs/R", s.ds_R], ["Δs for air (J/kg·K)", s.ds_R * GD.R_AIR]],
+    table: { name: "normal_shock", from: 1, to: 5, step: 0.1, head: ["M₁", "M₂", "p₂/p₁", "ρ₂/ρ₁", "T₂/T₁", "p₀₂/p₀₁", "p₀₂/p₁"],
+      row: (M, g) => { const s = normalShock(M, g); return s ? [M, s.M2, s.p2_p1, s.rho2_rho1, s.T2_T1, s.p02_p01, s.p02_p1] : [M, "—", "—", "—", "—", "—", "—"]; } },
+  });
+})();
+</script>
+</body>
+</html>

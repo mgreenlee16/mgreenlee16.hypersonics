@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isentropic Flow · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="isentropic">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 1 · Part I</div>
+  <h1>Compressible Flow &amp; Isentropic Relations</h1>
+  <p class="lead">When does a flow have to be treated as compressible, and what changes when it does? This lesson sets up the thermodynamics, the governing equations, the speed of sound and the total (stagnation) conditions that every later lesson builds on.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#thermo">Thermodynamics of a perfect gas</a></li>
+    <li><a href="#entropy">Entropy and the isentropic relations</a></li>
+    <li><a href="#compressibility">Compressibility: when density changes matter</a></li>
+    <li><a href="#equations">The governing equations</a></li>
+    <li><a href="#sound">The speed of sound</a></li>
+    <li><a href="#total">Total conditions and the isentropic flow relations</a></li>
+    <li><a href="#reference">Sonic reference conditions and M*</a></li>
+    <li><a href="#regimes">Flow regimes</a></li>
+  </ol></nav>
+
+  <h2 id="thermo">1. Thermodynamics of a perfect gas</h2>
+  <p>A <b>perfect gas</b> is one whose molecules exert no intermolecular forces except during collisions. Air at ordinary temperatures and pressures is very close to perfect, and obeys the equation of state</p>
+  $$p = \rho R T, \qquad R = \frac{\mathcal{R}}{\mathcal{M}} = 287\ \mathrm{J\,kg^{-1}\,K^{-1}}\ \text{for air}.$$
+  <p>For such a gas the internal energy \(e\) and enthalpy \(h = e + p/\rho\) depend on temperature alone. If the specific heats are also constant, the gas is <b>calorically perfect</b>:</p>
+  $$e = c_v T, \qquad h = c_p T, \qquad c_p - c_v = R, \qquad \gamma = \frac{c_p}{c_v},$$
+  $$c_p = \frac{\gamma R}{\gamma - 1}, \qquad c_v = \frac{R}{\gamma - 1}.$$
+  <p>For air, γ = 1.4 and c<sub>p</sub> ≈ 1005 J/(kg·K). The calorically perfect model holds well until vibrational modes of N₂ and O₂ begin to be excited, at roughly 800 K. Above that, c<sub>p</sub> rises and γ falls. Every relation on this site assumes a constant γ, which you can change in the top bar.</p>
+  <p>The <b>first law</b> for a system exchanging heat \(\delta q\) and work \(\delta w = p\,dv\) with its surroundings is</p>
+  $$de = \delta q - p\,dv, \qquad v = 1/\rho.$$
+
+  <h2 id="entropy">2. Entropy and the isentropic relations</h2>
+  <p>The first law does not say which way a process can go. The <b>second law</b> does, through the entropy \(s\):</p>
+  $$ds = \frac{\delta q_\text{rev}}{T}, \qquad ds \ge \frac{\delta q}{T}.$$
+  <p>In an adiabatic process (\(\delta q = 0\)) entropy can only stay the same or rise. Viscosity, heat conduction and shock waves are the dissipative mechanisms that raise it. Combining the first and second laws gives the Gibbs relations, \(T\,ds = de + p\,dv = dh - v\,dp\). Integrating them for a calorically perfect gas:</p>
+  $$s_2 - s_1 = c_p \ln\frac{T_2}{T_1} - R\ln\frac{p_2}{p_1} = c_v \ln\frac{T_2}{T_1} - R\ln\frac{v_2}{v_1}.$$
+  <p>An <b>isentropic</b> process is adiabatic and reversible, so \(s_2 = s_1\). Setting the entropy change to zero gives the isentropic relations, used constantly in what follows:</p>
+  $$\frac{p_2}{p_1} = \left(\frac{\rho_2}{\rho_1}\right)^{\gamma} = \left(\frac{T_2}{T_1}\right)^{\gamma/(\gamma-1)}.$$
+  <p>Most of a high-speed flow field is very nearly isentropic. Viscous and conduction effects are confined to thin boundary layers, and shocks are thin surfaces across which the jump conditions can be applied. So these relations describe the flow everywhere except at those places.</p>
+
+  <h2 id="compressibility">3. Compressibility: when density changes matter</h2>
+  <p>The <b>compressibility</b> of a fluid is the fractional change in volume per unit change in pressure:</p>
+  $$\tau = -\frac{1}{v}\frac{dv}{dp} = \frac{1}{\rho}\frac{d\rho}{dp} \quad\Longrightarrow\quad d\rho = \rho\,\tau\,dp.$$
+  <p>For water, τ<sub>T</sub> ≈ 5×10⁻¹⁰ m²/N. For air at 1 atm, τ<sub>T</sub> ≈ 10⁻⁵ m²/N, about 20 000 times larger. Whether density changes matter depends on the pressure changes the flow creates, and those scale with the dynamic pressure, \(dp \sim \rho V^2\). So \(d\rho/\rho \sim \rho\tau V^2\). Written with the isentropic compressibility, this is</p>
+  $$\frac{\Delta\rho}{\rho} \approx \frac{1}{2}M^2 \qquad (\text{for small } M).$$
+  <p>The usual rule of thumb follows: below M ≈ 0.3 the density changes by less than about 5%, and incompressible theory is adequate. The figure compares the exact isentropic density change from rest with the small-M estimate, and shows how far Bernoulli's equation underestimates the stagnation pressure.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="m1">Mach number M <output for="m1"></output></label>
+      <input type="range" id="m1" min="0.01" max="1" step="0.01" value="0.3"></div>
+    <div id="ro1" class="readout"></div>
+    <p class="note">The stagnation pressure coefficient is exactly 1 for incompressible flow. Its compressible value expands as \(C_{p,0} = 1 + \tfrac{1}{4}M^2 + \tfrac{2-\gamma}{24}M^4 + \dots\)</p>
+  </div>
+  <div class="views">
+    <figure><div id="plot1"></div><figcaption>Density change from the stagnation state, and the error in the stagnation pressure predicted by Bernoulli's equation.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="equations">4. The governing equations</h2>
+  <p>For an inviscid, non-conducting flow with no body forces, the integral forms of the conservation laws on a fixed control volume \(\mathcal{V}\) with surface \(S\) are</p>
+  $$\frac{\partial}{\partial t}\iiint_\mathcal{V} \rho\, d\mathcal{V} + \oiint_S \rho\mathbf{V}\cdot d\mathbf{S} = 0 \quad\text{(mass)}$$
+  $$\frac{\partial}{\partial t}\iiint_\mathcal{V} \rho\mathbf{V}\, d\mathcal{V} + \oiint_S (\rho\mathbf{V}\cdot d\mathbf{S})\mathbf{V} = -\oiint_S p\, d\mathbf{S} \quad\text{(momentum)}$$
+  $$\frac{\partial}{\partial t}\iiint_\mathcal{V} \rho\left(e + \tfrac{V^2}{2}\right) d\mathcal{V} + \oiint_S \rho\left(e + \tfrac{V^2}{2}\right)\mathbf{V}\cdot d\mathbf{S} = \iiint_\mathcal{V}\dot q\rho\, d\mathcal{V} - \oiint_S p\mathbf{V}\cdot d\mathbf{S} \quad\text{(energy)}$$
+  <p>Together with \(p = \rho R T\) and \(e = c_v T\), these are the <b>Euler equations</b>. In incompressible flow, continuity and momentum are enough to find velocity and pressure, and energy decouples. In compressible flow, density and temperature vary too, and the energy equation is needed as well. For steady, adiabatic flow along a streamline, the energy equation reduces to the statement that total enthalpy is constant:</p>
+  $$h + \frac{V^2}{2} = h_0 = \text{const} \qquad\Longleftrightarrow\qquad c_pT + \frac{V^2}{2} = c_pT_0.$$
+  <p>This holds even through a shock, since a shock is adiabatic, though not isentropic.</p>
+
+  <h2 id="sound">5. The speed of sound</h2>
+  <p>A sound wave is a weak pressure pulse. Ride with the wave: gas enters at speed \(a\) with state \(p, \rho, T\), and leaves at \(a + da\) with \(p + dp,\ \rho + d\rho\). Mass and momentum across the wave give</p>
+  $$\rho a = (\rho + d\rho)(a + da), \qquad p + \rho a^2 = (p + dp) + (\rho + d\rho)(a + da)^2.$$
+  <p>Dropping second-order terms, \(a^2 = dp/d\rho\). The wave is weak, and there is no time for heat conduction across it, so the process is isentropic:</p>
+  $$a = \sqrt{\left(\frac{\partial p}{\partial \rho}\right)_s} = \sqrt{\frac{\gamma p}{\rho}} = \sqrt{\gamma R T} = \sqrt{\frac{1}{\rho\,\tau_s}}.$$
+  <p>For a perfect gas the speed of sound depends on temperature alone: 340.3 m/s at 288.15 K, and 295.1 m/s at 216.65 K in the stratosphere. The <b>Mach number</b> \(M = V/a\) compares the flow speed with the speed at which pressure signals travel. That is why it governs compressibility. Since \(M^2 = V^2/(\gamma R T)\), it is also proportional to the ratio of directed kinetic energy to random thermal energy of the molecules.</p>
+
+  <h2 id="total">6. Total conditions and the isentropic flow relations</h2>
+  <p>The <b>total</b> (stagnation) temperature \(T_0\) is the temperature the gas would reach if brought to rest adiabatically. The <b>total pressure</b> \(p_0\) and <b>total density</b> \(\rho_0\) are the values it would reach if brought to rest isentropically. From the energy equation, with \(c_p = \gamma R/(\gamma-1)\) and \(a^2 = \gamma R T\):</p>
+  $$\frac{T_0}{T} = 1 + \frac{\gamma - 1}{2}M^2.$$
+  <p>The isentropic relations then give</p>
+  $$\frac{p_0}{p} = \left(1 + \frac{\gamma - 1}{2}M^2\right)^{\gamma/(\gamma-1)}, \qquad \frac{\rho_0}{\rho} = \left(1 + \frac{\gamma - 1}{2}M^2\right)^{1/(\gamma-1)}.$$
+  <p>These are <b>point</b> properties: every point in any flow has a \(T_0\), \(p_0\) and \(\rho_0\), whether or not the flow actually stagnates there. In steady adiabatic flow \(T_0\) is constant along a streamline. In isentropic flow \(p_0\) and \(\rho_0\) are constant too. A drop in \(p_0\) is a direct measure of entropy production, \(s_2 - s_1 = -R\ln(p_{0,2}/p_{0,1})\), a result used constantly for shocks.</p>
+  <p>The last ratio in the figure, \(A/A^*\), is the area ratio for quasi-one-dimensional isentropic flow. It is derived in <a href="nozzles.html">Lesson 3</a>.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="m2">Mach number M <output for="m2"></output></label>
+      <input type="range" id="m2" min="0.05" max="5" step="0.01" value="2"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot2"></div><figcaption>Isentropic total-to-static ratios and area ratio versus Mach number (log scale). The dot marks the selected Mach number.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="reference">7. Sonic reference conditions and the characteristic Mach number</h2>
+  <p>A second useful reference state is the one the flow would have if it were brought, adiabatically, to exactly M = 1. The starred quantities follow by setting M = 1 in the relations above:</p>
+  $$\frac{T^*}{T_0} = \frac{2}{\gamma+1}, \qquad \frac{p^*}{p_0} = \left(\frac{2}{\gamma+1}\right)^{\gamma/(\gamma-1)}, \qquad \frac{\rho^*}{\rho_0} = \left(\frac{2}{\gamma+1}\right)^{1/(\gamma-1)}.$$
+  <p>For γ = 1.4 these are 0.8333, 0.5283 and 0.6339. The value p*/p₀ = 0.528 is the pressure ratio at which a converging nozzle chokes. The <b>characteristic Mach number</b> \(M^* = V/a^*\), with \(a^* = \sqrt{\gamma R T^*}\), is related to M by</p>
+  $$M^{*2} = \frac{(\gamma+1)M^2}{2 + (\gamma-1)M^2}.$$
+  <p>It equals 1 when M does, is less than 1 when M is, and tends to \(\sqrt{(\gamma+1)/(\gamma-1)} = 2.449\) as M → ∞. That bounded range makes it convenient in shock theory: the Prandtl relation in Lesson 2 is simply \(M_1^* M_2^* = 1\). Dividing the energy equation by \(a^2/(\gamma-1)\) gives another useful form:</p>
+  $$\frac{a^2}{\gamma-1} + \frac{V^2}{2} = \frac{a_0^2}{\gamma-1} = \frac{\gamma+1}{2(\gamma-1)}a^{*2}.$$
+
+  <h2 id="regimes">8. Flow regimes</h2>
+  <table class="data">
+    <thead><tr><th>Regime</th><th>Mach range</th><th>Character</th></tr></thead>
+    <tbody>
+      <tr><td>Incompressible</td><td>M &lt; 0.3</td><td style="font-family:var(--sans);text-align:left">Δρ/ρ below about 5%; Bernoulli applies.</td></tr>
+      <tr><td>Subsonic compressible</td><td>0.3 – 0.8</td><td style="font-family:var(--sans);text-align:left">Smooth, shock-free flow; Prandtl–Glauert-type corrections (Lesson 7).</td></tr>
+      <tr><td>Transonic</td><td>0.8 – 1.2</td><td style="font-family:var(--sans);text-align:left">Mixed subsonic and supersonic regions; local shocks; drag rise.</td></tr>
+      <tr><td>Supersonic</td><td>1.2 – 5</td><td style="font-family:var(--sans);text-align:left">Everywhere supersonic except near blunt noses; oblique shocks and expansion fans.</td></tr>
+      <tr><td>Hypersonic</td><td>&gt; ~5</td><td style="font-family:var(--sans);text-align:left">Thin shock layers and strong heating. Beyond the calorically perfect model used here.</td></tr>
+    </tbody>
+  </table>
+  <p>The boundaries are rules of thumb, not sharp limits. What matters physically is the local Mach number, which can be well above or below the freestream value.</p>
+  <div class="note">Try it: set γ = 1.67 (a monatomic gas such as helium or argon) in the top bar and watch the ratios at a given Mach number change. For the same Mach number, a monatomic gas has a lower total-to-static pressure ratio.</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen } = GD;
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), M = UI.val("m1");
+    const Ms = UI.linspace(0.01, 1, 120);
+    const drho = Ms.map(m => 100 * (1 - 1 / isen.rho0_rho(m, g)));
+    const small = Ms.map(m => 100 * 0.5 * m * m);
+    const bern = Ms.map(m => { const cp0 = (isen.p0_p(m, g) - 1) / (0.5 * g * m * m); return 100 * (1 - 1 / cp0); });
+    UI.plot("#plot1", {
+      xlabel: "Mach number M", ylabel: "percent", xlim: [0, 1], ylim: [0, 45], legend: "tl",
+      series: [
+        { x: Ms, y: drho, label: "Δρ/ρ₀ exact", c: 1 },
+        { x: Ms, y: small, label: "½M² estimate", c: 1, dash: true },
+        { x: Ms, y: bern, label: "Bernoulli p₀ error", c: 2 },
+      ],
+      vlines: [{ x: 0.3, label: "M = 0.3" }],
+      points: [{ x: M, y: 100 * (1 - 1 / isen.rho0_rho(M, g)), c: 1 }],
+    });
+    const cp0 = (isen.p0_p(M, g) - 1) / (0.5 * g * M * M);
+    UI.readout("#ro1", [
+      ["ρ/ρ₀", 1 / isen.rho0_rho(M, g)], ["Δρ/ρ₀ (%)", 100 * (1 - 1 / isen.rho0_rho(M, g))],
+      ["C_p at stagnation", cp0], ["Bernoulli error (%)", 100 * (1 - 1 / cp0)],
+    ]);
+  });
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M = UI.val("m2");
+    const Ms = UI.linspace(0.05, 5, 300);
+    UI.plot("#plot2", {
+      xlabel: "Mach number M", ylabel: "ratio", xlim: [0, 5], ylim: [1, 1000], logy: true, legend: "tl",
+      series: [
+        { x: Ms, y: Ms.map(m => isen.p0_p(m, g)), label: "p₀/p" },
+        { x: Ms, y: Ms.map(m => isen.rho0_rho(m, g)), label: "ρ₀/ρ" },
+        { x: Ms, y: Ms.map(m => isen.T0_T(m, g)), label: "T₀/T" },
+        { x: Ms, y: Ms.map(m => isen.A_Astar(m, g)), label: "A/A*" },
+      ],
+      vlines: [{ x: 1, label: "M = 1" }],
+      points: [
+        { x: M, y: isen.p0_p(M, g), c: 1 }, { x: M, y: isen.rho0_rho(M, g), c: 2 },
+        { x: M, y: isen.T0_T(M, g), c: 3 }, { x: M, y: isen.A_Astar(M, g), c: 4 },
+      ],
+    });
+    const Mstar = Math.sqrt(((g + 1) * M * M) / (2 + (g - 1) * M * M));
+    UI.readout("#ro2", [
+      ["p₀/p", isen.p0_p(M, g)], ["ρ₀/ρ", isen.rho0_rho(M, g)], ["T₀/T", isen.T0_T(M, g)],
+      ["A/A*", isen.A_Astar(M, g)], ["M*", Mstar],
+      ["Mach angle μ (°)", M >= 1 ? isen.machAngle(M) / GD.DEG : "—"],
+      ["ν (°)", M >= 1 ? GD.nu(M, g) / GD.DEG : "—"],
+    ]);
+  });
+})();
+</script>
+</body>
+</html>

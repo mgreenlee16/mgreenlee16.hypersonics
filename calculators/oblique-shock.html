@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oblique Shock Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Oblique shock</div>
+  <h1>Oblique Shock</h1>
+  <p class="lead">Any two of upstream Mach number, deflection angle θ and wave angle β give the third, for the weak or strong solution, along with every ratio across the shock.</p>
+</div>
+<section class="calc" id="c1">
+  <div class="inputs">
+    <label>Known pair<select id="mode"><option value="Mt">M₁ and θ</option><option value="Mb">M₁ and β</option><option value="tb">θ and β</option></select></label>
+    <label id="lM">M₁<input type="number" id="M" value="2" step="any"></label>
+    <label id="lt">θ (deg)<input type="number" id="t" value="10" step="any"></label>
+    <label id="lb">β (deg)<input type="number" id="b" value="39.31" step="any"></label>
+    <label id="ls">Solution<select id="br"><option value="weak">weak</option><option value="strong">strong</option></select></label>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="results" id="out"></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  $$\tan\theta = 2\cot\beta\,\frac{M_1^2\sin^2\beta-1}{M_1^2(\gamma+\cos2\beta)+2},\qquad M_1^2 = \frac{2(\cot\beta+\tan\theta)}{\sin2\beta-\tan\theta(\gamma+\cos2\beta)}$$
+  <p>Given M₁ and θ, β is found by bisection on the weak (μ &lt; β &lt; β<sub>max</sub>) or strong (β<sub>max</sub> &lt; β &lt; 90°) branch. If θ &gt; θ<sub>max</sub> the shock is detached. Downstream properties use the normal-shock relations with M<sub>n1</sub> = M₁ sin β, and M₂ = M<sub>n2</sub>/sin(β − θ). See <a href="../lessons/oblique-shock.html">Lesson 5</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script>
+(function () {
+  const D = GD.DEG;
+  const { obliqueShock, betaMax, M_from_theta_beta } = GD;
+  const sync = () => {
+    const m = document.getElementById("mode").value;
+    document.getElementById("lM").style.display = m === "tb" ? "none" : "";
+    document.getElementById("lt").style.display = m === "Mb" ? "none" : "";
+    document.getElementById("lb").style.display = m === "Mt" ? "none" : "";
+    document.getElementById("ls").style.display = m === "Mt" ? "" : "none";
+    run();
+  };
+  function run() {
+    const g = UI.gamma(), m = document.getElementById("mode").value;
+    const M = UI.val("M"), t = UI.val("t") * D, b = UI.val("b") * D, err = document.getElementById("err"), out = document.getElementById("out");
+    let s = null, msg = "";
+    if (m === "Mt") {
+      if (!(M > 1)) msg = "M₁ must exceed 1.";
+      else if (!(t >= 0)) msg = "θ must be non-negative.";
+      else { s = obliqueShock(M, t, g, document.getElementById("br").value === "strong");
+        if (!s) msg = `Detached: θ exceeds θ_max = ${(betaMax(M, g).theta / D).toFixed(3)}° for M₁ = ${M}.`; }
+    } else if (m === "Mb") {
+      if (!(M > 1)) msg = "M₁ must exceed 1.";
+      else if (!(b >= Math.asin(1 / M) && b <= Math.PI / 2)) msg = `β must lie between the Mach angle ${(Math.asin(1 / M) / D).toFixed(3)}° and 90°.`;
+      else s = obliqueShock(M, 0, g, false, b);
+    } else {
+      const Ms = M_from_theta_beta(t, b, g);
+      if (!(t >= 0 && b > t && b <= Math.PI / 2) || !isFinite(Ms)) msg = "No Mach number gives this θ–β pair.";
+      else s = obliqueShock(Ms, 0, g, false, b);
+    }
+    if (!s) { err.textContent = msg; out.innerHTML = ""; return; }
+    err.textContent = "";
+    const bm = betaMax(s.M1, g);
+    UI.table(out, ["Quantity", "Value"], [["M₁", s.M1], ["θ (deg)", s.theta / D], ["β (deg)", s.beta / D], ["M₂", s.M2],
+      ["Mₙ₁", s.Mn1], ["Mₙ₂", s.Mn2], ["p₂/p₁", s.p2_p1], ["ρ₂/ρ₁", s.rho2_rho1], ["T₂/T₁", s.T2_T1], ["p₀₂/p₀₁", s.p02_p01],
+      ["Solution type", s.beta > bm.beta ? "strong" : "weak"], ["θ_max for M₁ (deg)", bm.theta / D], ["β at θ_max (deg)", bm.beta / D], ["Mach angle μ (deg)", Math.asin(1 / s.M1) / D]]);
+  }
+  document.getElementById("mode").addEventListener("change", sync);
+  ["M", "t", "b", "br"].forEach(id => document.getElementById(id).addEventListener("input", run));
+  document.getElementById("br").addEventListener("change", run);
+  UI.onGamma(run);
+  sync();
+})();
+</script>
+</body>
+</html>

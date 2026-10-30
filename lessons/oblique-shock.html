@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oblique Shock Waves · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="oblique-shock">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 5 · Part II</div>
+  <h1>Oblique Shock Waves</h1>
+  <p class="lead">When a supersonic flow meets a wall turned into it, such as a wedge, a ramp or a deflected flap, the flow turns through an oblique shock attached to the corner. This lesson develops the θ–β–M relation, its weak and strong solutions, detachment, reflection, and the reason several weak shocks are better than one strong one.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#mach">Mach waves</a></li>
+    <li><a href="#relations">Oblique-shock relations</a></li>
+    <li><a href="#tbm">The θ–β–M relation</a></li>
+    <li><a href="#detach">Detachment and bow shocks</a></li>
+    <li><a href="#cone">Wedges versus cones</a></li>
+    <li><a href="#reflect">Shock reflection from a wall</a></li>
+    <li><a href="#interact">Shock intersections</a></li>
+    <li><a href="#multi">Multi-shock compression</a></li>
+  </ol></nav>
+
+  <h2 id="mach">1. Mach waves</h2>
+  <p>A small disturbance moving at speed \(V\) through still gas sends out sound waves, which spread as spheres at speed \(a\). If \(V &gt; a\), the spheres are left behind, and their envelope is a cone, the <b>Mach cone</b>, with half-angle</p>
+  $$\mu = \sin^{-1}\frac{1}{M}.$$
+  <p>Outside the cone, no signal has arrived: this is the "zone of silence". A Mach wave is the limit of an infinitely weak oblique shock. Real oblique shocks stand at a wave angle β between μ and 90°.</p>
+
+  <h2 id="relations">2. Oblique-shock relations</h2>
+  <p>Split the upstream velocity into components normal (\(u_1 = V_1\sin\beta\)) and tangential (\(w_1 = V_1\cos\beta\)) to the shock. Tangential momentum shows \(w_1 = w_2\): the tangential velocity is unchanged. Continuity, normal momentum and energy are then identical to the normal-shock equations, written with the normal components. An oblique shock is a normal shock in a frame sliding along it, and only the normal Mach number matters:</p>
+  $$M_{n,1} = M_1\sin\beta,$$
+  $$\frac{p_2}{p_1} = 1 + \frac{2\gamma}{\gamma+1}\left(M_{n,1}^2-1\right), \qquad \frac{\rho_2}{\rho_1} = \frac{(\gamma+1)M_{n,1}^2}{2+(\gamma-1)M_{n,1}^2},$$
+  $$M_{n,2}^2 = \frac{1+\frac{\gamma-1}{2}M_{n,1}^2}{\gamma M_{n,1}^2-\frac{\gamma-1}{2}}, \qquad M_2 = \frac{M_{n,2}}{\sin(\beta-\theta)}.$$
+  <p>The shock needs \(M_{n,1} \ge 1\), which is why β ≥ μ. \(M_{n,2}\) is always subsonic, but \(M_2\) itself is usually supersonic, because the tangential component carries through.</p>
+
+  <h2 id="tbm">3. The θ–β–M relation</h2>
+  <p>Because the normal velocity drops while the tangential one does not, the flow turns <em>toward</em> the shock, by the deflection angle θ. Geometry and continuity give \(\tan\beta/\tan(\beta-\theta) = u_1/u_2 = \rho_2/\rho_1\), which becomes</p>
+  $$\tan\theta = 2\cot\beta\,\frac{M_1^2\sin^2\beta - 1}{M_1^2(\gamma+\cos2\beta)+2}.$$
+  <p>This is the most important relation in two-dimensional supersonic flow. Its chart (below) shows that:</p>
+  <ul>
+    <li>For a given \(M_1\) there is a <b>maximum deflection</b> \(\theta_\text{max}\). If the wall turns more than this, no straight attached shock is possible.</li>
+    <li>For \(\theta &lt; \theta_\text{max}\) there are two solutions. The <b>weak</b> one (smaller β, usually supersonic \(M_2\)) is what nature normally chooses for attached shocks on wedges and ramps. The <b>strong</b> one (larger β, subsonic \(M_2\)) occurs only when a high back pressure forces it, for example in an inlet or in the central part of a bow shock.</li>
+    <li>For θ = 0 the solutions are the Mach wave (β = μ) and the normal shock (β = 90°).</li>
+    <li>The dashed line through each curve's sonic point separates supersonic from subsonic \(M_2\). It lies just below the \(\theta_\text{max}\) points, so a weak shock can have a slightly subsonic \(M_2\) in a narrow band near \(\theta_\text{max}\).</li>
+  </ul>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="M1">Upstream Mach M₁ <output for="M1"></output></label>
+      <input type="range" id="M1" min="1.05" max="8" step="0.01" value="2.5"></div>
+    <div class="ctl"><label for="th">Wedge half-angle θ <output for="th"></output></label>
+      <input type="range" id="th" min="0" max="45" step="0.1" value="15" data-dec="1" data-unit="°"></div>
+    <div class="ctl inline"><span>Solution</span>
+      <div class="seg" id="branch" data-value="weak"><button data-value="weak" aria-pressed="true">weak</button><button data-value="strong" aria-pressed="false">strong</button></div></div>
+    <div id="status1" class="status"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag1"></div><figcaption>Flow over a wedge: an attached oblique shock, or a detached bow shock if θ &gt; θ<sub>max</sub>.</figcaption></figure>
+    <figure><div id="plot1"></div><figcaption>The θ–β–M chart. Each curve is one Mach number; the dot is the selected solution. Dotted: locus of θ<sub>max</sub>; dashed: M₂ = 1.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="detach">4. Detachment and bow shocks</h2>
+  <p>If the wedge angle exceeds \(\theta_\text{max}(M_1)\), or if the body has a blunt nose, the shock detaches and stands ahead of the body as a curved <b>bow shock</b>. Along the stagnation streamline the shock is normal, and the flow behind it is subsonic. Moving outward, the shock bends back through every solution of the θ–β–M curve, first strong and then weak, and becomes a Mach wave far from the body. Between the shock and the body there is a <b>subsonic region</b> around the nose, bounded by a sonic line. Computing this mixed flow requires numerical methods. The <b>shock stand-off distance</b> δ shrinks as the Mach number rises. For a sphere of radius R, a widely used correlation (Billig) is \(\delta/R \approx 0.143\exp(3.24/M_\infty^2)\).</p>
+
+  <h2 id="cone">5. Wedges versus cones</h2>
+  <p>A cone in supersonic flow also carries an attached conical shock, but it is weaker than the wedge shock for the same half-angle. The flow behind a conical shock is not uniform. It continues to turn and compress isentropically between the shock and the surface, because the flow can relieve itself sideways in three dimensions. The solution (Taylor–Maccoll, 1933) requires integrating an ordinary differential equation. The upshot is that a cone has a smaller shock angle, a lower surface pressure and a larger maximum deflection than a wedge of the same angle. For example, at \(M_\infty = 2\) the maximum attached half-angle is about 23° for a wedge but about 40° for a cone.</p>
+
+  <h2 id="reflect">6. Shock reflection from a wall</h2>
+  <p>When an oblique shock meets a straight wall, the flow behind it has been turned by θ toward the wall. That is impossible at a wall, so a <b>reflected shock</b> must turn the flow back by θ to make it parallel again. The reflected shock sees upstream Mach \(M_2 &lt; M_1\), so it is a different shock. It is stronger (higher pressure ratio) and makes a different angle with the wall, so the reflection is not mirror-like.</p>
+  <p>Since \(\theta_\text{max}\) falls as Mach number drops, the required turn θ may exceed \(\theta_\text{max}(M_2)\) even though it did not exceed \(\theta_\text{max}(M_1)\). Then regular reflection is impossible. A near-normal shock, the <b>Mach stem</b>, forms at the wall, joined to the incident and reflected shocks at a triple point. This is <b>Mach reflection</b>.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="rM">Upstream Mach M₁ <output for="rM"></output></label>
+      <input type="range" id="rM" min="1.3" max="6" step="0.01" value="2.8"></div>
+    <div class="ctl"><label for="rth">Deflection θ <output for="rth"></output></label>
+      <input type="range" id="rth" min="1" max="35" step="0.1" value="10" data-dec="1" data-unit="°"></div>
+    <div id="status2" class="status"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="diag2"></div><figcaption>An incident shock from the upper wall reflects from the lower wall. Regions: 1 freestream, 2 behind incident, 3 behind reflected.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="interact">7. Shock intersections</h2>
+  <p>When two shocks of opposite families cross, for example from upper and lower ramps, each continues with a changed strength. Their downstream regions must end up with the same pressure and flow direction, but they generally have different entropy, velocity and temperature. The interface between them is a <b>slip line</b> (contact surface) across which velocity jumps. When two shocks of the same family meet, they merge into a single stronger shock, and a weak reflected wave and a slip line are generated. Pressure–deflection diagrams (shock polars) are the tool for solving these: each shock is a curve in the (θ, p) plane, and compatible downstream states are their intersections.</p>
+
+  <h2 id="multi">8. Multi-shock compression</h2>
+  <p>Entropy rises roughly as the cube of shock strength. So slowing a flow through several weak oblique shocks, then a weak terminal normal shock, loses far less total pressure than one normal shock at the full Mach number. That is the principle of external-compression supersonic diffusers. Oswatitsch showed that, for a given number of shocks, recovery is greatest when every shock has the same normal Mach number. The figure compares a single normal shock with n equal-deflection ramps followed by a normal shock.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="controls">
+    <div class="ctl"><label for="mM">Freestream Mach M∞ <output for="mM"></output></label>
+      <input type="range" id="mM" min="1.5" max="5" step="0.01" value="3"></div>
+    <div class="ctl"><label for="mth">Deflection per ramp θ <output for="mth"></output></label>
+      <input type="range" id="mth" min="1" max="20" step="0.1" value="8" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="mn">Number of oblique shocks n <output for="mn"></output></label>
+      <input type="range" id="mn" min="0" max="4" step="1" value="2" data-dec="0"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag3"></div><figcaption>Ramps of equal deflection, each generating an oblique shock, followed by a terminal normal shock.</figcaption></figure>
+    <figure><div id="plot3"></div><figcaption>Total-pressure recovery versus deflection per ramp for 1–4 oblique shocks plus a terminal normal shock. The flat line is a single normal shock.</figcaption></figure>
+  </div>
+</section>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { obliqueShock, theta_from_beta, betaMax, normalShock, DEG } = GD;
+  const arrowDefs = `<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>`;
+
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), M1 = UI.val("M1"), th = UI.val("th") * DEG, strong = UI.seg("branch") === "strong";
+    const bm = betaMax(M1, g), os = obliqueShock(M1, th, g, strong);
+    const st = document.getElementById("status1");
+    // diagram
+    const W = 620, H = 240, x0 = 200, y0 = 200, L = 380;
+    const tip = `${x0},${y0}`, top = `${x0 + L},${y0 - L * Math.tan(th)}`;
+    let shock = "", flow = "";
+    if (os) {
+      const b = os.beta, len = 330;
+      shock = `<line x1="${x0}" y1="${y0}" x2="${x0 + len * Math.cos(b)}" y2="${y0 - len * Math.sin(b)}" class="shock"/>
+        <path d="M${x0 + 26} ${y0} A26 26 0 0 0 ${x0 + 26 * Math.cos(th)} ${y0 - 26 * Math.sin(th)}" class="stream"/>
+        <path d="M${x0 + 60} ${y0} A60 60 0 0 0 ${x0 + 60 * Math.cos(b)} ${y0 - 60 * Math.sin(b)}" class="fan"/>
+        <text x="${x0 + 32}" y="${y0 - 4}" class="small">θ</text><text x="${x0 + 64 * Math.cos(b / 2)}" y="${y0 - 64 * Math.sin(b / 2)}" class="small">β = ${(b / DEG).toFixed(1)}°</text>`;
+      for (let k = 0; k < 4; k++) {
+        const yy = y0 - 30 - k * 40, xs = x0 + (y0 - yy) / Math.tan(os.beta);
+        flow += `<path d="M20 ${yy} L${xs} ${yy} L${xs + 90} ${yy - 90 * Math.tan(th)}" class="stream" marker-end="url(#ar)"/>`;
+      }
+      st.className = "status " + (os.M2 < 1 ? "" : "good");
+      st.innerHTML = `Attached ${strong ? "strong" : "weak"} shock; M₂ ${os.M2 < 1 ? "is subsonic" : "is supersonic"}.`;
+    } else {
+      const R = 120;
+      shock = `<path d="M${x0 - 30} ${y0} Q${x0 - 30} ${y0 - 150} ${x0 + 200} ${y0 - 220}" class="shock"/>`;
+      for (let k = 0; k < 4; k++) flow += `<line x1="20" x2="${x0 - 50}" y1="${y0 - 30 - k * 40}" y2="${y0 - 30 - k * 40}" class="stream" marker-end="url(#ar)"/>`;
+      st.className = "status bad";
+      st.innerHTML = `θ exceeds θ<sub>max</sub> = ${(bm.theta / DEG).toFixed(2)}° for M₁ = ${M1.toFixed(2)}: the shock detaches and stands ahead of the wedge as a bow shock.`;
+    }
+    document.getElementById("diag1").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${arrowDefs}
+      <polygon points="${tip} ${top} ${x0 + L},${y0}" class="body"/><line x1="0" x2="${W}" y1="${y0}" y2="${y0}" class="stream"/>
+      ${flow}${shock}<text x="24" y="20" class="label">M₁ = ${M1.toFixed(2)}</text>
+      ${os ? `<text x="${W - 150}" y="40" class="label">M₂ = ${os.M2.toFixed(3)}</text>` : ""}</svg>`;
+    // chart
+    const machs = [1.2, 1.5, 2, 3, 5, 10, 1e4];
+    const series = machs.map((m, i) => {
+      const mu = Math.asin(1 / m), bs = UI.linspace(mu, Math.PI / 2, 200);
+      return { x: bs.map(b => theta_from_beta(m, b, g) / DEG), y: bs.map(b => b / DEG), label: m > 100 ? "M = ∞" : `M = ${m}`, c: (i % 6) + 1, width: 1.4 };
+    });
+    // theta-max and sonic loci
+    const Ml = UI.linspace(1.02, 30, 120), tm = Ml.map(m => betaMax(m, g));
+    const sonic = Ml.map(m => {
+      const bmx = betaMax(m, g).beta;
+      const b = GD.bisect(b => { const o = obliqueShock(m, 0, g, false, b); return o.M2 - 1; }, Math.asin(1 / m) + 1e-6, bmx);
+      return b;
+    });
+    series.push({ x: tm.map(t => t.theta / DEG), y: tm.map(t => t.beta / DEG), c: 6, dash: true });
+    series.push({ x: sonic.map((b, i) => theta_from_beta(Ml[i], b, g) / DEG), y: sonic.map(b => b / DEG), c: 6, dash: true, width: 1 });
+    const pts = [];
+    if (os) pts.push({ x: th / DEG, y: os.beta / DEG, c: 1, label: `β = ${(os.beta / DEG).toFixed(2)}°` });
+    const ow = obliqueShock(M1, th, g, !strong);
+    if (ow) pts.push({ x: th / DEG, y: ow.beta / DEG, c: 6 });
+    // curve for current M
+    const mu = Math.asin(1 / M1), bs = UI.linspace(mu, Math.PI / 2, 200);
+    series.push({ x: bs.map(b => theta_from_beta(M1, b, g) / DEG), y: bs.map(b => b / DEG), c: 1, width: 3.5 });
+    UI.plot("#plot1", { xlabel: "Deflection angle θ (deg)", ylabel: "Wave angle β (deg)", xlim: [0, 50], ylim: [0, 90], legend: "br", series, points: pts, h: 420 });
+    UI.readout("#ro1", os ? [["β (°)", os.beta / DEG], ["M₂", os.M2], ["Mₙ₁", os.Mn1], ["p₂/p₁", os.p2_p1], ["ρ₂/ρ₁", os.rho2_rho1],
+      ["T₂/T₁", os.T2_T1], ["p₀₂/p₀₁", os.p02_p01], ["θ_max (°)", bm.theta / DEG], ["μ (°)", mu / DEG]]
+      : [["θ_max (°)", bm.theta / DEG], ["β at θ_max (°)", bm.beta / DEG], ["Stand-off δ/R (sphere)", 0.143 * Math.exp(3.24 / (M1 * M1))]]);
+  });
+
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M1 = UI.val("rM"), th = UI.val("rth") * DEG;
+    const inc = obliqueShock(M1, th, g), st = document.getElementById("status2");
+    const W = 620, H = 220, yT = 20, yB = 200;
+    let svg = `<line x1="0" x2="${W}" y1="${yB}" y2="${yB}" class="body" style="stroke-width:3"/>`;
+    if (!inc) {
+      st.className = "status bad"; st.innerHTML = "The incident shock itself is detached at this Mach number and deflection.";
+      document.getElementById("diag2").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+      UI.readout("#ro2", []); return;
+    }
+    const ref = obliqueShock(inc.M2, th, g);
+    const xi = 60, xr = xi + (yB - yT) / Math.tan(inc.beta);
+    svg += `<path d="M0 ${yT} L${xi} ${yT} L${xi + 90} ${yT + 90 * Math.tan(th)}" class="body" style="stroke-width:3;fill:none"/><text x="${xi + 100}" y="${yT + 4}" class="small">upper wall turns by θ</text>`;
+    svg += `<text x="10" y="${yB - 80}" class="label">1</text>`;
+    if (ref) {
+      const phi = ref.beta - th; // reflected-shock angle to the wall
+      svg += `<line x1="${xi}" y1="${yT}" x2="${xr}" y2="${yB}" class="shock"/>
+        <line x1="${xr}" y1="${yB}" x2="${xr + (yB - yT) / Math.tan(phi)}" y2="${yT}" class="shock"/>
+        <text x="${xr - 30}" y="${yB - 90}" class="label">2</text><text x="${xr + 70}" y="${yB - 20}" class="label">3</text>
+        <text x="${xr + 8}" y="${yB - 6}" class="small">Φ = ${(phi / DEG).toFixed(1)}°</text>`;
+      st.className = "status good";
+      st.innerHTML = `Regular reflection. The reflected shock makes Φ = ${(phi / DEG).toFixed(2)}° with the wall, versus β₁ = ${(inc.beta / DEG).toFixed(2)}° for the incident shock: not a mirror image.`;
+      UI.readout("#ro2", [["β incident (°)", inc.beta / DEG], ["M₂", inc.M2], ["p₂/p₁", inc.p2_p1],
+        ["β reflected (°)", ref.beta / DEG], ["M₃", ref.M2], ["p₃/p₁", inc.p2_p1 * ref.p2_p1],
+        ["θ_max at M₂ (°)", betaMax(inc.M2, g).theta / DEG]]);
+    } else {
+      const xm = xr - 50, ym = yB - 60;
+      svg += `<line x1="${xi}" y1="${yT}" x2="${xm}" y2="${ym}" class="shock"/><path d="M${xm} ${ym} Q${xm + 6} ${(ym + yB) / 2} ${xm + 4} ${yB}" class="shock"/>
+        <line x1="${xm}" y1="${ym}" x2="${xm + 200}" y2="${yT}" class="shock"/><path d="M${xm} ${ym} Q${xm + 120} ${ym + 10} ${W} ${ym + 20}" class="stream" style="stroke-dasharray:4 3"/>
+        <text x="${xm + 10}" y="${yB - 10}" class="small">Mach stem</text><text x="${xm + 130}" y="${ym + 4}" class="small">slip line</text>`;
+      st.className = "status bad";
+      st.innerHTML = `Mach reflection. Turning the flow back by θ = ${(th / DEG).toFixed(1)}° exceeds θ<sub>max</sub> = ${(betaMax(inc.M2, g).theta / DEG).toFixed(2)}° at M₂ = ${inc.M2.toFixed(3)}, so a near-normal Mach stem forms at the wall.`;
+      UI.readout("#ro2", [["β incident (°)", inc.beta / DEG], ["M₂", inc.M2], ["θ_max at M₂ (°)", betaMax(inc.M2, g).theta / DEG]]);
+    }
+    document.getElementById("diag2").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+  });
+
+  function cascade(M, th, n, g) {
+    let pr = 1, m = M; const shocks = [];
+    for (let i = 0; i < n; i++) {
+      const os = obliqueShock(m, th, g);
+      if (!os || os.M2 <= 1) return null;
+      pr *= os.p02_p01; m = os.M2; shocks.push(os);
+    }
+    const ns = normalShock(m, g);
+    return { recovery: pr * ns.p02_p01, Mfinal: ns.M2, Mterminal: m, shocks };
+  }
+
+  UI.wire("#lab3", () => {
+    const g = UI.gamma(), M = UI.val("mM"), th = UI.val("mth") * DEG, n = Math.round(UI.val("mn"));
+    const c = cascade(M, th, n, g);
+    const ths = UI.linspace(0.5, 25, 120);
+    const single = normalShock(M, g).p02_p01;
+    const series = [1, 2, 3, 4].map(k => ({ x: ths, y: ths.map(t => { const r = cascade(M, t * DEG, k, g); return r ? r.recovery : NaN; }), label: `${k} oblique + normal` }));
+    series.push({ x: [0, 25], y: [single, single], label: "normal shock only", c: 6, dash: true });
+    UI.plot("#plot3", { xlabel: "Deflection per ramp θ (deg)", ylabel: "p₀,final / p₀,∞", xlim: [0, 25], ylim: [0, 1], legend: "br", series,
+      points: c && n > 0 ? [{ x: th / DEG, y: c.recovery, c: n }] : [] });
+    // diagram
+    const W = 620, H = 200, yb = 180; let x = 30, y = yb, pts = `0,${yb} ${x},${y}`, shocks = "";
+    let m = M;
+    const ok = c !== null;
+    for (let i = 0; i < n && ok; i++) {
+      const os = c.shocks[i], ang = (i + 1) * th, len = 110;
+      const beta = os.beta + i * th;
+      shocks += `<line x1="${x}" y1="${y}" x2="${x + 240 * Math.cos(beta)}" y2="${y - 240 * Math.sin(beta)}" class="shock" style="stroke-width:1.8"/>`;
+      x += len * Math.cos(ang); y -= len * Math.sin(ang); pts += ` ${x},${y}`;
+    }
+    pts += ` ${W},${y} ${W},${yb + 20} 0,${yb + 20}`;
+    const cowlY = Math.max(10, y - 60);
+    document.getElementById("diag3").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">
+      <polygon points="${pts}" class="body"/>${shocks}
+      ${ok ? `<line x1="${x + 10}" x2="${x + 10}" y1="${y}" y2="${cowlY}" class="shock"/>
+      <line x1="${x + 10}" x2="${W}" y1="${cowlY}" y2="${cowlY}" class="body" style="stroke-width:3"/>` : ""}
+      <text x="10" y="20" class="label">M∞ = ${M.toFixed(2)}</text></svg>`;
+    UI.readout("#ro3", ok ? [["Recovery, this system", c.recovery], ["Normal shock alone", single],
+      ["Mach before terminal shock", c.Mterminal], ["Mach after terminal shock", c.Mfinal],
+      ["Total turning (°)", n * th / DEG]] : [["Status", "a ramp shock detaches or the flow goes subsonic"]]);
+  });
+})();
+</script>
+</body>
+</html>

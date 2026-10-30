@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expansion Waves · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="expansion">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 6 · Part II</div>
+  <h1>Expansion Waves &amp; Shock-Expansion Theory</h1>
+  <p class="lead">A supersonic flow turned <em>away</em> from itself expands through a fan of Mach waves rather than a shock. The process is isentropic, it has an exact closed-form solution, and combined with oblique shocks it gives the lift and wave drag of supersonic airfoils with no further approximation.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#fan">The centered expansion fan</a></li>
+    <li><a href="#pm">The Prandtl–Meyer function</a></li>
+    <li><a href="#compression">Isentropic compression</a></li>
+    <li><a href="#moc">A note on the method of characteristics</a></li>
+    <li><a href="#se">Shock-expansion theory</a></li>
+    <li><a href="#linear">Linear (Ackeret) theory</a></li>
+    <li><a href="#airfoil">Supersonic airfoils</a></li>
+  </ol></nav>
+
+  <h2 id="fan">1. The centered expansion fan</h2>
+  <p>At a convex corner, the wall turns away from the flow by an angle θ. The flow can follow it only by expanding: speed and Mach number rise, while pressure, density and temperature fall. Each element of turning is accomplished across a Mach wave. At a sharp corner, these waves all originate at the corner and fan out, forming a <b>centered expansion fan</b>. It is bounded by the forward Mach line at \(\mu_1 = \sin^{-1}(1/M_1)\) to the upstream flow and the rearward Mach line at \(\mu_2\) to the downstream flow. Streamlines curve smoothly through the fan.</p>
+  <p>Expansion waves diverge, because each successive wave is inclined at a smaller angle. Compression waves converge and coalesce into shocks. That is why a compression corner makes a shock but an expansion corner makes a fan. An "expansion shock" would also violate the second law, as shown in Lesson 2.</p>
+
+  <h2 id="pm">2. The Prandtl–Meyer function</h2>
+  <p>Across a single Mach wave, the tangential velocity is unchanged and the flow turns by \(d\theta\). Geometry of the velocity triangle gives</p>
+  $$d\theta = \sqrt{M^2-1}\,\frac{dV}{V}.$$
+  <p>Writing \(dV/V\) in terms of \(dM\) with \(V = Ma\) and the adiabatic energy equation, and integrating from M = 1, defines the <b>Prandtl–Meyer function</b>:</p>
+  $$\nu(M) = \sqrt{\frac{\gamma+1}{\gamma-1}}\tan^{-1}\sqrt{\frac{\gamma-1}{\gamma+1}\left(M^2-1\right)} - \tan^{-1}\sqrt{M^2-1}.$$
+  <p>ν(M) is the angle through which a sonic flow must be turned to reach M. For an expansion by θ from \(M_1\),</p>
+  $$\nu(M_2) = \nu(M_1) + \theta,$$
+  <p>and since the fan is isentropic, \(p_0\) and \(T_0\) are constant, so \(p_2/p_1 = (p_0/p_1)/(p_0/p_2)\) follows from the isentropic relations. As M → ∞, ν approaches</p>
+  $$\nu_\text{max} = \frac{\pi}{2}\left(\sqrt{\frac{\gamma+1}{\gamma-1}} - 1\right) = 130.45^\circ \ (\gamma = 1.4).$$
+  <p>This is the largest turn a flow starting at M = 1 can make. If the wall turns further, the gas expands to zero pressure (in theory) and leaves the wall at that angle, with a vacuum between gas and wall.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="controls">
+    <div class="ctl"><label for="eM">Upstream Mach M₁ <output for="eM"></output></label>
+      <input type="range" id="eM" min="1" max="5" step="0.01" value="1.8"></div>
+    <div class="ctl"><label for="eth">Turn angle θ <output for="eth"></output></label>
+      <input type="range" id="eth" min="0" max="60" step="0.1" value="20" data-dec="1" data-unit="°"></div>
+    <div id="status1" class="status"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag1"></div><figcaption>A centered Prandtl–Meyer expansion fan at a convex corner, with one streamline traced through it.</figcaption></figure>
+    <figure><div id="plot1"></div><figcaption>The Prandtl–Meyer function ν(M) and Mach angle μ(M). The arrow shows ν₁ → ν₂ = ν₁ + θ.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="compression">3. Isentropic compression</h2>
+  <p>Turn a supersonic flow gradually <em>into</em> itself, along a smooth concave wall, and the compression happens through a series of Mach waves. Near the wall, where these waves have not yet merged, the compression is isentropic, and the same relation applies with the sign reversed: \(\nu(M_2) = \nu(M_1) - \theta\). Away from the wall the waves converge and coalesce into a shock. If the wall is shaped so that all the waves meet at a single point, the compression is isentropic all the way to that focal point. That is the idea behind isentropic-compression ramps and Busemann-type diffusers. For small turning angles, a shock and an isentropic compression give nearly the same pressure rise, because entropy rises as the cube of shock strength.</p>
+
+  <h2 id="moc">4. A note on the method of characteristics</h2>
+  <p>In steady, two-dimensional, irrotational supersonic flow, the governing equations are hyperbolic. Along the two families of Mach lines (characteristics, inclined at \(\theta \mp \mu\)), the quantities</p>
+  $$K_- = \theta + \nu(M), \qquad K_+ = \theta - \nu(M)$$
+  <p>are conserved (the Riemann invariants). Marching these along a grid of intersecting characteristics constructs the whole flow field. It is how minimum-length supersonic nozzles with shock-free, uniform exit flow are designed, and how jet plumes are computed. The Prandtl–Meyer fan is the simplest case: a "simple wave" region in which only one family carries information.</p>
+
+  <h2 id="se">5. Shock-expansion theory</h2>
+  <p>For an airfoil made of straight segments, every corner is either an oblique shock (a compression corner) or a Prandtl–Meyer fan (an expansion corner). The flow between corners is uniform. So the surface pressure on every panel can be found exactly, by marching from the leading edge, as long as the leading-edge shocks stay attached. This is <b>shock-expansion theory</b>. Integrating the pressures gives lift and wave drag. The only approximation is that waves reflected from the interaction of shocks and expansion fans away from the surface are ignored. Those reflections are weak and reach the surface only after the trailing edge on most airfoils.</p>
+  <p>Downstream of the trailing edge, the upper and lower flows meet with different pressures and directions. A shock and an expansion fan (or two shocks) form there to equalize pressure, with a slip line between them. They do not affect the airfoil's forces.</p>
+
+  <h2 id="linear">6. Linear (Ackeret) theory</h2>
+  <p>For thin airfoils at small angles of attack, the turning angles are small, and both shocks and expansions reduce to the same linear relation for the pressure coefficient:</p>
+  $$C_p = \frac{2\theta}{\sqrt{M_\infty^2 - 1}},$$
+  <p>with θ positive for compression. For a flat plate this gives \(c_l = 4\alpha/\sqrt{M_\infty^2-1}\) and \(c_{d,w} = 4\alpha^2/\sqrt{M_\infty^2-1}\). For a symmetric diamond of thickness ratio t/c,</p>
+  $$c_l = \frac{4\alpha}{\sqrt{M_\infty^2-1}}, \qquad c_{d,w} = \frac{4}{\sqrt{M_\infty^2-1}}\left[\alpha^2 + \left(\frac{t}{c}\right)^2\right].$$
+  <p>Two key consequences follow. Supersonic airfoils have <b>wave drag</b> even with no viscosity, made up of a part due to lift (\(\propto\alpha^2\)) and a part due to thickness (\(\propto (t/c)^2\)). And the center of pressure of a flat plate sits at mid-chord, not at the quarter-chord as in subsonic flow. Thin, sharp-edged sections are therefore the rule for supersonic wings.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="controls">
+    <div class="ctl"><label for="aM">Mach M∞ <output for="aM"></output></label>
+      <input type="range" id="aM" min="1.2" max="5" step="0.01" value="2.5"></div>
+    <div class="ctl"><label for="aa">Angle of attack α <output for="aa"></output></label>
+      <input type="range" id="aa" min="-10" max="20" step="0.1" value="5" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="tc">Thickness ratio t/c <output for="tc"></output></label>
+      <input type="range" id="tc" min="0" max="0.15" step="0.005" value="0.06" data-dec="3"></div>
+    <div id="status2" class="status"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag2"></div><figcaption>Diamond airfoil (t/c = 0 is a flat plate) at angle of attack. Shocks in orange, expansion fans in blue. Panel labels give p/p∞.</figcaption></figure>
+    <figure><div id="plot2"></div><figcaption>Lift and wave-drag coefficients versus angle of attack: shock-expansion theory (solid) and linear theory (dashed).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="airfoil">7. Supersonic airfoils</h2>
+  <p>Some points to explore with the simulator above:</p>
+  <ul>
+    <li>At small α and t/c, linear theory agrees with shock-expansion theory to within a few percent. The gap grows with α, because linear theory misses the nonlinear rise of pressure on the compression side.</li>
+    <li>At a fixed Mach number, the maximum lift-to-drag ratio of a diamond airfoil falls as thickness grows, because thickness adds drag but no lift. Linear theory predicts \((L/D)_\text{max} = 1/(2\,t/c)\) at \(\alpha = t/c\).</li>
+    <li>As M∞ rises, both \(c_l\) and \(c_{d,w}\) fall, roughly as \(1/\sqrt{M^2-1}\). The pressures themselves rise, of course; the coefficients fall because the dynamic pressure rises faster.</li>
+    <li>If the angle on the compression side exceeds θ<sub>max</sub>, the leading-edge shock detaches, the theory no longer applies, and the simulator says so.</li>
+  </ul>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { nu, nuMax, M_from_nu, isen, diamondAirfoil, DEG } = GD;
+
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), M1 = UI.val("eM"), th = UI.val("eth") * DEG;
+    const nu1 = nu(M1, g), nu2 = nu1 + th, st = document.getElementById("status1");
+    const vac = nu2 >= nuMax(g);
+    const M2 = vac ? Infinity : M_from_nu(nu2, g);
+    const mu1 = Math.asin(1 / M1), mu2 = vac ? 0 : Math.asin(1 / M2);
+    // diagram: corner at (260,140); upstream wall horizontal, downstream wall at -theta
+    const W = 620, H = 260, cx = 260, cy = 150;
+    let fan = "";
+    const nW = 9;
+    for (let i = 0; i <= nW; i++) {
+      const f = i / nW, nuI = nu1 + f * Math.min(th, nuMax(g) - nu1 - 1e-6), Mi = M_from_nu(nuI, g);
+      const ang = Math.asin(1 / Mi) - f * th; // Mach line angle measured from x-axis (above)
+      fan += `<line x1="${cx}" y1="${cy}" x2="${cx + 220 * Math.cos(ang)}" y2="${cy - 220 * Math.sin(ang)}" class="fan" ${i === 0 || i === nW ? 'style="stroke-width:2"' : ""}/>`;
+    }
+    // Streamline: exact entry/exit points on the bounding Mach lines (stream-tube height scales with A/A*),
+    // joined by a quadratic curve through the fan.
+    const h = 60;
+    let sl = "";
+    if (!vac && th > 0) {
+      const r1 = h / Math.sin(mu1), p1 = [cx + r1 * Math.cos(mu1), cy - r1 * Math.sin(mu1)];
+      const h2 = h * isen.A_Astar(M2, g) / isen.A_Astar(M1, g), r2 = h2 / Math.sin(mu2);
+      const p2 = [cx + r2 * Math.cos(mu2 - th), cy - r2 * Math.sin(mu2 - th)];
+      // control point: intersection of incoming horizontal line with the outgoing line at angle -theta
+      const ctrl = [p2[0] - (p2[1] - p1[1]) / Math.tan(th), p1[1]];
+      sl = `M20 ${p1[1]} L${p1[0]} ${p1[1]} Q${ctrl[0]} ${ctrl[1]} ${p2[0]} ${p2[1]} L${p2[0] + 120 * Math.cos(th)} ${p2[1] + 120 * Math.sin(th)}`;
+    } else sl = `M20 ${cy - h} L${W} ${cy - h}`;
+    document.getElementById("diag1").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">
+      <polygon points="0,${cy} ${cx},${cy} ${cx + 360 * Math.cos(th)},${cy + 360 * Math.sin(th)} 0,${H}" class="body"/>
+      ${fan}<path d="${sl}" class="stream" style="stroke-width:1.6"/>
+      <text x="30" y="30" class="label">M₁ = ${M1.toFixed(2)}</text>
+      <text x="${W - 160}" y="30" class="label">M₂ = ${vac ? "∞" : M2.toFixed(3)}</text>
+      <text x="${cx + 60}" y="${cy + 6}" class="small">θ = ${(th / DEG).toFixed(1)}°</text></svg>`;
+    st.className = "status " + (vac ? "bad" : "good");
+    st.innerHTML = vac ? `θ exceeds the maximum turning ν<sub>max</sub> − ν₁ = ${((nuMax(g) - nu1) / DEG).toFixed(2)}°: the flow expands to vacuum and separates from the wall.`
+      : `ν₁ = ${(nu1 / DEG).toFixed(3)}°, ν₂ = ν₁ + θ = ${(nu2 / DEG).toFixed(3)}°.`;
+    UI.readout("#ro1", vac ? [["ν₁ (°)", nu1 / DEG], ["max turn (°)", (nuMax(g) - nu1) / DEG]] : [
+      ["M₂", M2], ["p₂/p₁", isen.p0_p(M1, g) / isen.p0_p(M2, g)], ["T₂/T₁", isen.T0_T(M1, g) / isen.T0_T(M2, g)],
+      ["ρ₂/ρ₁", isen.rho0_rho(M1, g) / isen.rho0_rho(M2, g)], ["μ₁ (°)", mu1 / DEG], ["μ₂ (°)", mu2 / DEG],
+      ["fan spread (°)", (mu1 - mu2) / DEG + th / DEG]]);
+    const Ms = UI.linspace(1, 10, 300);
+    UI.plot("#plot1", {
+      xlabel: "Mach number M", ylabel: "angle (deg)", xlim: [1, 10], ylim: [0, 100], legend: "tl",
+      series: [{ x: Ms, y: Ms.map(m => nu(m, g) / DEG), label: "ν(M)", c: 2 }, { x: Ms, y: Ms.map(m => Math.asin(1 / m) / DEG), label: "μ(M)", c: 5 },
+        ...(vac ? [] : [{ x: [M1, M1, M2], y: [nu1 / DEG, nu2 / DEG, nu2 / DEG], c: 1, dash: true }])],
+      points: [{ x: M1, y: nu1 / DEG, c: 1, label: "1" }, ...(vac || M2 > 10 ? [] : [{ x: M2, y: nu2 / DEG, c: 1, label: "2" }])],
+    });
+  });
+
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M = UI.val("aM"), a = UI.val("aa") * DEG, tc = UI.val("tc");
+    const r = diamondAirfoil(M, a, tc, g), st = document.getElementById("status2");
+    // diagram
+    const W = 620, H = 260, cxp = 160, cyp = 130, C = 300, eps = Math.atan(tc);
+    const rot = (x, y) => { // body coords (x along chord from LE, y up) -> screen, rotated by -alpha (nose up)
+      const xr = x * Math.cos(a) + y * Math.sin(a), yr = -x * Math.sin(a) + y * Math.cos(a);
+      return [cxp + xr * C, cyp - yr * C];
+    };
+    const LE = rot(0, 0), UP = rot(0.5, tc / 2), TE = rot(1, 0), LO = rot(0.5, -tc / 2);
+    let svg = `<polygon points="${LE} ${UP} ${TE} ${LO}" class="body"/>`;
+    if (tc === 0) svg = `<line x1="${LE[0]}" y1="${LE[1]}" x2="${TE[0]}" y2="${TE[1]}" class="body" style="stroke-width:3"/>`;
+    const waveAt = (P, type, beta, upper, label, pr) => {
+      const sgn = upper ? 1 : -1;
+      if (type === "shock") {
+        const ang = beta;
+        return `<line x1="${P[0]}" y1="${P[1]}" x2="${P[0] + 120 * Math.cos(ang)}" y2="${P[1] - sgn * 120 * Math.sin(ang)}" class="shock" style="stroke-width:2"/>`;
+      }
+      if (type === "expansion") {
+        let s = "";
+        for (let k = 0; k < 5; k++) { const ang = (25 + k * 9) * DEG; s += `<line x1="${P[0]}" y1="${P[1]}" x2="${P[0] + 90 * Math.cos(ang)}" y2="${P[1] - sgn * 90 * Math.sin(ang)}" class="fan"/>`; }
+        return s;
+      }
+      return "";
+    };
+    if (r) {
+      const f = r.faces;
+      const uf = GD.turn(M, eps - a, g), lf = GD.turn(M, eps + a, g);
+      svg += waveAt(LE, uf.type, uf.beta || 0, true);
+      svg += waveAt(LE, lf.type, lf.beta || 0, false);
+      if (tc > 0) { svg += waveAt(UP, "expansion", 0, true); svg += waveAt(LO, "expansion", 0, false); }
+      const lab = (P, Q, txt, dy) => `<text x="${(P[0] + Q[0]) / 2}" y="${(P[1] + Q[1]) / 2 + dy}" text-anchor="middle" class="small">${txt}</text>`;
+      svg += lab(LE, UP, UI.fmt(f[0].p, 3), -10) + lab(UP, TE, UI.fmt(f[1].p, 3), -10) + lab(LE, LO, UI.fmt(f[2].p, 3), 20) + lab(LO, TE, UI.fmt(f[3].p, 3), 20);
+      st.className = "status good";
+      st.innerHTML = `Shocks attached. L/D = ${r.LD.toFixed(2)} (linear theory: ${(r.linear.CL / r.linear.CD).toFixed(2)}).`;
+      UI.readout("#ro2", [["c_l (shock-exp.)", r.CL], ["c_l (linear)", r.linear.CL], ["c_d,w (shock-exp.)", r.CD], ["c_d,w (linear)", r.linear.CD],
+        ["L/D", r.LD], ["Cp upper front", f[0].Cp], ["Cp upper rear", f[1].Cp], ["Cp lower front", f[2].Cp], ["Cp lower rear", f[3].Cp]]);
+    } else {
+      st.className = "status bad";
+      st.innerHTML = "A leading-edge shock detaches at this Mach number and angle. Shock-expansion theory does not apply.";
+      UI.readout("#ro2", []);
+    }
+    document.getElementById("diag2").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">
+      <line x1="10" x2="80" y1="${cyp}" y2="${cyp}" class="stream" marker-end="url(#ar2)"/>
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+      <text x="10" y="${cyp - 10}" class="label">M∞ = ${M.toFixed(2)}</text>${svg}</svg>`;
+    const al = UI.linspace(-10, 20, 121), res = al.map(x => diamondAirfoil(M, x * DEG, tc, g)), b = Math.sqrt(M * M - 1);
+    UI.plot("#plot2", {
+      xlabel: "α (deg)", ylabel: "coefficient", xlim: [-10, 20], legend: "tl",
+      series: [
+        { x: al, y: res.map(q => (q ? q.CL : NaN)), label: "c_l", c: 2 }, { x: al, y: al.map(x => 4 * x * DEG / b), label: "c_l linear", c: 2, dash: true },
+        { x: al, y: res.map(q => (q ? q.CD * 5 : NaN)), label: "5 × c_d,w", c: 1 }, { x: al, y: al.map(x => 5 * (4 / b) * ((x * DEG) ** 2 + tc * tc)), label: "5 × c_d,w linear", c: 1, dash: true },
+      ],
+      points: r ? [{ x: a / DEG, y: r.CL, c: 2 }, { x: a / DEG, y: 5 * r.CD, c: 1 }] : [],
+    });
+  });
+})();
+</script>
+</body>
+</html>
