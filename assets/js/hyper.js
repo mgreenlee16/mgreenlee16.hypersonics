@@ -319,14 +319,16 @@
       cpf += x[i] * nasa.cp_R(sp, T);
       s += x[i] * (nasa.s_R(sp, T) - Math.log(Math.max(x[i] * p / PSTD, 1e-300)));
     });
-    const R = RU / M, hm = h * RU * T / M;
+    const R = RU / M, hm = h * RU * T / M, h0K = hm + H0_OFFSET; // enthalpy measured from cold air at 0 K
     const X = {}; SP.forEach((sp, i) => { X[sp.name] = x[i]; });
     return {
       T, p, x: X, xa: x, M, R, rho: p / (R * T), h: hm, e: hm - R * T, s: s * RU / M,
-      Z: AIR_M / M, cpFrozen: cpf * RU / M, gammaFrozen: cpf / (cpf - 1), gammaEff: hm / (hm - R * T),
+      Z: AIR_M / M, cpFrozen: cpf * RU / M, gammaFrozen: cpf / (cpf - 1), gammaEff: h0K / (h0K - R * T), h0K,
     };
   }
   const AIR_M = 0.79 * SP[0].M + 0.21 * SP[1].M;
+  // H°(298.15) − H°(0) of N2 and O2 (8.670 and 8.683 kJ/mol, JANAF), per kg of air: shifts h to a 0 K origin for γ̃ = h/e
+  const H0_OFFSET = (0.79 * 8670 + 0.21 * 8683) / AIR_M;
   // Cold (frozen) air at temperature T: only N2 and O2
   function coldAir(T, p) { const x = SP.map(() => 0); x[0] = 0.79; x[1] = 0.21; return mixture(T, p, x); }
   // T from (h, p) in equilibrium

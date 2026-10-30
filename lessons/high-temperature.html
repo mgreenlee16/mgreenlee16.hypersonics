@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>High-Temperature Gas Dynamics · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="high-temperature">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 11 · Part V</div>
+  <h1>High-Temperature Gas Dynamics</h1>
+  <p class="lead">A vehicle entering from orbit at 7.8 km/s carries about 30 MJ of kinetic energy per kilogram of air it meets. That is enough to vibrate, dissociate and even ionize the air in its shock layer. The gas then stops behaving like a perfect gas with γ = 1.4: shock temperatures fall by a factor of several, densities rise, and pressure distributions shift in ways that once caught the Space Shuttle by surprise. This lesson computes air in chemical equilibrium from its molecular thermodynamics, solves real-gas shocks, and introduces nonequilibrium.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#why">Why the perfect-gas model fails</a></li>
+    <li><a href="#modes">Molecular energy and vibration</a></li>
+    <li><a href="#equil">Chemical equilibrium of air</a></li>
+    <li><a href="#props">Properties of equilibrium air</a></li>
+    <li><a href="#shock">The equilibrium normal shock</a></li>
+    <li><a href="#noneq">Nonequilibrium and relaxation</a></li>
+    <li><a href="#anomaly">The Shuttle's pitching-moment anomaly</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="why"><span class="sec">Section 11.1</span>Why the perfect-gas model fails</h2>
+  <p>The calorically perfect gas assumes constant specific heats, which is true only while the molecules translate and rotate. Apply it to a normal shock at 11 km/s and 52 km altitude (lunar return) and it predicts 58,000 K behind the shock. The real figure is about 11,600 K. Most of the energy goes into breaking molecules apart rather than into raising the temperature. For air, the thresholds (at about 1 atm) are roughly:</p>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Temperature</th><th>What happens</th><th>Consequence</th></tr></thead><tbody>
+  <tr><td>≳ 800 K</td><td>Vibration of N₂ and O₂ becomes excited</td><td>c<sub>p</sub> rises; γ falls below 1.4 (thermally perfect gas)</td></tr>
+  <tr><td>≈ 2,000–4,000 K</td><td>O₂ dissociates: O₂ → 2O; some NO forms</td><td>Gas becomes a reacting mixture; molar mass falls</td></tr>
+  <tr><td>≈ 4,000–9,000 K</td><td>N₂ dissociates: N₂ → 2N</td><td>Large energy absorption; shock temperatures much lower than perfect-gas values</td></tr>
+  <tr><td>≳ 9,000 K</td><td>Ionization: N → N⁺ + e⁻, O → O⁺ + e⁻ (NO⁺ first, at lower temperature)</td><td>Plasma: radio blackout, radiative heating</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <p>Lower pressure shifts all of these to lower temperatures, because dissociation increases the number of particles, and low pressure favors that side of the reaction.</p>
+
+  <h2 id="modes"><span class="sec">Section 11.2</span>Molecular energy and vibration</h2>
+  <p>Statistical mechanics assigns each molecule translational, rotational, vibrational and electronic energy. Translation contributes \(\tfrac32 RT\) per unit mass, and rotation of a diatomic molecule another \(RT\), both fully excited at room temperature. Vibration, modeled as a harmonic oscillator with characteristic temperature \(\theta_v = h\nu/k\), contributes</p>
+  $$e_\text{vib} = \frac{R\theta_v}{e^{\theta_v/T} - 1}, \qquad \frac{c_v}{R} = \frac52 + \left(\frac{\theta_v}{T}\right)^2\frac{e^{\theta_v/T}}{\left(e^{\theta_v/T}-1\right)^2}.$$
+  <p>With \(\theta_v\) = 3,394 K for N₂ and 2,274 K for O₂, vibration is negligible at 300 K but approaches its classical value \(c_v = \tfrac72R\) above about 2θ<sub>v</sub>. γ then falls from 7/5 toward 9/7 = 1.286. A gas with \(c_p(T)\) but no chemistry is <b class="term">thermally perfect</b>. Interactive 1 compares the harmonic oscillator with the NASA Glenn polynomial fits used everywhere else on this site, which include anharmonicity and electronic excitation.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Vibrational excitation of N₂ and O₂</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="vT">Temperature T (K) <output for="vT"></output></label>
+      <input type="range" id="vT" min="200" max="6000" step="10" value="1500" data-dec="0"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot1a"></div><figcaption>c<sub>v</sub>/R for N₂ and O₂: harmonic oscillator (dashed) and NASA polynomials (solid). The classical limit is 3.5.</figcaption></figure>
+    <figure><div id="plot1b"></div><figcaption>γ = c<sub>p</sub>/c<sub>v</sub> of undissociated air (79% N₂, 21% O₂), from the NASA polynomials.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="equil"><span class="sec">Section 11.3</span>Chemical equilibrium of air</h2>
+  <p>In chemical equilibrium, each reaction balances. For a dissociation such as O₂ ⇌ 2O, the <b class="term">law of mass action</b> relates the partial pressures through an equilibrium constant that depends only on temperature:</p>
+  $$K_p(T) = \frac{(p_\text{O}/p^\circ)^2}{p_{\text{O}_2}/p^\circ} = \exp\!\left(-\frac{\Delta G^\circ(T)}{\mathcal R T}\right), \qquad \Delta G^\circ = 2g^\circ_\text{O} - g^\circ_{\text{O}_2}.$$
+  <p>Here \(g^\circ = h^\circ - Ts^\circ\) is the molar Gibbs energy at the standard pressure \(p^\circ\) = 1 bar. This site treats air as 11 species (N₂, O₂, NO, N, O, N₂⁺, O₂⁺, NO⁺, N⁺, O⁺, e⁻). The thermodynamic functions of each come from the NASA Glenn nine-coefficient polynomials (McBride, Zehe &amp; Gordon, NASA TP-2002-211556), valid from 200 K to 20,000 K. Writing every species in terms of N and O atoms and electrons, and adding conservation of the N:O ratio, the total pressure and charge neutrality, leaves two unknowns (the partial pressures of atomic N and O). These are solved by Newton's method in logarithmic variables.</p>
+  <div class="note"><b>Accuracy check</b>The solver reproduces Cantera's equilibrium solver to within a few parts per million in every mole fraction, from 300 to 20,000 K and from 100 Pa to 100 bar, when both use the same reference pressure. The site's test file, <code>tests/validate.js</code>, checks it against published values.</div>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Equilibrium composition of air</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cp">Pressure, log₁₀(p / 1 atm) <output for="cp"></output></label>
+      <input type="range" id="cp" min="-4" max="2" step="0.1" value="0" data-dec="1"></div>
+    <div class="ctl"><label for="cT">Temperature for the readout (K) <output for="cT"></output></label>
+      <input type="range" id="cT" min="300" max="20000" step="50" value="6000" data-dec="0"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"cp":0,"cT":4000}'>1 atm, 4000 K</button>
+      <button data-preset='{"cp":-2,"cT":6000}'>Shuttle shock layer</button>
+      <button data-preset='{"cp":-1,"cT":11000}'>Lunar-return shock layer</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot2a"></div><figcaption>Mole fractions against temperature at the chosen pressure (log scale); each curve is labeled at its peak. Ions are dashed.</figcaption></figure>
+    <figure><div id="plot2b"></div><figcaption>Compressibility Z = M<sub>air</sub>/M̄ at the chosen pressure (thick) and at 1/100 and 100 times it (thin).</figcaption></figure>
+    <figure><div id="plot2c"></div><figcaption>Effective γ̃ = h/e at the same three pressures.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="props"><span class="sec">Section 11.4</span>Properties of equilibrium air</h2>
+  <p>Two summary numbers describe how far equilibrium air departs from a perfect gas. The <b class="term">compressibility</b> \(Z = p/(\rho R_\text{air}T)\) counts how many particles there are relative to undissociated air: it rises from 1 toward 2 as the molecules split, and beyond 2 as ionization frees electrons. The <b class="term">effective γ</b>, \(\tilde\gamma = h/e\), is the γ that a perfect gas would need to have the same \(h\) and \(e\) at that state. It falls to about 1.1–1.2 in dissociating air. Many engineering methods, from Newtonian estimates to the Shuttle analysis in Section 11.7, use \(\tilde\gamma\) as a shortcut to real-gas effects.</p>
+  <p>The equilibrium speed of sound is lower than the frozen one, because a sound wave in equilibrium air shifts the chemistry as it passes. The calculators report both.</p>
+
+  <h2 id="shock"><span class="sec">Section 11.5</span>The equilibrium normal shock</h2>
+  <p>The normal-shock conservation equations hold whatever the gas:</p>
+  $$\rho_1u_1 = \rho_2u_2,\qquad p_1 + \rho_1u_1^2 = p_2 + \rho_2u_2^2,\qquad h_1 + \tfrac12u_1^2 = h_2 + \tfrac12u_2^2.$$
+  <p>With \(\varepsilon = \rho_1/\rho_2\) they become \(p_2 = p_1 + \rho_1u_1^2(1-\varepsilon)\) and \(h_2 = h_1 + \tfrac12u_1^2(1-\varepsilon^2)\). Guess ε, compute \(p_2\) and \(h_2\), find the equilibrium state with that enthalpy and pressure, update ε, and repeat (Anderson, <i>Hypersonic and High-Temperature Gas Dynamics</i>, ch. 14). Because \(p_2\) depends only weakly on ε, it is close to the perfect-gas value, but \(T_2\) and \(\rho_2\) are very different. The density ratio exceeds the perfect-gas limit of 6, reaching 15–20 at entry speeds.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Real-gas normal shock</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="su">Flight velocity u₁ (km/s) <output for="su"></output></label>
+      <input type="range" id="su" min="1" max="13" step="0.1" value="7.5" data-dec="1"></div>
+    <div class="ctl"><label for="sz">Altitude z (km) <output for="sz"></output></label>
+      <input type="range" id="sz" min="20" max="90" step="1" value="60" data-dec="0"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"su":7.5,"sz":70}'>Orbital entry, 70 km</button>
+      <button data-preset='{"su":11,"sz":52}'>Lunar return, 52 km (Anderson)</button>
+      <button data-preset='{"su":3,"sz":30}'>Mach 10 cruise</button>
+    </div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot3a"></div><figcaption>Temperature behind the shock: equilibrium air (solid) against perfect gas γ = 1.4 (dashed), at the chosen altitude.</figcaption></figure>
+    <figure><div id="plot3b"></div><figcaption>Density ratio ρ₂/ρ₁ and the composition just behind the shock (mole fractions of the main species, dotted).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="noneq"><span class="sec">Section 11.6</span>Nonequilibrium and relaxation</h2>
+  <p>Equilibrium assumes the molecules have had enough collisions to settle. Right behind a shock they have not. The shock itself is only a few mean free paths thick, so it raises the translational and rotational temperature at once while vibration and chemistry lag. Behind it is a <b class="term">relaxation zone</b> in which vibration is excited, molecules dissociate, and the temperature falls from its "frozen" value (the perfect-gas γ = 1.4 result) toward equilibrium.</p>
+  <p>Whether a flow is in equilibrium is decided by the <b class="term">Damköhler number</b>, the ratio of flow time to chemical (or relaxation) time:</p>
+  $$Da = \frac{\tau_\text{flow}}{\tau_\text{chem}} = \frac{L/u}{\tau}.\qquad Da \gg 1:\ \text{equilibrium};\quad Da \ll 1:\ \text{frozen}.$$
+  <p>For vibrational relaxation, the Millikan–White correlation gives \(p\tau = \exp[A(T^{-1/3} - 0.015\,\mu^{1/4}) - 18.42]\) atm·s, with \(A = 1.16\times10^{-3}\mu^{1/2}\theta_v^{4/3}\) and μ the reduced mass in atomic mass units (14 for N₂–N₂). Since τ ∝ 1/p, the relaxation length ∝ 1/ρ. Dissociation reactions are dominated by two-body collisions, so the same holds: nonequilibrium flows are similar when the product \(\rho L\) is matched. This <b class="term">binary scaling</b> lets a small model at high density reproduce the chemistry of a large vehicle at high altitude, and it is the basis of reflected-shock tunnel testing (Lesson 15).</p>
+  <p>Expanding nozzles freeze the other way. In the throat of a high-enthalpy tunnel the gas is near equilibrium, but it expands so fast that recombination cannot keep up. The test section is then left with dissociated, "frozen" oxygen atoms that are not present in flight.</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Vibrational relaxation behind a shock</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="ru">Velocity u₁ (km/s) <output for="ru"></output></label>
+      <input type="range" id="ru" min="2" max="8" step="0.1" value="5" data-dec="1"></div>
+    <div class="ctl"><label for="rz">Altitude z (km) <output for="rz"></output></label>
+      <input type="range" id="rz" min="10" max="90" step="1" value="50" data-dec="0"></div>
+    <div class="ctl"><label for="rL">Body length L (m) <output for="rL"></output></label>
+      <input type="range" id="rL" min="0.05" max="40" step="0.05" value="1" data-dec="2"></div>
+    <div id="ro4" class="readout"></div>
+    <p class="note" style="margin:0"><b>Validity</b>Millikan–White fits data from about 300 to 8,000 K. Above that, a high-temperature correction (Park) is needed; the estimate is shown for orientation only.</p>
+  </div>
+  <div class="views"><figure><div id="plot4"></div><figcaption>Relaxation length of N₂ vibration (frozen post-shock state, Millikan–White) against altitude for the chosen velocity, compared with the body length. Below the crossing, the shock layer is near vibrational equilibrium; above it, nearly frozen.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="anomaly"><span class="sec">Section 11.7</span>The Shuttle's hypersonic pitching-moment anomaly</h2>
+  <p>On the first Space Shuttle flight, STS-1 in April 1981, the Orbiter needed a body-flap deflection roughly twice the preflight prediction to trim at hypersonic speeds. The aerodynamic database, built mainly from cold-gas wind-tunnel tests near Mach 6–8, had underpredicted the nose-up pitching moment. Maus and co-workers (1984) traced most of the discrepancy to <b>real-gas effects</b>, a case study that Hirschel and Weiland treat at length.</p>
+  <p>The mechanism is captured by an effective γ. On the windward side the flow passes a strong compression at the nose and forebody, expands over the aft lower surface, and is compressed again by the body flap. In dissociating air the effective γ is lower. A lower γ reduces the pressure that survives the expansion onto the aft surface, relative to the forebody pressure. Less pressure aft of the center of gravity means less nose-down moment, so the vehicle pitches nose-up and the flap must deflect further to restore trim. A cold wind tunnel with γ = 1.4 cannot show this, however well it matches the Mach number.</p>
+  <p>Interactive 5 reproduces the trend with a three-panel model of the windward surface: a forebody panel at α, an aft panel expanded by a chosen angle, and a body flap. Each panel's pressure comes from exact oblique-shock and Prandtl–Meyer relations at the selected γ. The center of gravity is placed so that the vehicle trims with an 8° flap at γ = 1.4. Lowering γ then shows how much more flap is needed.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Effective γ and trim</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="aG">Effective γ̃ in the shock layer <output for="aG"></output></label>
+      <input type="range" id="aG" min="1.1" max="1.4" step="0.005" value="1.15" data-dec="3"></div>
+    <div class="ctl"><label for="aA">Angle of attack α <output for="aA"></output></label>
+      <input type="range" id="aA" min="25" max="45" step="0.5" value="40" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="aE">Aft-surface expansion angle <output for="aE"></output></label>
+      <input type="range" id="aE" min="2" max="14" step="0.5" value="10" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="aM">Mach number M∞ <output for="aM"></output></label>
+      <input type="range" id="aM" min="8" max="25" step="0.5" value="20" data-dec="1"></div>
+    <div id="status5" class="status"></div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag5"></div><figcaption>Three-panel windward surface (forebody, aft body, body flap) with pressure arrows for γ = 1.4 (outline) and the chosen γ̃ (filled).</figcaption></figure>
+    <figure><div id="plot5"></div><figcaption>Body-flap deflection needed for trim against effective γ. The model fixes the center of gravity so that γ = 1.4 needs 8°.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <p>Real vehicles show other high-temperature effects too. Heat-shield surfaces can be <b>catalytic</b>, recombining atoms at the wall and releasing the dissociation energy as extra heating (Lesson 12). Ionization produces the communications <b>blackout</b> of re-entry. And above about 10 km/s, radiation from the hot shock layer becomes a significant part of the heating of large capsules.</p>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 11.8</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 11.1 · Vibrational energy</button><button>Ex 11.2 · Equilibrium composition</button><button>Ex 11.3 · Real-gas shock</button><button>Ex 11.4 · Relaxation length</button></div>
+  <div class="panel" id="ex1">
+    <p>Find the vibrational energy of N₂ at temperature T (harmonic oscillator), as a fraction of its classical value RT, and the specific heats and γ of pure N₂.</p>
+    <div class="given"><label>T (K)<input type="number" id="e1T" value="2000" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>Air is held at temperature T and pressure p in equilibrium. Find the mole fractions of the main species, the mixture molar mass and Z, and verify the law of mass action for O₂ ⇌ 2O.</p>
+    <div class="given"><label>T (K)<input type="number" id="e2T" value="4000" step="any"></label><label>p (atm)<input type="number" id="e2p" value="1" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A vehicle flies at velocity \(u_1\) at altitude z. Find the conditions behind a normal shock in equilibrium air and compare them with the perfect-gas values.</p>
+    <div class="given"><label>u₁ (km/s)<input type="number" id="e3u" value="7" step="any"></label><label>z (km)<input type="number" id="e3z" value="60" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>Estimate the N₂ vibrational relaxation length behind a normal shock at velocity \(u_1\) and altitude z, using the frozen (γ = 1.4) post-shock state and Millikan–White, and the Damköhler number for a body of length L.</p>
+    <div class="given"><label>u₁ (km/s)<input type="number" id="e4u" value="4" step="any"></label><label>z (km)<input type="number" id="e4z" value="40" step="any"></label><label>L (m)<input type="number" id="e4L" value="1" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 11.9</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Vibration (harmonic oscillator)</h4>
+    $$e_\text{vib} = \frac{R\theta_v}{e^{\theta_v/T}-1},\quad \frac{c_v}{R} = \frac52 + \frac{(\theta_v/T)^2e^{\theta_v/T}}{(e^{\theta_v/T}-1)^2}$$</div>
+  <div><h4>Chemical equilibrium</h4>
+    $$K_p(T) = \prod_i\left(\frac{p_i}{p^\circ}\right)^{\nu_i} = \exp\!\left(-\frac{\Delta G^\circ}{\mathcal RT}\right)$$
+    $$Z = \frac{M_\text{air}}{\bar M},\qquad \tilde\gamma = \frac{h}{e}$$</div>
+  <div><h4>Normal shock, any gas</h4>
+    $$p_2 = p_1 + \rho_1u_1^2(1-\varepsilon),\quad h_2 = h_1 + \tfrac12u_1^2(1-\varepsilon^2)$$
+    $$\varepsilon = \rho_1/\rho_2\ \text{ iterated with } h(T,p)$$</div>
+  <div><h4>Nonequilibrium</h4>
+    $$Da = \frac{L/u}{\tau},\qquad p\tau = e^{A(T^{-1/3}-0.015\mu^{1/4})-18.42}\ \text{atm s}$$
+    $$\text{binary scaling: }\rho L = \text{const}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { DEG, bisect, isen } = GD;
+  const { SP, nasa, equilibrium, coldAir, eqNormalShock, perfectNormalShock, atmosphere, vib, THETA_V, millikanWhite } = HY;
+  const ATM = 101325, sp = n => SP.find(s => s.name === n);
+
+  // ---------- 1. vibration ----------
+  const Ts = UI.linspace(200, 6000, 150);
+  UI.wire("#lab1", () => {
+    const T = UI.val("vT");
+    const cvN = t => nasa.cp_R(sp("N2"), t) - 1, cvO = t => nasa.cp_R(sp("O2"), t) - 1;
+    UI.plot("#plot1a", { xlabel: "T (K)", ylabel: "cv / R", xlim: [200, 6000], ylim: [2.4, 4.6],
+      series: [{ x: Ts, y: Ts.map(cvN), c: 1, label: "N₂, NASA" }, { x: Ts, y: Ts.map(t => vib.cv_R(t, THETA_V.N2)), c: 1, dash: true, label: "N₂, harmonic" },
+        { x: Ts, y: Ts.map(cvO), c: 4, label: "O₂, NASA" }, { x: Ts, y: Ts.map(t => vib.cv_R(t, THETA_V.O2)), c: 4, dash: true, label: "O₂, harmonic" }],
+      hlines: [{ y: 3.5, label: "classical 7/2", c: 6 }], vlines: [{ x: T, c: 6 }], legend: "br", legendWidth: 120 });
+    const gam = t => { const a = coldAir(t, ATM); return a.gammaFrozen; };
+    UI.plot("#plot1b", { xlabel: "T (K)", ylabel: "γ (undissociated air)", xlim: [200, 6000], ylim: [1.25, 1.42],
+      series: [{ x: Ts, y: Ts.map(gam), c: 2 }], hlines: [{ y: 1.4, c: 6, label: "1.4" }, { y: 9 / 7, c: 6, label: "9/7" }], points: [{ x: T, y: gam(T), c: 4 }], legend: false });
+    UI.readout("#ro1", [["e_vib/RT, N₂", vib.e_RT(T, THETA_V.N2)], ["e_vib/RT, O₂", vib.e_RT(T, THETA_V.O2)], ["cv/R N₂ (NASA)", cvN(T)], ["cv/R N₂ (harmonic)", vib.cv_R(T, THETA_V.N2)], ["γ of air", gam(T)]]);
+  });
+
+  // ---------- 2. composition ----------
+  let compCache = {};
+  const names = ["N2", "O2", "NO", "N", "O", "NO+", "N+", "O+", "e-"], label = { N2: "N₂", O2: "O₂", NO: "NO", N: "N", O: "O", "NO+": "NO⁺", "N+": "N⁺", "O+": "O⁺", "e-": "e⁻" };
+  const Tc = UI.logspace(300, 20000, 160);
+  const sweep = p => compCache[p] || (compCache[p] = Tc.map(T => equilibrium(T, p)));
+  UI.wire("#lab2", () => {
+    const p = ATM * Math.pow(10, UI.val("cp")), T = UI.val("cT"), sw = sweep(p);
+    UI.plot("#plot2a", { xlabel: "T (K)", ylabel: "mole fraction", logy: true, xlim: [300, 20000], ylim: [1e-5, 1],
+      series: names.map((n, k) => ({ x: Tc, y: sw.map(s => s.x[n]), c: (k % 6) + 1, dash: k >= 6 })), vlines: [{ x: T, c: 6 }], legend: false, h: 400,
+      notes: names.map(n => { let i = 0; sw.forEach((s, j) => { if (s.x[n] > sw[i].x[n]) i = j; }); const edge = Tc[i] > 15000; return { x: edge ? 19800 : Tc[i] * (n === "N2" || n === "O2" ? 1.6 : 1), y: Math.min(0.7, sw[i].x[n] * (edge ? (n === "e-" ? 1.7 : 0.75) : 1.35)), text: label[n], anchor: edge ? "end" : "middle" }; }) });
+    const pr = [p / 100, p, p * 100].map(q => ({ q, s: sweep(q) }));
+    UI.plot("#plot2b", { xlabel: "T (K)", ylabel: "Z", xlim: [300, 20000], ylim: [1, 4],
+      series: pr.map((o, k) => ({ x: Tc, y: o.s.map(s => s.Z), c: 1, width: k === 1 ? 2.6 : 1.1, dash: k !== 1 })), vlines: [{ x: T, c: 6 }], legend: false });
+    UI.plot("#plot2c", { xlabel: "T (K)", ylabel: "γ̃ = h/e", xlim: [300, 20000], ylim: [1.05, 1.42],
+      series: pr.map((o, k) => ({ x: Tc, y: o.s.map(s => s.gammaEff), c: 4, width: k === 1 ? 2.6 : 1.1, dash: k !== 1 })), vlines: [{ x: T, c: 6 }], legend: false });
+    const s = equilibrium(T, p);
+    UI.readout("#ro2", names.slice(0, 6).map(n => [`x(${label[n]})`, s.x[n]]).concat([["x(e⁻)", s.x["e-"]], ["M̄ (g/mol)", s.M * 1000], ["Z", s.Z], ["γ̃ = h/e", s.gammaEff], ["h (MJ/kg)", s.h / 1e6], ["ρ (kg/m³)", s.rho]]));
+    UI.live("#lab2", `p = ${(p / ATM).toPrecision(3)} atm`);
+  });
+
+  // ---------- 3. real-gas shock ----------
+  let shockCache = { z: null };
+  UI.wire("#lab3", () => {
+    const u = UI.val("su") * 1000, z = UI.val("sz") * 1000, a = atmosphere(z);
+    if (shockCache.z !== z) {
+      const us = UI.linspace(1000, 13000, 25);
+      shockCache = { z, us, eq: us.map(v => eqNormalShock(v, a.p, a.T)), pf: us.map(v => perfectNormalShock(v, a.p, a.T)) };
+    }
+    const c = shockCache, s = eqNormalShock(u, a.p, a.T), pf = perfectNormalShock(u, a.p, a.T), x = c.us.map(v => v / 1000);
+    UI.plot("#plot3a", { xlabel: "u₁ (km/s)", ylabel: "T₂ (K)", xlim: [1, 13], ylim: [0, 30000],
+      series: [{ x, y: c.eq.map(q => q.T2), c: 1, label: "equilibrium air" }, { x, y: c.pf.map(q => q.T2), c: 4, dash: true, label: "perfect gas, γ = 1.4" }],
+      points: [{ x: u / 1000, y: s.T2, c: 1, label: `${s.T2.toFixed(0)} K` }], legend: "tl", legendWidth: 150 });
+    UI.plot("#plot3b", { xlabel: "u₁ (km/s)", ylabel: "ρ₂/ρ₁ ÷ 20,  mole fraction", xlim: [1, 13], ylim: [0, 1],
+      series: [{ x, y: c.eq.map(q => 1 / q.eps / 20), c: 2, label: "ρ₂/ρ₁ ÷ 20" }, { x, y: c.pf.map(q => 1 / q.eps / 20), c: 2, dash: true, label: "perfect ÷ 20" },
+        { x, y: c.eq.map(q => q.state2.x.N2), c: 1, dash: true, width: 1.3, label: "N₂" }, { x, y: c.eq.map(q => q.state2.x.O), c: 4, dash: true, width: 1.3, label: "O" },
+        { x, y: c.eq.map(q => q.state2.x.N), c: 3, dash: true, width: 1.3, label: "N" }, { x, y: c.eq.map(q => q.state2.x["e-"]), c: 5, dash: true, width: 1.3, label: "e⁻" }],
+      vlines: [{ x: u / 1000, c: 6 }], legend: "tr", legendWidth: 100 });
+    UI.readout("#ro3", [["M∞", s.M1], ["T₂ equilibrium (K)", s.T2], ["T₂ perfect gas (K)", pf.T2], ["ρ₂/ρ₁ equilibrium", 1 / s.eps], ["ρ₂/ρ₁ perfect", 1 / pf.eps],
+      ["p₂/p₁ equilibrium", s.p2 / a.p], ["p₂/p₁ perfect", pf.p2 / a.p], ["Stagnation T₀₂ (K)", s.T02], ["Pitot p₀₂ (kPa)", s.p02 / 1000], ["γ̃ behind shock", s.state2.gammaEff], ["Z behind shock", s.state2.Z]]);
+    UI.live("#lab3", `z = ${(z / 1000).toFixed(0)} km: T∞ = ${a.T.toFixed(1)} K, p∞ = ${a.p.toPrecision(3)} Pa`);
+  });
+
+  // ---------- 4. relaxation ----------
+  UI.wire("#lab4", () => {
+    const u = UI.val("ru") * 1000, z0 = UI.val("rz") * 1000, L = UI.val("rL");
+    const relax = z => { const a = atmosphere(z), f = perfectNormalShock(u, a.p, a.T), tau = millikanWhite(f.T2, f.p2 / ATM); return { len: f.u2 * tau, T: f.T2, p: f.p2, tau, u2: f.u2 }; };
+    const zs = UI.linspace(10000, 90000, 81), lens = zs.map(z => relax(z).len);
+    const r = relax(z0), Da = (L / r.u2) / r.tau;
+    UI.plot("#plot4", { xlabel: "Altitude (km)", ylabel: "Relaxation length (m)", logy: true, xlim: [10, 90], ylim: [1e-7, 1e3],
+      series: [{ x: zs.map(z => z / 1000), y: lens, c: 1, label: "N₂ vibration, u₂τ" }], hlines: [{ y: L, label: "body length L", c: 4 }],
+      points: [{ x: z0 / 1000, y: r.len, c: 4 }], legend: "tl", legendWidth: 150 });
+    UI.readout("#ro4", [["Frozen T₂ (K)", r.T], ["p₂ (kPa)", r.p / 1000], ["τ (μs)", r.tau * 1e6], ["Relaxation length (mm)", r.len * 1000], ["Da = (L/u₂)/τ", Da], ["Regime", Da > 10 ? "near equilibrium" : Da < 0.1 ? "nearly frozen" : "nonequilibrium"]]);
+  });
+
+  // ---------- 5. pitching-moment anomaly ----------
+  const P = [[0, 0.65], [0.65, 0.9], [0.9, 1.0]];
+  function panels(M, a, g, d, ex) {
+    const t1 = a, t2 = a - ex, t3 = t2 + d;
+    const f = GD.turn(M, t1, g); if (!f) return null;
+    const s = GD.turn(f.M, t2 - t1, g); if (!s) return null;
+    const fl = GD.turn(s.M, t3 - t2, g); if (!fl) return null;
+    const q = 0.5 * g * M * M, p1 = f.p_ratio, p2 = p1 * s.p_ratio, p3 = p2 * fl.p_ratio;
+    return [(p1 - 1) / q, (p2 - 1) / q, (p3 - 1) / q];
+  }
+  const Cm = (c, xr) => c.reduce((m, cp, i) => m + cp * (P[i][1] - P[i][0]) * (xr - 0.5 * (P[i][0] + P[i][1])), 0);
+  const flapFor = (M, a, g, ex, xr) => bisect(dd => { const c = panels(M, a, g, dd * DEG, ex); return c ? Cm(c, xr) : NaN; }, -15, 20, 1e-6);
+  UI.wire("#lab5", () => {
+    const g = UI.val("aG"), a = UI.val("aA") * DEG, ex = UI.val("aE") * DEG, M = UI.val("aM"), st = document.getElementById("status5");
+    const xr = bisect(x => Cm(panels(M, a, 1.4, 8 * DEG, ex), x), 0.2, 0.95);
+    const d = flapFor(M, a, g, ex, xr), c14 = panels(M, a, 1.4, 8 * DEG, ex), cg = panels(M, a, g, (isFinite(d) ? d : 8) * DEG, ex);
+    const gs = UI.linspace(1.1, 1.4, 31), ds = gs.map(gg => flapFor(M, a, gg, ex, xr));
+    UI.plot("#plot5", { xlabel: "effective γ̃", ylabel: "flap deflection for trim (deg)", xlim: [1.1, 1.4], ylim: [0, 20],
+      series: [{ x: gs, y: ds, c: 4 }], points: isFinite(d) ? [{ x: g, y: d, c: 1, label: `${d.toFixed(1)}°` }] : [], hlines: [{ y: 8, c: 6, label: "γ = 1.4 trim" }], legend: false, h: 280 });
+    // diagram
+    const W = 620, H = 220, x0 = 40, sc = 520, yb = 70;
+    const pts = [[0, 0], [0.65, 0], [0.9, 0.25 * Math.tan(ex) * 0.6], [1.0, 0.25 * Math.tan(ex) * 0.6 - 0.1 * Math.tan((isFinite(d) ? d : 8) * DEG - ex) * 0.6]];
+    const X = x => x0 + sc * x, Y = y => yb - 140 * y;
+    let svg = `<path d="M${X(0)} ${Y(0)} ${pts.map(p => `L${X(p[0])} ${Y(p[1])}`).join(" ")} L${X(1)} ${Y(0.6)} L${X(0)} ${Y(0.35)} Z" class="body" transform="translate(0,0)"/>`;
+    const drawP = (cp, i, fill) => { const xc = 0.5 * (P[i][0] + P[i][1]), y = (pts[i][1] + pts[i + 1][1]) / 2, len = 90 * cp;
+      return `<line x1="${X(xc)}" y1="${Y(y) + len + 6}" x2="${X(xc)}" y2="${Y(y) + 4}" stroke="${fill ? "var(--hot)" : "var(--muted)"}" stroke-width="${fill ? 5 : 2}" ${fill ? "" : 'stroke-dasharray="4 3"'} marker-end="url(#arP)"/>`; };
+    c14.forEach((cp, i) => svg += drawP(cp, i, false) + `<text x="${X(0.5 * (P[i][0] + P[i][1])) - 10}" y="${Y(0) + 24}" class="small" text-anchor="end">${["forebody", "aft body", "flap"][i]}</text>`);
+    if (cg) cg.forEach((cp, i) => svg += drawP(cp, i, true));
+    svg += `<path d="M${X(xr)} ${Y(0) - 30} v24" stroke="var(--text)" stroke-width="2"/><circle cx="${X(xr)}" cy="${Y(0) - 36}" r="6" fill="var(--surface)" stroke="var(--text)"/><text x="${X(xr) + 10}" y="${Y(0) - 32}" class="small">CG</text>`;
+    document.getElementById("diag5").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}"><defs><marker id="arP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--hot)"/></marker></defs><g transform="translate(0,20)">${svg}</g></svg>`;
+    st.className = "status " + (isFinite(d) ? (d > 9 ? "warn" : "good") : "bad");
+    st.innerHTML = isFinite(d) ? `Trim needs a ${d.toFixed(1)}° flap at γ̃ = ${g.toFixed(3)}, against 8.0° at γ = 1.4 (${((d / 8 - 1) * 100).toFixed(0)}% more).` : "No trim within the flap range for this case.";
+    UI.readout("#ro5", c14 && cg ? [["Cp forebody, γ 1.4", c14[0]], ["Cp forebody, γ̃", cg[0]], ["Cp aft, γ 1.4", c14[1]], ["Cp aft, γ̃", cg[1]], ["Aft/fore Cp ratio, γ 1.4", c14[1] / c14[0]], ["Aft/fore Cp ratio, γ̃", cg[1] / cg[0]], ["CG x/L", xr]] : []);
+  });
+
+  // ---------- worked examples ----------
+  UI.wire("#ex1", () => {
+    const T = UI.val("e1T"), th = THETA_V.N2, R = 296.8, ev = vib.e_RT(T, th), cv = vib.cv_R(T, th);
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["θv/T", "θv = 3394 K", th / T], ["e_vib/(RT)", "(θv/T)/(e^(θv/T) − 1)", ev], ["e_vib (kJ/kg)", "R = 296.8 J/(kg K) for N₂", ev * R * T / 1000],
+      ["cv/R", "5/2 + vib. term", cv], ["cp/R", "cv/R + 1", cv + 1], ["γ", "cp/cv", (cv + 1) / cv], ["cv/R from NASA polynomials", "cp/R − 1", nasa.cp_R(sp("N2"), T) - 1]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const T = UI.val("e2T"), p = UI.val("e2p") * ATM, s = equilibrium(T, p);
+    const g = n => nasa.h_RT(sp(n), T) - nasa.s_R(sp(n), T), Kp = Math.exp(-(2 * g("O") - g("O2")));
+    const lhs = (s.x.O * p / 1e5) ** 2 / (s.x.O2 * p / 1e5);
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["x(N₂)", "equilibrium solver", s.x.N2], ["x(O₂)", "", s.x.O2], ["x(NO)", "", s.x.NO], ["x(N)", "", s.x.N], ["x(O)", "", s.x.O], ["x(e⁻)", "", s.x["e-"]],
+      ["M̄ (g/mol)", "Σ xᵢMᵢ", s.M * 1000], ["Z", "M_air/M̄", s.Z], { sub: "Check: law of mass action for O₂ ⇌ 2O" },
+      ["K_p(T)", "exp(−ΔG°/RT), NASA data", Kp], ["(p_O/p°)²/(p_O₂/p°)", "from the composition", lhs]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const u = UI.val("e3u") * 1000, z = UI.val("e3z") * 1000, a = atmosphere(z), s = eqNormalShock(u, a.p, a.T), pf = perfectNormalShock(u, a.p, a.T);
+    UI.table("#e3out", ["Quantity", "Equilibrium air", "Perfect gas"], [
+      ["M∞", s.M1, pf.M1], ["T₂ (K)", s.T2, pf.T2], ["p₂ (kPa)", s.p2 / 1000, pf.p2 / 1000], ["ρ₂/ρ₁", 1 / s.eps, 1 / pf.eps], ["u₂ (m/s)", s.u2, pf.u2],
+      ["Stagnation T₀ (K)", s.T02, pf.T02], ["Pitot p₀₂ (kPa)", s.p02 / 1000, pf.p02 / 1000], ["x(O), x(N) behind shock", `${s.state2.x.O.toFixed(3)}, ${s.state2.x.N.toFixed(3)}`, "0, 0"]]);
+  });
+  UI.wire("#ex4", () => {
+    const u = UI.val("e4u") * 1000, z = UI.val("e4z") * 1000, L = UI.val("e4L"), a = atmosphere(z), f = perfectNormalShock(u, a.p, a.T), tau = millikanWhite(f.T2, f.p2 / ATM);
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [
+      ["Frozen T₂ (K)", "normal shock, γ = 1.4", f.T2], ["p₂ (atm)", "", f.p2 / ATM], ["A", "1.16×10⁻³ μ^½ θv^(4/3), μ = 14", 1.16e-3 * Math.sqrt(14) * Math.pow(3393.5, 4 / 3)],
+      ["pτ (atm·μs)", "Millikan–White", tau * f.p2 / ATM * 1e6], ["τ (μs)", "", tau * 1e6], ["u₂ (m/s)", "u₁ ρ₁/ρ₂", f.u2], ["Relaxation length (mm)", "u₂τ", f.u2 * tau * 1000], ["Da", "(L/u₂)/τ", L / f.u2 / tau]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "At 1 atm, which happens at the lowest temperature?", opts: ["N₂ dissociation", "O₂ dissociation", "Ionization of N", "Vibrational excitation"], a: 3, why: "Vibration starts near 800 K; O₂ dissociates from about 2,000 K, N₂ from about 4,000 K, ionization above about 9,000 K." },
+    { q: "Lowering the pressure at fixed temperature makes air…", opts: ["less dissociated", "more dissociated", "no different", "condense"], a: 1, why: "Dissociation increases the number of moles; by Le Chatelier, lower pressure favors it." },
+    { q: "The classical (fully excited) cv of a diatomic gas with vibration is…", opts: ["5/2 R", "3 R", "7/2 R", "9/2 R"], a: 2, why: "3/2 R translation + R rotation + R vibration (kinetic and potential) = 7/2 R, giving γ = 9/7." },
+    { q: "Compared with a perfect gas, an equilibrium normal shock at 7 km/s has…", opts: ["higher T₂ and lower ρ₂", "much lower T₂ and higher ρ₂", "the same T₂", "lower p₂ by a factor of 5"], a: 1, why: "Energy goes into dissociation instead of temperature; the cooler, denser gas gives ρ₂/ρ₁ well above 6, while p₂ changes only slightly." },
+    { q: "In the iteration for a real-gas shock, p₂ is insensitive to the density ratio because…", opts: ["p₂ = p₁ + ρ₁u₁²(1 − ε) and ε is small", "the shock is isentropic", "Z = 1", "it is fixed by T₂"], a: 0, why: "With ε = ρ₁/ρ₂ ≈ 0.05–0.15, (1 − ε) changes little, so p₂ ≈ ρ₁u₁² whatever the chemistry." },
+    { q: "A Damköhler number much less than 1 means the flow is…", opts: ["in equilibrium", "frozen", "turbulent", "subsonic"], a: 1, why: "Da = flow time / chemical time. If the flow is much faster than the chemistry, the composition cannot change: frozen flow." },
+    { q: "Binary scaling says nonequilibrium dissociating flows are similar when…", opts: ["M is matched", "ρL is matched", "Re is matched", "T is matched"], a: 1, why: "Two-body reaction rates scale with ρ, so the number of reactions over a length L scales with ρL." },
+    { q: "Right behind a strong shock, before relaxation, the temperature is…", opts: ["the equilibrium value", "higher: the frozen, perfect-gas value", "lower than equilibrium", "the wall temperature"], a: 1, why: "Translational and rotational modes adjust within the shock; vibration and chemistry lag, so T starts at the frozen value and falls." },
+    { q: "Real-gas effects made the Shuttle Orbiter need more body-flap deflection because…", opts: ["the nose became hotter", "the lower effective γ reduced aft-surface pressure relative to the forebody, pitching the nose up", "the flap melted", "the Mach number was higher"], a: 1, why: "Less pressure behind the CG means less nose-down moment; the flap must deflect more to restore trim (Maus et al. 1984)." },
+    { q: "Effective γ̃ is defined as…", opts: ["cp/cv", "h/e", "p/(ρRT)", "a²/(RT)"], a: 1, why: "γ̃ = h/e is the γ a perfect gas would need to have the same enthalpy and internal energy; it is not the ratio of specific heats." },
+  ]);
+})();
+</script>
+</body>
+</html>
