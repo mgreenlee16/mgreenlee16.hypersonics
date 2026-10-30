@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About · Compressible Flow Lab</title>
+<title>About · Hypersonics Lab</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body data-root="./" data-gamma="off" data-section="about">
 <main class="prose">
   <div class="eyebrow">About</div>
   <h1>About this site</h1>
-  <p>Compressible Flow Lab is a self-study site for compressible aerodynamics and supersonic testing. The format (short derivations paired with live, adjustable figures, plus calculators that replace the tables) was inspired by Kursat Kara's open <a href="https://kursatkara.github.io/MAE3293_Fundamentals_of_Aerodynamics/">Fundamentals of Aerodynamics</a> course site.</p>
+  <p>Hypersonics Lab is a self-study site for compressible aerodynamics, hypersonic flight and high-speed testing, built by Michael Greenlee, an aerospace engineering student at Purdue University working on hypersonic boundary-layer transition at the Boeing/AFOSR Mach-6 Quiet Tunnel. It is organized so that someone interested in spaceflight and hypersonics can work from first principles up to re-entry, scramjet propulsion and wind-tunnel testing. The format (short derivations paired with live, adjustable figures, plus calculators that replace the tables) was inspired by Kursat Kara's open <a href="https://kursatkara.github.io/MAE3293_Fundamentals_of_Aerodynamics/">Fundamentals of Aerodynamics</a> course site.</p>
   <h2>How it is built</h2>
-  <p>Plain HTML, CSS and JavaScript with no build step, so it runs straight from GitHub Pages. All physics lives in one file, <code>assets/js/gasdyn.js</code>: the isentropic, normal-shock, oblique-shock, Prandtl–Meyer, Rayleigh and Fanno relations, shock-expansion theory, compressibility corrections, the 1976 U.S. Standard Atmosphere, and supersonic wind-tunnel models (starting, blowdown run time, condensation). Lessons and calculators call the same functions. Equations are typeset with KaTeX.</p>
+  <p>Plain HTML, CSS and JavaScript with no build step, so it runs straight from GitHub Pages. All physics lives in one file, <code>assets/js/gasdyn.js</code>: the isentropic, normal-shock, oblique-shock, Prandtl–Meyer, Rayleigh and Fanno relations, shock-expansion theory, compressibility corrections, the 1976 U.S. Standard Atmosphere, and supersonic wind-tunnel models (starting, blowdown run time, condensation). The hypersonic material lives in <code>assets/js/hyper.js</code>: Newtonian and hypersonic small-disturbance theory, Taylor–Maccoll cones, Newtonian panel integration of bodies of revolution, 11-species equilibrium air from NASA Glenn polynomials, equilibrium normal shocks, Sutton–Graves and reference-temperature heating, entry trajectories, Brayton-cycle ramjet and scramjet analysis, and shock-tube, Ludwieg-tube and liquefaction models. Lessons and calculators call the same functions. Equations are typeset with KaTeX.</p>
   <h2>Accuracy</h2>
   <p>The functions reproduce the standard tables. For M = 2 and γ = 1.4: p₀/p = 7.824, A/A* = 1.688, normal-shock p₀₂/p₀₁ = 0.7209, a θ = 10° wedge gives β = 39.31° (weak) or 83.70° (strong), θ<sub>max</sub> = 22.97°, ν = 26.38°, Fanno 4fL*/D = 0.3050, and Rayleigh T₀/T₀* = 0.7934. Inverse problems are solved by bisection to near machine precision.</p>
+  <p>For the hypersonic models: the Taylor–Maccoll solver gives β = 31.2° for a 10° cone at Mach 2 and a maximum cone angle of 57.6° in the hypersonic limit; Newtonian panel integration reproduces C<sub>D</sub> = 1 for a sphere and the closed-form cone forces at incidence; the equilibrium-air solver agrees with Cantera to a few parts per million; and the equilibrium normal shock at 11 km/s and 52 km gives T₂ ≈ 11,700 K against about 58,800 K for a perfect gas, as in Anderson. Run <code>node tests/validate.js</code> to repeat these checks. Correlations (Sutton–Graves, the reference-temperature method, Millikan–White, Billig, the second-mode frequency estimate) are only as accurate as the correlations themselves, typically 10–20%, and the entry and engine presets are illustrative, not flight reconstructions.</p>
   <h2>References</h2>
   <ul>
     <li>J. D. Anderson, <i>Fundamentals of Aerodynamics</i>, McGraw-Hill.</li>
@@ -27,11 +28,25 @@
     <li>G. S. Settles, <i>Schlieren and Shadowgraph Techniques</i>, Springer.</li>
     <li>W. Merzkirch, <i>Flow Visualization</i>, Academic Press.</li>
     <li>U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF).</li>
+    <li>E. H. Hirschel &amp; C. Weiland, <i>Selected Aerothermodynamic Design Problems of Hypersonic Flight Vehicles</i>, Springer / AIAA, 2009.</li>
+    <li>E. H. Hirschel, <i>Basics of Aerothermodynamics</i>, Springer.</li>
+    <li>J. D. Anderson, <i>Hypersonic and High-Temperature Gas Dynamics</i>, AIAA.</li>
+    <li>J. J. Bertin, <i>Hypersonic Aerothermodynamics</i>, AIAA.</li>
+    <li>W. H. Heiser &amp; D. T. Pratt, <i>Hypersonic Airbreathing Propulsion</i>, AIAA.</li>
+    <li>J. D. Mattingly, <i>Elements of Propulsion: Gas Turbines and Rockets</i>, AIAA.</li>
+    <li>H. J. Allen &amp; A. J. Eggers, NACA Report 1381 (1958), on ballistic entry.</li>
+    <li>J. A. Fay &amp; F. R. Riddell, <i>J. Aeronautical Sciences</i> 25 (1958); K. Sutton &amp; R. A. Graves, NASA TR R-376 (1971), on stagnation heating.</li>
+    <li>B. J. McBride, M. J. Zehe &amp; S. Gordon, NASA TP-2002-211556, thermodynamic data.</li>
+    <li>J. R. Maus et al., "Hypersonic Mach number and real gas effects on Space Shuttle Orbiter aerodynamics," <i>J. Spacecraft and Rockets</i> 21 (1984).</li>
+    <li>R. C. Millikan &amp; D. R. White, <i>J. Chemical Physics</i> 39 (1963), vibrational relaxation.</li>
+    <li>S. P. Schneider, reviews of hypersonic laminar–turbulent transition and quiet-tunnel development.</li>
+    <li>L. M. Mack, "Boundary-layer linear stability theory," AGARD Report 709 (1984).</li>
   </ul>
   <h2>License</h2>
   <p>Code is released under the MIT License. Text and figures are licensed under CC BY 4.0.</p>
 </main>
 <script src="assets/js/gasdyn.js"></script>
+<script src="assets/js/hyper.js"></script>
 <script src="assets/js/ui.js"></script>
 </body>
 </html>
