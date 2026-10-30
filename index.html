@@ -10,15 +10,32 @@
 <body data-root="./" data-gamma="off">
 <main>
   <section class="hero">
-    <div class="eyebrow">Compressible aerodynamics</div>
-    <h1>Compressible Flow Lab</h1>
-    <p class="lead">Interactive lessons and calculators for compressible aerodynamics. Each lesson pairs the derivations with figures computed live from the exact relations for a calorically perfect gas. Change the Mach number, the geometry or the back pressure, and the wave pattern, pressure distribution and forces update at once.</p>
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">Compressible aerodynamics · Supersonic testing</div>
+        <h1>Compressible Flow Lab</h1>
+        <p class="lead">Interactive lessons and calculators for compressible aerodynamics, from the thermodynamics of a perfect gas to shocks, expansion waves, nozzles, compressible airfoils and supersonic wind tunnels. Every figure is computed live from the exact relations: change the Mach number, the geometry or the back pressure, and the wave pattern, pressures and forces update at once.</p>
+        <div class="stats"><div><b>8</b><span>lessons</span></div><div><b>45+</b><span>interactive figures</span></div><div><b>8</b><span>calculators</span></div><div><b>90+</b><span>self-check questions</span></div></div>
+      </div>
+      <svg viewBox="0 0 420 260" aria-hidden="true">
+        <path d="M120 170 L300 120 L300 170 Z" fill="#1a2a4a" stroke="#e5ebf7" stroke-width="1.5"/>
+        <path d="M120 170 L360 40" stroke="#ff8a4c" stroke-width="3"/>
+        <g stroke="#6aa3ff" stroke-width="1.2" opacity=".9"><line x1="300" y1="120" x2="400" y2="60"/><line x1="300" y1="120" x2="410" y2="80"/><line x1="300" y1="120" x2="415" y2="100"/></g>
+        <g stroke="#9fb0cf" stroke-width="1" fill="none" opacity=".7">
+          <path d="M10 140 L170 140 L300 104 L420 104"/><path d="M10 110 L230 110 L330 84 L420 84"/><path d="M10 80 L290 80 L370 60 L420 60"/></g>
+        <line x1="0" y1="170" x2="420" y2="170" stroke="#9fb0cf" stroke-width="1"/>
+        <text x="20" y="62" style="fill:#e5ebf7;font-size:15px">M∞ &gt; 1</text>
+        <text x="250" y="30" style="fill:#ff8a4c;font-size:12px">oblique shock</text>
+        <text x="330" y="140" style="fill:#6aa3ff;font-size:12px">expansion fan</text>
+        <text x="190" y="196" style="fill:#9fb0cf;font-size:12px">wedge</text>
+      </svg>
+    </div>
   </section>
 
   <section id="lessons" class="section-head">
     <div class="eyebrow">Learn</div>
     <h2>Lessons</h2>
-    <p class="prose">The lessons build on one another. Part I covers one-dimensional flow, Part II turns to two-dimensional supersonic waves, and Part III applies both to airfoils from high subsonic to supersonic speeds.</p>
+    <p class="prose">The lessons build on one another. Part I covers one-dimensional flow, Part II turns to two-dimensional supersonic waves, and Part III applies both to airfoils from high subsonic to supersonic speeds, and Part IV turns to the experiment: supersonic wind tunnels and how flows are measured.</p>
     <div id="lessonCards"></div>
   </section>
 

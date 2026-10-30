@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supersonic Wind Tunnels · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="wind-tunnels">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 8 · Part IV</div>
+  <h1>Supersonic Wind Tunnels</h1>
+  <p class="lead">A supersonic wind tunnel is the nozzle, shock and diffuser theory of Lessons 2–5 built in steel. This lesson covers how such tunnels are laid out and powered, how big their components must be, why they have to be "started", how long a blowdown tunnel can run, why the air must be dried, and how pressures, temperatures, forces and flow patterns are measured.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#why">Why test, and what must be matched</a></li>
+    <li><a href="#layout">Anatomy of a supersonic tunnel</a></li>
+    <li><a href="#types">Blowdown, indraft and continuous tunnels</a></li>
+    <li><a href="#test">Test-section conditions</a></li>
+    <li><a href="#start">Starting: the starting shock and the second throat</a></li>
+    <li><a href="#ratios">Pressure ratio, power and the diffuser</a></li>
+    <li><a href="#runtime">Run time of a blowdown tunnel</a></li>
+    <li><a href="#condensation">Condensation and drying the air</a></li>
+    <li><a href="#quality">Flow quality and calibration</a></li>
+    <li><a href="#pressure">Measuring pressure</a></li>
+    <li><a href="#temperature">Measuring temperature</a></li>
+    <li><a href="#forces">Measuring forces and moments</a></li>
+    <li><a href="#vis">Flow visualization</a></li>
+    <li><a href="#procedure">Running a test: a checklist</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="why"><span class="sec">Section 8.1</span>Why test, and what must be matched</h2>
+  <p>Computation has replaced a great deal of wind-tunnel testing, but not all of it. Turbulence, transition, shock–boundary-layer interaction, separation and unsteady loads are still hard to predict with confidence. Experiments supply the data that validates codes, and the final numbers for anything that will fly.</p>
+  <p>A test on a scale model reproduces full-scale flight only if the relevant <b class="term">similarity parameters</b> are matched. Dimensional analysis of a compressible, viscous, heat-conducting flow of a perfect gas gives</p>
+  $$C_F = f\!\left(M_\infty,\ Re_\infty,\ \gamma,\ Pr,\ \frac{T_w}{T_\infty},\ \alpha,\ \text{geometry}\right).$$
+  <p>In a supersonic tunnel the Mach number is matched exactly, since it is set by the nozzle. γ and Pr match automatically if the test gas is air. The Reynolds number is the hard one. A 1:20 model must see twenty times the flight value of \(\rho V/\mu\) to match \(Re\), and tunnels rarely achieve that. Instead, boundary-layer trips are used to force transition where it would occur in flight, and results are extrapolated in \(Re\). The wall-to-gas temperature ratio matters for heat transfer and boundary-layer behavior. In a cold-flow tunnel the model wall is near the stagnation temperature, which may not match flight.</p>
+
+  <h2 id="layout"><span class="sec">Section 8.2</span>Anatomy of a supersonic tunnel</h2>
+  <p>Gas flows from left to right through five components:</p>
+  <ol>
+    <li><b>Settling chamber (stagnation chamber).</b> A large-area, low-speed section where the gas is at its reservoir state \(p_0, T_0\). Honeycomb straightens the flow and fine screens break up large eddies, reducing turbulence before the nozzle.</li>
+    <li><b>Nozzle.</b> Converges to the throat and then diverges to the test-section area. Its exit area ratio \(A_e/A^*\) sets the test Mach number. The divergent contour is designed by the method of characteristics so that every expansion wave from the walls is cancelled, delivering uniform, parallel flow. Many tunnels have interchangeable fixed nozzle blocks. Others use flexible steel plates bent by jacks to give any Mach number in a range, or a sliding asymmetric block that changes the throat area.</li>
+    <li><b>Test section.</b> Constant area (slightly divergent, in practice, to allow for boundary-layer growth), with optical-quality windows (schlieren glass) and access for model supports and probes.</li>
+    <li><b>Diffuser.</b> Decelerates the flow and recovers pressure, so the tunnel needs a smaller pressure ratio to run. A converging section and a <b class="term">second throat</b> slow the supersonic stream before a weak terminal shock, and a diverging subsonic section follows.</li>
+    <li><b>Exhaust or return.</b> To atmosphere, to a vacuum tank, or back to a compressor in a closed circuit.</li>
+  </ol>
+  <p>Interactive 1 shows the Mach number and pressure along a tunnel that has started and is running normally. The supersonic flow passes through the test section, is slowed (still supersonic) in the converging diffuser, and ends with a weak normal shock just downstream of the second throat.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Inside a running tunnel</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="aM">Test-section Mach M<sub>t</sub> <output for="aM"></output></label>
+      <input type="range" id="aM" min="1.3" max="4.5" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="aR">Second throat A<sub>t2</sub>/A<sub>t1</sub> (× starting minimum) <output for="aR"></output></label>
+      <input type="range" id="aR" min="1" max="1.3" step="0.01" value="1.05"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"aM":1.5,"aR":1.05}'>M = 1.5</button>
+      <button data-preset='{"aM":2.5,"aR":1.05}'>M = 2.5</button>
+      <button data-preset='{"aM":4,"aR":1.05}'>M = 4</button>
+      <button data-preset='{"aM":2.5,"aR":1.3}'>Oversized second throat</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag1"></div><figcaption>Tunnel outline (to scale in area, not in length). Shading shows supersonic flow; the orange line is the terminal shock, placed at the second throat (the most efficient running condition).</figcaption></figure>
+    <figure><div id="plot1"></div><figcaption>Mach number and static pressure along the tunnel.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="types"><span class="sec">Section 8.3</span>Blowdown, indraft and continuous tunnels</h2>
+  <p>The flow needs a pressure ratio \(p_0/p_b\) across the tunnel. There are three ways to provide it:</p>
+  <table class="data text">
+    <thead><tr><th>Type</th><th>How it works</th><th>Strengths</th><th>Limitations</th></tr></thead>
+    <tbody>
+      <tr><td><b>Blowdown</b> (pressure–atmosphere or pressure–vacuum)</td><td>A compressor slowly fills storage tanks to high pressure; a fast-acting control valve then holds the settling-chamber pressure constant while the tanks discharge through the tunnel.</td><td>Cheap per unit of test-section size; high Reynolds numbers (high p₀); small compressor.</td><td>Run times of seconds to a minute; T₀ drifts as the tanks expand; heavy, fast pressure regulation needed; large starting loads on models.</td></tr>
+      <tr><td><b>Indraft</b> (atmosphere–vacuum)</td><td>The tunnel draws dried atmospheric air into an evacuated vacuum tank.</td><td>Constant p₀ and T₀ (the atmosphere); safe; smooth starting.</td><td>p₀ fixed at 1 atm, so low Reynolds numbers; run time limited by tank volume; drying the intake air is critical.</td></tr>
+      <tr><td><b>Continuous</b> (closed circuit)</td><td>A multistage compressor drives the gas around a closed loop, with coolers to remove the compression heat.</td><td>Unlimited run time; independent control of p₀ (and so Re) and Mach number; steady conditions.</td><td>Very expensive; installed power of tens to hundreds of megawatts for large tunnels.</td></tr>
+    </tbody>
+  </table>
+  <p>Most university supersonic facilities are blowdown or indraft tunnels. The large continuous tunnels are national facilities, such as the 16-ft supersonic tunnel at Arnold Engineering Development Complex and the Unitary Plan tunnels at NASA Ames and Langley.</p>
+
+  <h2 id="test"><span class="sec">Section 8.4</span>Test-section conditions</h2>
+  <p>With isentropic expansion from the reservoir, the test-section state follows from Lesson 1:</p>
+  $$T = \frac{T_0}{1 + \frac{\gamma-1}{2}M^2}, \qquad p = \frac{p_0}{\left(1 + \frac{\gamma-1}{2}M^2\right)^{\gamma/(\gamma-1)}}, \qquad V = M\sqrt{\gamma RT}, \qquad q = \tfrac12\gamma pM^2.$$
+  <p>The nozzle throat passes the choked mass flow, which sets throat size and air consumption:</p>
+  $$\dot m = \frac{p_0A_{t1}}{\sqrt{T_0}}\sqrt{\frac{\gamma}{R}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}} = 0.0404\,\frac{p_0A_{t1}}{\sqrt{T_0}}\ \ (\text{air, SI}), \qquad A_\text{test} = A_{t1}\,\frac{A}{A^*}\bigg|_{M}.$$
+  <p>The unit Reynolds number \(\rho V/\mu\) rises in proportion to \(p_0\). It also rises with Mach number at first, because the static temperature, and with it the viscosity, falls. Static temperatures in an unheated tunnel are very low: 129 K (−144 °C) at M = 2.5 from a 290 K reservoir. That has consequences for condensation (Section 8.8) and for models and instrumentation.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Tunnel designer: from reservoir to test section</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="dM">Test Mach M <output for="dM"></output></label>
+      <input type="range" id="dM" min="1.2" max="4.5" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="dp0">Reservoir pressure p₀ <output for="dp0"></output></label>
+      <input type="range" id="dp0" min="0.5" max="20" step="0.1" value="4" data-dec="1" data-unit=" bar"></div>
+    <div class="ctl"><label for="dT0">Reservoir temperature T₀ <output for="dT0"></output></label>
+      <input type="range" id="dT0" min="250" max="450" step="1" value="290" data-dec="0" data-unit=" K"></div>
+    <div class="ctl"><label for="dH">Test section, square side <output for="dH"></output></label>
+      <input type="range" id="dH" min="0.02" max="1" step="0.01" value="0.1" data-dec="2" data-unit=" m"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"dM":2,"dp0":1.013,"dT0":293,"dH":0.05}'>Small indraft, M = 2</button>
+      <button data-preset='{"dM":2.5,"dp0":4,"dT0":290,"dH":0.1}'>University blowdown</button>
+      <button data-preset='{"dM":3.5,"dp0":12,"dT0":300,"dH":0.3}'>Large blowdown, M = 3.5</button>
+    </div>
+  </div>
+  <div class="views">
+    <div id="ro2" class="readout"></div>
+    <figure><div id="plot2"></div><figcaption>Unit Reynolds number and test-section static temperature versus Mach number for this reservoir state. The dot is the design point.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="start"><span class="sec">Section 8.5</span>Starting: the starting shock and the second throat</h2>
+  <p>A supersonic tunnel does not simply "switch on". Follow the flow as the back pressure is lowered from \(p_0\), exactly as for the converging–diverging nozzle of Lesson 3.</p>
+  <ol>
+    <li>At first the flow is subsonic everywhere. Then the nozzle throat chokes.</li>
+    <li>A normal shock appears just downstream of the throat and moves down the nozzle as \(p_b\) falls. It grows stronger as it reaches higher Mach numbers.</li>
+    <li>To <b>start</b> the tunnel, this <b class="term">starting shock</b> must pass right through the test section, at its strongest (Mach \(M_t\)), and be swallowed by the diffuser.</li>
+  </ol>
+  <p>Here the second throat matters. Behind the starting shock, total pressure has dropped to \(p_{0,2}\). The diffuser throat must pass the same mass flow at this lower total pressure. Choked flow gives \(p_{0,1}A_{t1} = p_{0,2}A^*_2\), so the second throat must be at least</p>
+  $$\boxed{\frac{A_{t2}}{A_{t1}} \ge \frac{p_{0,1}}{p_{0,2}}\bigg|_{M_t}}$$
+  <p>If it is smaller, the second throat chokes first. The starting shock can then advance only to the point in the nozzle where its Mach number satisfies \(p_{0,1}/p_{0,2} = A_{t2}/A_{t1}\). It stays there however low the back pressure is made, and the tunnel will not start. When the tunnel is started, the flow through the converging diffuser is supersonic, and a much weaker shock stands near the second throat.</p>
+  <p>This leads to <b class="term">hysteresis</b>. The back pressure needed to <em>start</em> the tunnel (normal shock at \(M_t\)) is lower than the back pressure at which it <em>unstarts</em> (weaker shock at the second-throat Mach number). Once started, the back pressure can be raised again. A variable-geometry diffuser can then close the second throat after starting to improve recovery further. Interactive 3 lets you explore all of this.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Starting the tunnel</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sM">Test-section Mach M<sub>t</sub> <output for="sM"></output></label>
+      <input type="range" id="sM" min="1.5" max="4" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="sR">Second throat A<sub>t2</sub>/A<sub>t1</sub> <output for="sR"></output></label>
+      <input type="range" id="sR" min="1.05" max="2.6" step="0.01" value="2.1"></div>
+    <div class="ctl"><label for="sP">Back pressure p<sub>b</sub>/p₀ <output for="sP"></output></label>
+      <input type="range" id="sP" min="0.05" max="1" step="0.002" value="0.7" data-dec="3"></div>
+    <div class="ctl inline"><span>History</span>
+      <div class="seg" id="sHist" data-value="start"><button data-value="start" aria-pressed="true">starting (p_b falling)</button><button data-value="run" aria-pressed="false">already started</button></div></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"sP":0.9,"sHist":"start"}'>Subsonic</button>
+      <button data-preset='{"sP":0.7,"sHist":"start"}'>Shock in nozzle</button>
+      <button data-preset='{"sP":0.45,"sHist":"start"}'>Started</button>
+      <button data-preset='{"sP":0.6,"sHist":"run"}'>Running at higher p_b</button>
+      <button data-preset='{"sR":1.6,"sP":0.3,"sHist":"start"}'>Throat too small</button>
+    </div>
+    <div id="status3" class="status"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag3"></div><figcaption>Tunnel schematic with the computed shock position. Shading marks supersonic flow.</figcaption></figure>
+    <figure><div id="plot3"></div><figcaption>Mach number along the tunnel, with the critical back pressures for this geometry.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="ratios"><span class="sec">Section 8.6</span>Pressure ratio, power and the diffuser</h2>
+  <p>Without a second throat (a constant-area diffuser with a normal shock at the test Mach number, followed by subsonic diffusion to stagnation), the tunnel needs roughly</p>
+  $$\frac{p_0}{p_b} \approx \frac{p_{0,1}}{p_{0,2}}\bigg|_{M_t},$$
+  <p>both to start and to run. With an optimum fixed second throat, the starting requirement is the same, but the running requirement drops to the normal-shock loss at the second-throat Mach number, \(M_{t2}\), the supersonic root of \(A/A^* = A_{t2}/A_{t1}\). Real diffusers do somewhat worse because of boundary layers and shock–boundary-layer interaction. Measured running ratios typically lie between the two curves of Interactive 4.</p>
+  <p>For a continuous tunnel, the compressor must supply this pressure ratio at the tunnel's mass flow. The ideal (isentropic) compressor power is</p>
+  $$P = \dot m\,c_pT_0\left[\left(\frac{p_0}{p_b}\right)^{(\gamma-1)/\gamma} - 1\right],$$
+  <p>so power grows quickly with Mach number. Pressure ratio rises steeply, and so does mass flow per unit test-section area at a given q. That is the main reason high-Mach continuous tunnels are rare and blowdown tunnels are popular.</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">How much pressure ratio does the tunnel need?</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="rM">Test-section Mach M<sub>t</sub> <output for="rM"></output></label>
+      <input type="range" id="rM" min="1.1" max="5" step="0.05" value="2.5"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"rM":1.5}'>M = 1.5</button><button data-preset='{"rM":2.5}'>M = 2.5</button><button data-preset='{"rM":4}'>M = 4</button>
+    </div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot4"></div><figcaption>Pressure ratio p₀/p_b to start (normal shock at M_t) and to run with the minimum second throat, and the required second-throat area ratio.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="runtime"><span class="sec">Section 8.7</span>Run time of a blowdown tunnel</h2>
+  <p>A blowdown tunnel's storage tanks hold a mass \(m_i = p_iV/(RT_i)\). A regulating valve holds \(p_0\) constant while the tank pressure falls. The run ends when the tank pressure drops to a little above \(p_0\), the margin the valve needs. Two limiting models bracket reality:</p>
+  <ul>
+    <li><b>Isothermal tank.</b> Heat-storage material in the tanks, such as steel tubes or plates, keeps the air near its initial temperature. Then \(p \propto m\), and with constant \(T_0\) the mass flow is constant:
+    $$t_\text{run} = \frac{V\,(p_i - p_f)}{R\,T_i\,\dot m}.$$</li>
+    <li><b>Adiabatic tank.</b> The gas remaining in the tank expands isentropically, so \(p/p_i = (m/m_i)^\gamma\) and \(T/T_i = (m/m_i)^{\gamma-1}\). The supply temperature \(T_0\) falls during the run. Mass flow rises as \(T_0^{-1/2}\), and the run is shorter. The drifting \(T_0\) also changes the test Reynolds number and the static temperature, which matters for condensation.</li>
+  </ul>
+  <p>Interactive 5 integrates both cases in time.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Blowdown run time</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="bV">Tank volume V <output for="bV"></output></label>
+      <input type="range" id="bV" min="1" max="200" step="1" value="30" data-dec="0" data-unit=" m³"></div>
+    <div class="ctl"><label for="bpi">Initial tank pressure <output for="bpi"></output></label>
+      <input type="range" id="bpi" min="5" max="200" step="1" value="20" data-dec="0" data-unit=" bar"></div>
+    <div class="ctl"><label for="bp0">Regulated p₀ <output for="bp0"></output></label>
+      <input type="range" id="bp0" min="1" max="20" step="0.1" value="4" data-dec="1" data-unit=" bar"></div>
+    <div class="ctl"><label for="bM">Test Mach M <output for="bM"></output></label>
+      <input type="range" id="bM" min="1.5" max="4.5" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="bH">Test section, square side <output for="bH"></output></label>
+      <input type="range" id="bH" min="0.02" max="0.5" step="0.01" value="0.1" data-dec="2" data-unit=" m"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"bV":30,"bpi":20,"bp0":4,"bM":2.5,"bH":0.1}'>University blowdown</button>
+      <button data-preset='{"bV":100,"bpi":40,"bp0":10,"bM":3.5,"bH":0.3}'>Large facility</button>
+      <button data-preset='{"bV":5,"bpi":10,"bp0":3,"bM":2,"bH":0.05}'>Teaching rig</button>
+    </div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot5"></div><figcaption>Tank pressure and supply temperature during the run, for isothermal (heat-storage) and adiabatic tanks. The run ends when the tank reaches 1.1 p₀.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="condensation"><span class="sec">Section 8.8</span>Condensation and drying the air</h2>
+  <p>Atmospheric air carries water vapor, typically 5–15 grams per kilogram of air. Expanding it to a test-section static temperature of 100–150 K takes the vapor far below its frost point. Condensation does not happen instantly, because nucleation needs time and the nozzle transit takes only milliseconds. The vapor becomes strongly supersaturated, then condenses suddenly in the nozzle. The latent heat released acts like heat addition in a supersonic stream (Rayleigh flow, Lesson 4). It lowers the Mach number, raises the pressure, and can produce visible <b class="term">condensation shocks</b> that make the test-section flow non-uniform.</p>
+  <p>The cure is to dry the supply air, usually with refrigeration followed by desiccant (silica gel or activated alumina) dryers. Indraft tunnels dry their intake air with a large desiccant bed. A common rule is to keep the specific humidity below about 10⁻⁴ kg/kg (100 ppm by mass) for Mach 2–3 tunnels, a frost point below roughly −40 °C at atmospheric pressure. The amount of supersaturation that can be tolerated depends on the expansion rate, so tunnels are checked by comparing measured and isentropic wall pressures along the nozzle. At higher Mach numbers the static temperature eventually falls toward the saturation temperature of air itself. Unheated air tunnels are therefore limited to roughly Mach 4–5. Beyond that, the supply air must be heated.</p>
+</div>
+
+<section class="lab" id="lab6">
+  <div class="lab-head"><span class="num">Interactive 6</span><span class="title">Will water condense in the test section?</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cM">Test Mach M <output for="cM"></output></label>
+      <input type="range" id="cM" min="1" max="4.5" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="cw">Specific humidity, log₁₀ ω (kg/kg) <output for="cw"></output></label>
+      <input type="range" id="cw" min="-6" max="-2" step="0.05" value="-4" data-dec="2" data-unit=""></div>
+    <div class="ctl"><label for="cp0">Reservoir pressure p₀ <output for="cp0"></output></label>
+      <input type="range" id="cp0" min="1" max="20" step="0.5" value="4" data-dec="1" data-unit=" bar"></div>
+    <div class="ctl"><label for="cT0">Reservoir temperature T₀ <output for="cT0"></output></label>
+      <input type="range" id="cT0" min="250" max="400" step="1" value="290" data-dec="0" data-unit=" K"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"cw":-2,"cM":2.5}'>Humid outside air (10 g/kg)</button>
+      <button data-preset='{"cw":-4,"cM":2.5}'>Dried, 100 ppm</button>
+      <button data-preset='{"cw":-5,"cM":3.5}'>Very dry, M = 3.5</button>
+    </div>
+    <div id="status6" class="status"></div>
+    <div id="ro6" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot6"></div><figcaption>Static temperature through the nozzle expansion versus local Mach number, and the frost point of the water vapor at the local pressure. Where the static temperature is below the frost point, the vapor is supersaturated and condensation is possible.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="quality"><span class="sec">Section 8.9</span>Flow quality and calibration</h2>
+  <p>Before a tunnel is used for testing, its empty test section is <b class="term">calibrated</b>:</p>
+  <ul>
+    <li><b>Mach number distribution.</b> A rake of Pitot probes is traversed through the test section. Each reading \(p_{0,2}\), divided by the settling-chamber pressure \(p_{0,1}\), gives the local Mach number through the normal-shock total-pressure ratio. A good tunnel holds M uniform to within about ±0.5% over the test core. Static pressures from wall taps, or from a cone-cylinder static probe on the centerline, give an independent check through \(p/p_0\).</li>
+    <li><b>Flow angularity.</b> Cone or wedge probes with pressure taps on opposite faces measure flow inclination. Targets are about ±0.1–0.2°.</li>
+    <li><b>Disturbances.</b> Weak waves from imperfections in the nozzle contour or wall joints show up in schlieren images and Pitot surveys. Turbulent boundary layers on the nozzle walls radiate acoustic noise into the test section, with pressure fluctuations of a percent or so of the static pressure. That noise promotes early boundary-layer transition on models. Specially designed "quiet" tunnels, with polished nozzles that keep laminar wall boundary layers, exist for transition research.</li>
+    <li><b>Boundary-layer growth.</b> Wall boundary layers thicken along the nozzle and test section, reducing the effective area. Nozzle contours are corrected for displacement thickness, and test sections are often slightly divergent.</li>
+  </ul>
+  <p>The model must also be small enough not to <b>block</b> the tunnel. If its blockage, together with its shock losses and the wall boundary layers, takes up too much of the diffuser's capacity, the tunnel unstarts when the model is inserted. Models are often injected after starting, or tested at angles of attack chosen to keep blockage low. Reflected shocks are a second geometric limit: the model's bow shock must not reflect from the wall back onto the model. A Mach-cone sketch shows how long a model can be for a given test-section height.</p>
+
+  <h2 id="pressure"><span class="sec">Section 8.10</span>Measuring pressure</h2>
+  <p>Pressure is the most common measurement in a supersonic tunnel.</p>
+  <ul>
+    <li><b>Surface static taps.</b> Small holes, typically 0.3–1 mm, drilled normal to the model surface and free of burrs, connected by tubing to transducers. Hole-size errors are small if the hole is a small fraction of the boundary-layer thickness.</li>
+    <li><b>Pitot and static probes.</b> Pitot probes read p₀₂ (Lesson 2). Static probes are slender cone-cylinders with taps placed where the nose disturbance has decayed.</li>
+    <li><b>Transducers.</b> Strain-gauge diaphragm transducers, silicon piezoresistive sensors (small, with response to tens of kHz, the workhorse today), capacitive sensors (very accurate and stable, for calibration standards), and piezoelectric gauges (dynamic only, for unsteady pressures and acoustic noise). Electronic pressure scanners multiplex hundreds of taps at high rates, with in-place calibration.</li>
+    <li><b>Pressure-sensitive paint (PSP).</b> A luminescent coating whose emission is quenched by oxygen. It gives a full-field surface pressure image from a camera, after calibration against taps.</li>
+  </ul>
+  <p><b>Pneumatic lag.</b> A transducer connected by tubing does not respond instantly. For laminar (Poiseuille) flow in a tube of diameter \(d\) and length \(L\) feeding a transducer volume \(V_t\), the time constant is roughly</p>
+  $$\tau \approx \frac{128\,\mu\,L\,V_t}{\pi\,d^4\,\bar p}.$$
+  <p>The fourth power of \(d\) and the inverse dependence on pressure matter a great deal in a blowdown tunnel. Low test-section static pressures and fine tubing can give lags of seconds, a large fraction of the run. Interactive 7 lets you check a tubing layout.</p>
+
+  <h2 id="temperature"><span class="sec">Section 8.11</span>Measuring temperature</h2>
+  <p>A thermometer placed in a high-speed flow reads neither \(T\) nor \(T_0\). The fluid near its surface is slowed by viscosity and heated, but some of that heat conducts away. The <b class="term">recovery temperature</b> is defined through the <b class="term">recovery factor</b> \(r\):</p>
+  $$T_r = T + r\,\frac{V^2}{2c_p} = T\left(1 + r\,\frac{\gamma-1}{2}M^2\right), \qquad r \approx \sqrt{Pr} \approx 0.85\ (\text{laminar}),\quad r \approx Pr^{1/3} \approx 0.89\ (\text{turbulent}).$$
+  <p>In a supersonic tunnel the reservoir temperature \(T_0\) is measured in the settling chamber, where the velocity is low, with thermocouples or resistance thermometers. Static temperature is then calculated, not measured. Total-temperature probes for the test section (shielded thermocouples with a vented shroud) are calibrated for their own recovery factor, typically 0.95–0.99. Model surface temperatures, if needed, come from embedded thermocouples, temperature-sensitive paint or infrared thermography.</p>
+
+  <h2 id="forces"><span class="sec">Section 8.12</span>Measuring forces and moments</h2>
+  <p>Aerodynamic forces are measured with a <b class="term">balance</b>. In supersonic tunnels it is almost always an <em>internal sting balance</em>: a machined metal flexure inside the model, mounted on a sting that enters through the model base. Strain gauges in Wheatstone bridges on the flexure elements respond to normal force, axial force, side force and three moments, so a six-component balance gives the full force and moment vector. Calibration applies known loads in every combination, producing an interaction matrix that corrects for cross-talk between components. Key practical issues are listed below.</p>
+  <ul>
+    <li><b>Starting loads.</b> As the starting shock passes, the model sees brief loads several times the steady test loads. Balances must be sized for these, or the model must be injected after the tunnel starts.</li>
+    <li><b>Base pressure.</b> The sting alters the base flow. The measured base pressure is subtracted to get "forebody" drag, and sting-interference studies use different sting sizes.</li>
+    <li><b>Thermal drift.</b> Cold test gas cools the balance during a run, shifting the zero. Temperature compensation and short runs help.</li>
+    <li><b>Dynamic effects.</b> Model–sting vibration and unsteady separation require filtering and attention to the balance's natural frequency.</li>
+  </ul>
+
+  <h2 id="vis"><span class="sec">Section 8.13</span>Flow visualization: schlieren, shadowgraph and interferometry</h2>
+  <p>The density changes in supersonic flow are large enough to bend light. The refractive index of a gas obeys the <b class="term">Gladstone–Dale relation</b>,</p>
+  $$n - 1 = K\rho, \qquad K \approx 2.26\times10^{-4}\ \mathrm{m^3/kg}\ \text{(air, visible light)}.$$
+  <p>A light ray crossing a test section of span \(L\) is deflected by an angle proportional to the density gradient normal to it:</p>
+  $$\varepsilon_y = \frac{1}{n_\infty}\int_0^L \frac{\partial n}{\partial y}\,dz \approx K L\,\frac{\partial\rho}{\partial y}.$$
+  <p>Three classic optical systems respond to different derivatives of density:</p>
+  <ul>
+    <li><b>Shadowgraph</b> responds to \(\nabla^2\rho\), the second derivative. Simple: a point light source and a screen. Shocks appear as a bright–dark line pair, slightly displaced from their true position.</li>
+    <li><b>Schlieren</b> responds to \(\partial\rho/\partial y\), the first derivative normal to a <b>knife edge</b> placed at the focus of the second mirror, which cuts off part of the light source image. Rays bent toward the knife edge are blocked (dark), and rays bent away pass (bright). The orientation of the knife edge selects which gradient component is seen. Sensitivity grows with the focal length of the second mirror and with the fraction of the source image cut off. The usual layout is a Z-type arrangement of two parabolic mirrors. Color schlieren replaces the knife edge with a color filter.</li>
+    <li><b>Interferometry</b> (e.g. Mach–Zehnder) responds to \(\rho\) itself. Each fringe marks a fixed change in \(\int\rho\,dz\), so densities can be measured quantitatively.</li>
+  </ul>
+  <p>Interactive 8 computes all three images for a real flow: a wedge with an attached oblique shock and a Prandtl–Meyer expansion at its shoulder, using the relations of Lessons 5–6.</p>
+</div>
+
+<section class="lab" id="lab8">
+  <div class="lab-head"><span class="num">Interactive 8</span><span class="title">What each optical method sees</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="vM">Freestream Mach M <output for="vM"></output></label>
+      <input type="range" id="vM" min="1.4" max="4" step="0.05" value="2.5"></div>
+    <div class="ctl"><label for="vth">Wedge half-angle θ <output for="vth"></output></label>
+      <input type="range" id="vth" min="4" max="20" step="0.5" value="12" data-dec="1" data-unit="°"></div>
+    <div class="ctl inline"><span>Method</span>
+      <div class="seg" id="vMode" data-value="sx"><button data-value="sx" aria-pressed="true">schlieren ∂ρ/∂x</button><button data-value="sy" aria-pressed="false">schlieren ∂ρ/∂y</button></div></div>
+    <div class="ctl inline"><span></span>
+      <div class="seg" id="vMode2" data-value="none"><button data-value="none" aria-pressed="true">—</button><button data-value="sh" aria-pressed="false">shadowgraph</button><button data-value="int" aria-pressed="false">interferogram</button></div></div>
+    <div class="ctl"><label for="vS">Sensitivity <output for="vS"></output></label>
+      <input type="range" id="vS" min="0.2" max="4" step="0.1" value="1" data-dec="1"></div>
+    <div id="ro8" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><canvas id="cv8" width="640" height="300" style="width:100%;height:auto;border-radius:8px;background:#000"></canvas>
+      <figcaption>Synthetic image computed from the exact oblique-shock and Prandtl–Meyer solution (shock smeared over a few pixels so its gradient is visible). Choose a schlieren knife-edge orientation, or override with shadowgraph or interferometry.</figcaption></figure>
+  </div>
+</section>
+
+<section class="lab" id="lab7">
+  <div class="lab-head"><span class="num">Interactive 7</span><span class="title">Instrument response: tubing lag and recovery temperature</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="ld">Tube inner diameter d <output for="ld"></output></label>
+      <input type="range" id="ld" min="0.3" max="3" step="0.05" value="1" data-dec="2" data-unit=" mm"></div>
+    <div class="ctl"><label for="lL">Tube length L <output for="lL"></output></label>
+      <input type="range" id="lL" min="0.1" max="5" step="0.1" value="1.5" data-dec="1" data-unit=" m"></div>
+    <div class="ctl"><label for="lV">Transducer volume V<sub>t</sub> <output for="lV"></output></label>
+      <input type="range" id="lV" min="10" max="2000" step="10" value="200" data-dec="0" data-unit=" mm³"></div>
+    <div class="ctl"><label for="lp">Mean pressure p̄ <output for="lp"></output></label>
+      <input type="range" id="lp" min="1" max="100" step="1" value="20" data-dec="0" data-unit=" kPa"></div>
+    <div class="ctl"><label for="lr">Probe recovery factor r <output for="lr"></output></label>
+      <input type="range" id="lr" min="0.8" max="1" step="0.005" value="0.89" data-dec="3"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"ld":1,"lL":1.5,"lV":200,"lp":20}'>Typical model tap</button>
+      <button data-preset='{"ld":0.5,"lL":3,"lV":500,"lp":5}'>Fine tubing, low pressure</button>
+      <button data-preset='{"ld":1.5,"lL":0.3,"lV":50,"lp":50}'>Close-coupled transducer</button>
+    </div>
+    <div id="ro7" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot7"></div><figcaption>Response of a tubing–transducer system to a step change in pressure (first-order model), and the time to settle within 1%.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <p>Other optical and seeded techniques complete the toolkit. <b>Surface oil flow</b> shows separation and reattachment lines. <b>Particle image velocimetry (PIV)</b> and <b>laser Doppler velocimetry</b> measure velocity from tracer particles, which must be small (well under a micrometer) to follow the flow through shocks. <b>Planar laser-induced fluorescence</b> images species concentration and temperature.</p>
+
+  <h2 id="procedure"><span class="sec">Section 8.14</span>Running a test: a checklist</h2>
+  <ol>
+    <li><b>Plan.</b> Define the test matrix (Mach, Re, α, configurations) and the measurements. Check model size against blockage, starting loads and reflected-shock limits.</li>
+    <li><b>Prepare the air.</b> Charge the storage tanks (blowdown) or pump down the vacuum tank (indraft). Check dryer performance and dew point.</li>
+    <li><b>Zero and calibrate.</b> Record wind-off zeros of all transducers and the balance, and check calibrations, at the temperature expected during the run if possible.</li>
+    <li><b>Start.</b> Open the control valve and bring p₀ up quickly to the set point. Confirm start from the schlieren image and the test-section static pressure.</li>
+    <li><b>Acquire.</b> Hold conditions, sweep angle of attack if planned, and record p₀, T₀, all pressures, balance outputs and images. Allow for tubing lag before each data point.</li>
+    <li><b>Shut down.</b> Close the valve. Watch for the unstart load and protect the balance.</li>
+    <li><b>Reduce data.</b> Compute test-section conditions from p₀, T₀ and the calibrated Mach number. Form coefficients, and apply base-pressure, sting and wall corrections. Estimate uncertainty by propagating the instrument errors.</li>
+  </ol>
+  <div class="note warn"><b>Safety</b>High-pressure storage, fast-acting valves, vacuum tanks and high-intensity light sources are all hazards. Supersonic facilities run under written procedures with interlocks, pressure-vessel certification and hearing protection.</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 8.15</span>Worked examples</h2>
+<p>γ = 1.4 and R = 287 J/(kg·K). Edit any given value. The <a href="../calculators/wind-tunnel.html">wind-tunnel calculator</a> collects these steps in one place.</p></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 8.1 · Sizing a tunnel</button><button>Ex 8.2 · Blowdown run time</button><button>Ex 8.3 · Mach from a Pitot rake</button><button>Ex 8.4 · Recovery temperature</button></div>
+  <div class="panel" id="ex1">
+    <p>Design a tunnel with a square test section of side \(H\) at Mach \(M\), supplied from a reservoir at \(p_0\) and \(T_0\). Find the nozzle throat size, the mass flow, the test conditions, and the diffuser second throat and pressure ratio needed to start.</p>
+    <div class="given"><label>M<input type="number" id="e1M" value="2.5" step="any"></label><label>H (m)<input type="number" id="e1H" value="0.15" step="any"></label><label>p₀ (kPa)<input type="number" id="e1p" value="500" step="any"></label><label>T₀ (K)<input type="number" id="e1T" value="295" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>A blowdown tunnel with throat area \(A_t\) runs at \(p_0\) and \(T_0\) from tanks of volume \(V\) charged to \(p_i\). The regulator needs the tank to stay above \(1.1p_0\). Estimate the run time for isothermal tanks.</p>
+    <div class="given"><label>A_t (cm²)<input type="number" id="e2A" value="40" step="any"></label><label>p₀ (kPa)<input type="number" id="e2p" value="400" step="any"></label><label>T₀ (K)<input type="number" id="e2T" value="290" step="any"></label><label>V (m³)<input type="number" id="e2V" value="25" step="any"></label><label>p_i (kPa)<input type="number" id="e2pi" value="2000" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A Pitot probe on the tunnel centerline reads \(p_{0,2}\) while the settling chamber reads \(p_{0,1}\). Find the test-section Mach number, and the static pressure it implies.</p>
+    <div class="given"><label>p₀₂ (kPa)<input type="number" id="e3a" value="250" step="any"></label><label>p₀₁ (kPa)<input type="number" id="e3b" value="500" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>A bare thermocouple in a test section at Mach \(M\) reads \(T_r\). The probe's recovery factor is \(r\). Find the static and total temperatures, and the error if the reading were taken as \(T_0\).</p>
+    <div class="given"><label>M<input type="number" id="e4M" value="2" step="any"></label><label>T_r (K)<input type="number" id="e4T" value="280" step="any"></label><label>r<input type="number" id="e4r" value="0.89" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 8.16</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Test-section state and mass flow</h4>
+    $$\frac{T_0}{T} = 1 + \frac{\gamma-1}{2}M^2,\quad \frac{A_\text{test}}{A_{t1}} = \frac{A}{A^*}\bigg|_M$$
+    $$\dot m = 0.0404\,\frac{p_0A_{t1}}{\sqrt{T_0}}\ \ (\text{air, SI})$$</div>
+  <div><h4>Starting and running</h4>
+    $$\frac{A_{t2}}{A_{t1}} \ge \frac{p_{0,1}}{p_{0,2}}\bigg|_{M_t},\qquad \frac{p_0}{p_b}\bigg|_\text{start} \approx \frac{p_{0,1}}{p_{0,2}}\bigg|_{M_t}$$
+    $$\frac{p_0}{p_b}\bigg|_\text{run} \approx \frac{p_{0,1}}{p_{0,2}}\bigg|_{M_{t2}}$$</div>
+  <div><h4>Blowdown and power</h4>
+    $$t_\text{run} = \frac{V(p_i - p_f)}{RT_i\dot m}\ \ (\text{isothermal})$$
+    $$P = \dot mc_pT_0\left[\left(\frac{p_0}{p_b}\right)^{\frac{\gamma-1}{\gamma}} - 1\right]$$</div>
+  <div><h4>Instrumentation</h4>
+    $$T_r = T\left(1 + r\frac{\gamma-1}{2}M^2\right),\qquad n - 1 = K\rho$$
+    $$\tau \approx \frac{128\mu LV_t}{\pi d^4\bar p},\qquad \varepsilon \approx KL\frac{\partial\rho}{\partial y}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen, normalShock, normalShockFrom, bisect, tunnel, blowdown, pSatWater, dewPoint, vaporPressure, obliqueShock, nu, M_from_nu, DEG } = GD;
+  const Rg = 287.05, BAR = 1e5;
+
+  // ---------- quasi-1-D tunnel model shared by Interactives 1 and 3 ----------
+  // x: −0.5…0 contraction, 0…1 nozzle, 1…1.6 test section, 1.6…2.2 converging diffuser, 2.2…3.4 diverging diffuser
+  function geom(Mt, r2, g) {
+    const Ats = isen.A_Astar(Mt, g), At2 = Math.min(r2, Ats), Aex = Math.max(1.6 * Ats, At2 * 1.8), Ain = 3.5;
+    const sm = s => 3 * s * s - 2 * s * s * s;
+    const A = x => x < 0 ? 1 + (Ain - 1) * (x / 0.5) ** 2
+      : x < 1 ? 1 + (Ats - 1) * sm(x)
+      : x < 1.6 ? Ats
+      : x < 2.2 ? Ats + (At2 - Ats) * sm((x - 1.6) / 0.6)
+      : At2 + (Aex - At2) * ((x - 2.2) / 1.2);
+    return { A, Ats, At2, Aex, Ain };
+  }
+  const xs = UI.linspace(-0.5, 3.4, 400);
+  // Inverse of A(x) on a monotone segment
+  const xAt = (G, area, a, b) => bisect(x => G.A(x) - area, a, b);
+
+  // Solve the tunnel for back pressure pb (fraction of p0). mode: "start" or "run".
+  function solveTunnel(Mt, r2, pb, mode, g) {
+    const G = geom(Mt, r2, g), out = { G };
+    const sub = A => isen.M_from_A_Astar(Math.max(A, 1), g, "sub"), sup = A => isen.M_from_A_Astar(Math.max(A, 1), g, "sup");
+    const pe1 = 1 / isen.p0_p(sub(G.Aex), g);  // choked, subsonic everywhere
+    // exit pressure with a normal shock at upstream Mach Ms (shock at area As in a region with A* = At1 = 1)
+    const exitAfterShock = Ms => { const ns = normalShock(Ms, g); return ns.p02_p01 / isen.p0_p(sub(G.Aex * ns.p02_p01), g); };
+    const Mallow = G.At2 > 1 ? normalShockFrom("p02_p01", 1 / G.At2, g).M1 : 1; // strongest shock the second throat can pass
+    const pStart = exitAfterShock(Mt);
+    const M2t = G.At2 > 1 ? sup(G.At2) : 1;
+    const pRun = exitAfterShock(Math.max(M2t, 1.0001));
+    const canStart = Mallow >= Mt - 1e-9;
+    Object.assign(out, { pe1, pStart, pRun, Mallow, canStart, M2t });
+    let state, xsh = null, Ms = null;
+    const started = canStart && (pb <= pStart + 1e-12 || (mode === "run" && pb <= pRun));
+    if (pb >= 1) { state = "noflow"; }
+    else if (pb > pe1) { state = "subsonic"; }
+    else if (!started) {
+      // shock in the nozzle: find Ms with exitAfterShock(Ms) = pb, limited by Mallow and Mt
+      const Mcap = Math.min(Mallow, Mt);
+      let M = bisect(m => exitAfterShock(m) - pb, 1.000001, Mcap);
+      if (isNaN(M)) M = Mcap; // second throat choked: shock pinned
+      Ms = M; xsh = Ms >= Mt - 1e-6 ? 1.6 : xAt(G, isen.A_Astar(Ms, g), 0, 1);
+      state = (!canStart && Math.abs(M - Mallow) < 1e-6) ? "pinned" : "nozzle";
+    } else {
+      // started: shock in the diverging diffuser where exit pressure matches pb
+      const exitDiff = As => exitAfterShock(sup(As));
+      const pShockAtExit = exitDiff(G.Aex);
+      if (pb <= pShockAtExit) { state = "supersonic-exit"; }
+      else {
+        const As = bisect(a => exitDiff(a) - pb, G.At2 * 1.000001, G.Aex);
+        const AsUse = isNaN(As) ? G.At2 : As;
+        Ms = sup(AsUse); xsh = xAt(G, AsUse, 2.2, 3.4); state = "started";
+      }
+    }
+    // Mach distribution
+    const M = xs.map(x => {
+      const A = G.A(x);
+      if (state === "noflow") return 0;
+      if (state === "subsonic") {
+        const Me = isen.M_from_p0_p(1 / pb, g), Astar = G.Aex / isen.A_Astar(Me, g);
+        return sub(A / Astar);
+      }
+      if (x <= 0) return sub(A);
+      if (state === "nozzle" || state === "pinned") {
+        if (x < xsh) return sup(A);
+        const r = normalShock(Ms, g).p02_p01;
+        const Ma = A * r; // A/A2*, with A2* = 1/r
+        if (state === "pinned" && x >= 2.2) return sup(Math.max(A / G.At2, 1)); // second throat sonic, re-expands
+        return Ma >= 1 ? sub(Ma) : 1;
+      }
+      // started
+      if (x < 2.2) return sup(A);
+      if (state === "supersonic-exit" || x < xsh) return sup(A);
+      return sub(A * normalShock(Ms, g).p02_p01);
+    });
+    return Object.assign(out, { state, xsh, Ms, M });
+  }
+
+  function drawTunnel(el, sol, opts = {}) {
+    const G = sol.G, W = 640, H = 200, cy = 100, k = 70 / Math.sqrt(G.Ain);
+    const X = x => 20 + (x + 0.5) / 3.9 * 600, r = x => k * Math.sqrt(G.A(x));
+    let up = "", lo = "", fillSup = "";
+    xs.forEach((x, i) => { up += (i ? "L" : "M") + X(x).toFixed(1) + " " + (cy - r(x)).toFixed(1); lo += (i ? "L" : "M") + X(x).toFixed(1) + " " + (cy + r(x)).toFixed(1); });
+    // supersonic shading
+    let seg = [];
+    const flush = () => { if (seg.length > 1) { fillSup += `<path d="M${seg.map(x => `${X(x).toFixed(1)} ${(cy - r(x)).toFixed(1)}`).join(" L")} L${seg.slice().reverse().map(x => `${X(x).toFixed(1)} ${(cy + r(x)).toFixed(1)}`).join(" L")}Z" fill="var(--accent)" opacity=".16"/>`; } seg = []; };
+    xs.forEach((x, i) => { if (sol.M[i] > 1.0005) seg.push(x); else flush(); }); flush();
+    let shock = "";
+    if (sol.xsh !== null && sol.xsh !== undefined) shock = `<line x1="${X(sol.xsh)}" x2="${X(sol.xsh)}" y1="${cy - r(sol.xsh)}" y2="${cy + r(sol.xsh)}" class="shock"/>`;
+    const labels = [["settling", -0.35], ["nozzle", 0.5], ["test section", 1.3], ["diffuser", 2.6]].map(([t, x]) => `<text x="${X(x)}" y="${H - 6}" text-anchor="middle" class="small">${t}</text>`).join("");
+    const model = opts.model ? `<path d="M${X(1.18)} ${cy} L${X(1.42)} ${cy - 8} L${X(1.42)} ${cy + 8} Z" class="body"/>` : "";
+    document.getElementById(el).innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${fillSup}
+      <path d="${up}" class="body" style="fill:none;stroke-width:2"/><path d="${lo}" class="body" style="fill:none;stroke-width:2"/>${shock}${model}
+      <line x1="${X(0)}" x2="${X(0)}" y1="${cy - r(0) - 6}" y2="${cy + r(0) + 6}" class="stream" style="stroke-dasharray:2 3"/><text x="${X(0)}" y="${cy - r(0) - 10}" text-anchor="middle" class="small">A_t1</text>
+      <line x1="${X(2.2)}" x2="${X(2.2)}" y1="${cy - r(2.2) - 6}" y2="${cy + r(2.2) + 6}" class="stream" style="stroke-dasharray:2 3"/><text x="${X(2.2)}" y="${cy - r(2.2) - 10}" text-anchor="middle" class="small">A_t2</text>
+      ${labels}</svg>`;
+  }
+
+  // Interactive 1
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), Mt = UI.val("aM"), f = UI.val("aR");
+    const r2min = 1 / normalShock(Mt, g).p02_p01, r2 = Math.min(r2min * f, isen.A_Astar(Mt, g));
+    const sol0 = solveTunnel(Mt, r2, 0.5, "run", g);
+    const sol = solveTunnel(Mt, r2, Math.min(sol0.pRun * 0.999, 0.999), "run", g);
+    drawTunnel("diag1", sol, { model: true });
+    const p = sol.M.map((m, i) => { let p0r = 1; if (sol.xsh !== null && xs[i] > sol.xsh) p0r = normalShock(sol.Ms, g).p02_p01; return p0r / isen.p0_p(m, g); });
+    UI.plot("#plot1", { xlabel: "position along tunnel (schematic)", ylabel: "M  and  p/p₀", xlim: [-0.5, 3.4], ylim: [0, Math.max(Mt * 1.1, 1.2)], legend: "tr", h: 260,
+      series: [{ x: xs, y: sol.M, label: "Mach number", c: 1, width: 3 }, { x: xs, y: p, label: "p / p₀", c: 3 }], hlines: [{ y: 1 }],
+      bands: [{ x0: 1, x1: 1.6, label: "test section" }] });
+    UI.live("#lab1", `A_t2/A_t1 = ${r2.toFixed(3)} · terminal shock at M = ${(sol.Ms || 1).toFixed(3)} · p₀/p_b(run) = ${(1 / sol.pRun).toFixed(3)}`);
+    UI.readout("#ro1", [["A_test/A_t1", isen.A_Astar(Mt, g)], ["A_t2/A_t1", r2], ["M at second throat", sol.M2t], ["terminal shock p₀₂/p₀₁", normalShock(Math.max(sol.M2t, 1), g).p02_p01],
+      ["p₀/p_b to start", 1 / sol.pStart], ["p₀/p_b to run", 1 / sol.pRun], ["test p/p₀", 1 / isen.p0_p(Mt, g)]]);
+  });
+
+  // Interactive 2
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M = UI.val("dM"), p0 = UI.val("dp0") * BAR, T0 = UI.val("dT0"), H = UI.val("dH");
+    const At = H * H / isen.A_Astar(M, g), t = tunnel(M, p0, T0, g, Rg, At);
+    const cp = g * Rg / (g - 1);
+    UI.live("#lab2", `ṁ = ${UI.fmt(t.mdot)} kg/s · Re/m = ${UI.fmt(t.Re_per_m)} · T = ${t.T.toFixed(1)} K`);
+    UI.readout("#ro2", [["Static T (K)", t.T, `${(t.T - 273.15).toFixed(0)} °C`], ["Static p (kPa)", t.p / 1000], ["Velocity (m/s)", t.V], ["q (kPa)", t.q / 1000],
+      ["Unit Re (1/m)", t.Re_per_m], ["Mass flow (kg/s)", t.mdot], ["Throat area A_t1 (cm²)", At * 1e4], ["Throat height (mm)", At / H * 1000, "for a 2-D nozzle"],
+      ["Pitot pressure (kPa)", t.pitot / 1000], ["A_t2 min (cm²)", At * t.At2_At1_min * 1e4], ["p₀/p_b to start", t.p0_pb_start],
+      ["Ideal compressor power (MW)", t.mdot * cp * T0 * (Math.pow(t.p0_pb_start, (g - 1) / g) - 1) / 1e6, "continuous, to start"]]);
+    const Ms = UI.linspace(1.05, 4.5, 120), tt = Ms.map(m => tunnel(m, p0, T0, g, Rg, At));
+    UI.plot("#plot2", { xlabel: "Test Mach number", ylabel: "unit Reynolds number (1/m)", xlim: [1, 4.5], logy: true, ylim: [1e6, 3e9], legend: "tl",
+      series: [{ x: Ms, y: tt.map(s => s.Re_per_m), label: "Re per meter", c: 2, width: 3 }, { x: Ms, y: tt.map(s => s.T * 1e6), label: "static T (×10⁶, K)", c: 3, dash: true }],
+      points: [{ x: M, y: t.Re_per_m, c: 2, label: UI.fmt(t.Re_per_m, 3) }] });
+  });
+
+  // Interactive 3
+  UI.wire("#lab3", () => {
+    const g = UI.gamma(), Mt = UI.val("sM"), r2 = UI.val("sR"), pb = UI.val("sP"), mode = UI.seg("sHist");
+    const sol = solveTunnel(Mt, r2, pb, mode, g);
+    drawTunnel("diag3", sol);
+    const msgs = {
+      noflow: "No flow: the back pressure equals the reservoir pressure.",
+      subsonic: "Subsonic everywhere. The nozzle throat is not yet choked.",
+      nozzle: `Unstarted: the starting shock stands in the nozzle at M = ${(sol.Ms || 0).toFixed(3)}. Lower the back pressure to push it through the test section (needs p_b/p₀ ≤ ${sol.pStart.toFixed(3)}).`,
+      pinned: `Will not start. The second throat (A_t2/A_t1 = ${sol.G.At2.toFixed(3)}) is smaller than the ${(1 / normalShock(Mt, g).p02_p01).toFixed(3)} needed, so it chokes, and the starting shock is pinned at M = ${sol.Mallow.toFixed(3)}, wherever p_b is set.`,
+      started: `Started. Supersonic test section at M = ${Mt}; terminal shock in the diffuser at M = ${(sol.Ms || 0).toFixed(3)}.`,
+      "supersonic-exit": "Started, with supersonic flow all the way to the diffuser exit (back pressure lower than needed).",
+    };
+    const st = document.getElementById("status3");
+    st.className = "status " + (sol.state === "started" || sol.state === "supersonic-exit" ? "good" : sol.state === "pinned" ? "bad" : "warn");
+    st.innerHTML = msgs[sol.state];
+    UI.plot("#plot3", { xlabel: "position along tunnel (schematic)", ylabel: "Mach number", xlim: [-0.5, 3.4], ylim: [0, Math.max(Mt * 1.15, 1.3)], h: 250,
+      series: [{ x: xs, y: sol.M, c: 1, width: 3 }], hlines: [{ y: 1, label: "M = 1" }], bands: [{ x0: 1, x1: 1.6, label: "test section" }] });
+    UI.live("#lab3", sol.state.replace("-", " "));
+    UI.readout("#ro3", [["p_b/p₀ to choke", sol.pe1], ["p_b/p₀ to start", sol.canStart ? sol.pStart : "cannot start"], ["p_b/p₀ to stay started", sol.canStart ? sol.pRun : "—"],
+      ["A_t2/A_t1 needed", 1 / normalShock(Mt, g).p02_p01], ["A_t2/A_t1 actual", sol.G.At2], ["Shock Mach", sol.Ms || "—"]]);
+  });
+
+  // Interactive 4
+  UI.wire("#lab4", () => {
+    const g = UI.gamma(), Mt = UI.val("rM"), Ms = UI.linspace(1.02, 5, 200);
+    const start = Ms.map(m => 1 / normalShock(m, g).p02_p01);
+    const run = Ms.map((m, i) => { const r2 = Math.min(start[i], isen.A_Astar(m, g)); const m2 = isen.M_from_A_Astar(r2, g, "sup"); return 1 / normalShock(Math.max(m2, 1), g).p02_p01; });
+    const s0 = 1 / normalShock(Mt, g).p02_p01, m2 = isen.M_from_A_Astar(Math.min(s0, isen.A_Astar(Mt, g)), g, "sup"), r0 = 1 / normalShock(Math.max(m2, 1), g).p02_p01;
+    UI.plot("#plot4", { xlabel: "Test-section Mach number", ylabel: "ratio", xlim: [1, 5], ylim: [1, 40], logy: true, legend: "tl",
+      series: [{ x: Ms, y: start, label: "p₀/p_b to start  = A_t2/A_t1 min", c: 3, width: 3 }, { x: Ms, y: run, label: "p₀/p_b to run (min 2nd throat)", c: 1, width: 3 },
+        { x: Ms, y: Ms.map(m => isen.A_Astar(m, g)), label: "A_test/A_t1", c: 2, dash: true }],
+      points: [{ x: Mt, y: s0, c: 3 }, { x: Mt, y: r0, c: 1 }] });
+    UI.live("#lab4", `start ${s0.toFixed(3)} · run ${r0.toFixed(3)}`);
+    UI.readout("#ro4", [["p₀/p_b to start", s0], ["p₀/p_b to run", r0], ["Saving", ((1 - r0 / s0) * 100).toFixed(1) + " %"], ["M at 2nd throat", m2], ["A_test/A_t1", isen.A_Astar(Mt, g)]]);
+  });
+
+  // Interactive 5
+  UI.wire("#lab5", () => {
+    const g = UI.gamma(), V = UI.val("bV"), pi = UI.val("bpi") * BAR, p0 = UI.val("bp0") * BAR, M = UI.val("bM"), H = UI.val("bH");
+    const At = H * H / isen.A_Astar(M, g), Ti = 290;
+    const iso = blowdown({ V, pi, p0, margin: 0.1, Ti, At, g, R: Rg, process: "isothermal" });
+    const adi = blowdown({ V, pi, p0, margin: 0.1, Ti, At, g, R: Rg, process: "adiabatic" });
+    const tmax = Math.max(iso.t, 1e-3) * 1.05;
+    UI.plot("#plot5", { xlabel: "time (s)", ylabel: "tank pressure (bar)  ·  supply T₀/10 (K)", xlim: [0, tmax], ylim: [0, Math.max(pi / BAR, 30) * 1.05], legend: "tr",
+      series: [{ x: iso.hist.map(h => h.t), y: iso.hist.map(h => h.p / BAR), label: "p_tank, isothermal", c: 1, width: 3 }, { x: adi.hist.map(h => h.t), y: adi.hist.map(h => h.p / BAR), label: "p_tank, adiabatic", c: 3, width: 3 },
+        { x: adi.hist.map(h => h.t), y: adi.hist.map(h => h.T / 10), label: "T₀/10, adiabatic", c: 4, dash: true }],
+      hlines: [{ y: 1.1 * p0 / BAR, label: "1.1 p₀ (end of run)" }] });
+    const mdot = isen.massFlowParam(1, g, Rg) * At * p0 / Math.sqrt(Ti);
+    UI.live("#lab5", pi <= 1.1 * p0 ? "tank pressure too low to run" : `run time ${iso.t.toFixed(1)} s (isothermal) · ${adi.t.toFixed(1)} s (adiabatic)`);
+    UI.readout("#ro5", [["Mass flow (kg/s)", mdot], ["Air stored (kg)", iso.mi || pi * V / (Rg * Ti)], ["Run time, isothermal (s)", iso.t], ["Run time, adiabatic (s)", adi.t],
+      ["T₀ at end, adiabatic (K)", adi.hist[adi.hist.length - 1].T], ["Usable fraction of air", iso.used ? iso.used / iso.mi : 0]]);
+  });
+
+  // Interactive 6: condensation
+  UI.wire("#lab6", () => {
+    const g = UI.gamma(), Mt = UI.val("cM"), w = Math.pow(10, UI.val("cw")), p0 = UI.val("cp0") * BAR, T0 = UI.val("cT0");
+    const Ms = UI.linspace(0, 4.5, 200);
+    const T = Ms.map(m => T0 / isen.T0_T(m, g));
+    const frost = Ms.map(m => dewPoint(vaporPressure(w, p0 / isen.p0_p(m, g))));
+    const Tt = T0 / isen.T0_T(Mt, g), pt = p0 / isen.p0_p(Mt, g), pv = vaporPressure(w, pt), S = pv / pSatWater(Tt);
+    const Tf = dewPoint(pv);
+    UI.plot("#plot6", { xlabel: "local Mach number in the nozzle", ylabel: "temperature (K)", xlim: [0, 4.5], ylim: [0, Math.max(T0 * 1.05, 320)], legend: "tr",
+      series: [{ x: Ms, y: T, label: "static temperature", c: 2, width: 3 }, { x: Ms, y: frost, label: "frost/dew point of vapor", c: 3, width: 3 }],
+      vlines: [{ x: Mt, label: "test section" }], points: [{ x: Mt, y: Tt, c: 2 }, { x: Mt, y: Tf, c: 3 }] });
+    // Mach where supersaturation begins
+    const Mc = bisect(m => T0 / isen.T0_T(m, g) - dewPoint(vaporPressure(w, p0 / isen.p0_p(m, g))), 0.01, 4.5);
+    const st = document.getElementById("status6");
+    const dry = w <= 1.2e-4;
+    st.className = "status " + (S < 1 ? "good" : dry ? "warn" : "bad");
+    st.innerHTML = S < 1 ? "Vapor stays unsaturated through the test section: no condensation."
+      : `Supersaturated from M ≈ ${isNaN(Mc) ? "—" : Mc.toFixed(2)} onward; saturation ratio in the test section ${UI.fmt(S, 3)}. ${dry ? "At this low humidity the heat release is small, and nucleation is slow enough that effects are usually negligible." : "Expect a condensation shock and a measurable change in test Mach number: dry the air."}`;
+    UI.live("#lab6", `ω = ${UI.fmt(w * 1e6, 3)} ppm · frost point at reservoir ${(dewPoint(vaporPressure(w, p0)) - 273.15).toFixed(1)} °C`);
+    // Heat release if all vapor condensed (sublimation enthalpy ~2.83 MJ/kg) → ΔT0
+    const dT0 = w * 2.83e6 / (g * Rg / (g - 1));
+    UI.readout("#ro6", [["Test static T (K)", Tt], ["Frost point in test section (K)", Tf], ["Saturation ratio S", S], ["Reservoir frost point (°C)", dewPoint(vaporPressure(w, p0)) - 273.15],
+      ["ΔT₀ if all vapor condensed (K)", dT0, "latent heat released"]]);
+  });
+
+  // Interactive 7: tubing lag and recovery
+  UI.wire("#lab7", () => {
+    const d = UI.val("ld") / 1000, L = UI.val("lL"), Vt = UI.val("lV") * 1e-9, p = UI.val("lp") * 1000, r = UI.val("lr");
+    const mu = 1.8e-5, tau = 128 * mu * L * Vt / (Math.PI * d ** 4 * p) + 128 * mu * L * (Math.PI * d * d / 4 * L) / (2 * Math.PI * d ** 4 * p);
+    const tt = UI.linspace(0, Math.max(6 * tau, 1e-3), 200);
+    UI.plot("#plot7", { xlabel: "time after step (s)", ylabel: "indicated / actual change", xlim: [0, tt[tt.length - 1]], ylim: [0, 1.05], h: 260,
+      series: [{ x: tt, y: tt.map(t => 1 - Math.exp(-t / tau)), c: 1, width: 3 }], hlines: [{ y: 0.99, label: "99%" }], vlines: [{ x: 4.6 * tau, label: "settled" }] });
+    const M = 2.5, g = 1.4, T0 = 290, T = T0 / isen.T0_T(M, g), Tr = T * (1 + r * (g - 1) / 2 * M * M);
+    UI.live("#lab7", `τ = ${UI.fmt(tau, 3)} s · settle (1%) in ${UI.fmt(4.6 * tau, 3)} s`);
+    UI.readout("#ro7", [["Time constant τ (s)", tau], ["Time to 1% (s)", 4.6 * tau], ["Tube volume / V_t", (Math.PI * d * d / 4 * L) / Vt],
+      ["T_r at M = 2.5, T₀ = 290 K", Tr, `reads ${(T0 - Tr).toFixed(1)} K below T₀`]]);
+  });
+
+  // Interactive 8: synthetic schlieren / shadowgraph / interferogram
+  const cv = document.getElementById("cv8"), ctx = cv.getContext("2d");
+  UI.wire("#lab8", () => {
+    const g = UI.gamma(), M = UI.val("vM"), th = UI.val("vth") * DEG, sens = UI.val("vS");
+    const mode = UI.seg("vMode2") !== "none" ? UI.seg("vMode2") : UI.seg("vMode");
+    const W = cv.width, H = cv.height, os = obliqueShock(M, th, g);
+    const img = ctx.createImageData(W, H);
+    // geometry in pixels: wedge apex at (120, H-40), ramp to x = 360, then flat
+    const x0 = 120, yb = H - 40, xs2 = 360, ys2 = yb - (xs2 - x0) * Math.tan(th);
+    let rho;
+    if (os) {
+      const r2 = os.rho2_rho1, M2 = os.M2, nu2 = nu(M2, g), M3 = M_from_nu(nu2 + th, g), mu2 = Math.asin(1 / M2), mu3 = Math.asin(1 / M3);
+      const b = os.beta, w = 2.2;
+      // Centred Prandtl–Meyer fan at the shoulder: along a ray at angle φ (from horizontal) the flow direction δ and Mach M
+      // satisfy δ = θ − (ν(M) − ν₂) and φ = δ + μ(M). Tabulate ρ/ρ₁ against φ.
+      const phiLead = th + mu2, phiTrail = mu3, tab = [];
+      for (let k = 0; k <= 200; k++) {
+        const phi = phiTrail + (phiLead - phiTrail) * k / 200;
+        const Mf = bisect(m => (th - (nu(m, g) - nu2)) + Math.asin(1 / m) - phi, M2, M3 + 1e-9);
+        const Mu = isNaN(Mf) ? (k ? M2 : M3) : Mf;
+        tab.push(r2 * isen.rho0_rho(M2, g) / isen.rho0_rho(Mu, g));
+      }
+      const fanRho = phi => { const u = Math.min(200, Math.max(0, 200 * (phi - phiTrail) / (phiLead - phiTrail))), i = Math.min(199, Math.floor(u)); return tab[i] + (tab[i + 1] - tab[i]) * (u - i); };
+      rho = (x, y) => {
+        if (x >= x0 && ((x < xs2 && y > yb - (x - x0) * Math.tan(th)) || (x >= xs2 && y > ys2))) return null; // inside the wedge
+        const ds = (x - x0) * Math.sin(b) - (yb - y) * Math.cos(b);  // signed distance from the shock (positive = behind)
+        const shockMix = 0.5 * (1 + Math.tanh(ds / w));
+        let behind = r2;
+        const phi = Math.atan2(ys2 - y, x - xs2);
+        if (phi < phiLead && phi > -Math.PI / 2) behind = phi <= phiTrail ? r2 * isen.rho0_rho(M2, g) / isen.rho0_rho(M3, g) : fanRho(phi);
+        return 1 + (behind - 1) * shockMix;
+      };
+    } else rho = () => 1;
+    const field = new Float32Array(W * H);
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) { const v = rho(i, j); field[j * W + i] = v === null ? NaN : v; }
+    const at = (i, j) => { const v = field[Math.min(H - 1, Math.max(0, j)) * W + Math.min(W - 1, Math.max(0, i))]; return isNaN(v) ? NaN : v; };
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+      const v = at(i, j), k = 4 * (j * W + i);
+      let I;
+      if (isNaN(v)) { img.data[k] = 40; img.data[k + 1] = 44; img.data[k + 2] = 52; img.data[k + 3] = 255; continue; }
+      if (mode === "sx") { const dx = (at(i + 1, j) - at(i - 1, j)); I = 0.5 + sens * 2.5 * (isNaN(dx) ? 0 : dx); }
+      else if (mode === "sy") { const dy = (at(i, j + 1) - at(i, j - 1)); I = 0.5 - sens * 2.5 * (isNaN(dy) ? 0 : dy); }
+      else if (mode === "sh") { const lap = at(i + 1, j) + at(i - 1, j) + at(i, j + 1) + at(i, j - 1) - 4 * v; I = 0.5 + sens * 4 * (isNaN(lap) ? 0 : lap); }
+      else { I = 0.5 + 0.5 * Math.cos(2 * Math.PI * sens * 6 * (v - 1) + 0.002 * j * sens * 6); }
+      I = Math.max(0, Math.min(1, I)) * 235 + 10;
+      img.data[k] = I; img.data[k + 1] = I; img.data[k + 2] = I; img.data[k + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    ctx.fillStyle = "#ddd"; ctx.font = "13px sans-serif";
+    ctx.fillText(os ? `M = ${M.toFixed(2)}, θ = ${(th / DEG).toFixed(1)}°, β = ${(os.beta / DEG).toFixed(1)}°` : "shock detached at this θ: increase M or reduce θ", 10, 20);
+    const labels = { sx: "schlieren, vertical knife edge (∂ρ/∂x)", sy: "schlieren, horizontal knife edge (∂ρ/∂y)", sh: "shadowgraph (∇²ρ)", int: "interferogram (ρ)" };
+    ctx.fillText(labels[mode], 10, 38);
+    UI.live("#lab8", labels[mode]);
+    if (os) {
+      const M3 = M_from_nu(nu(os.M2, g) + th, g);
+      UI.readout("#ro8", [["β (°)", os.beta / DEG], ["ρ₂/ρ₁ across shock", os.rho2_rho1], ["M behind shock", os.M2], ["M after shoulder", M3],
+        ["ρ₃/ρ₁ after shoulder", os.rho2_rho1 * isen.rho0_rho(os.M2, g) / isen.rho0_rho(M3, g)], ["Δn across shock (ρ₁ = 0.4 kg/m³)", 2.26e-4 * 0.4 * (os.rho2_rho1 - 1)]]);
+    } else UI.readout("#ro8", [["Status", "detached"]]);
+  });
+
+  // Worked examples
+  const g = 1.4, R = 287, cp = g * R / (g - 1);
+  UI.wire("#ex1", () => {
+    const M = UI.val("e1M"), H = UI.val("e1H"), p0 = UI.val("e1p") * 1000, T0 = UI.val("e1T");
+    const AR = isen.A_Astar(M, g), At = H * H / AR, t = tunnel(M, p0, T0, g, R, At), ns = normalShock(M, g);
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["A/A* at M", "area–Mach relation", AR], ["Throat area A_t1 (cm²)", "H²/(A/A*)", At * 1e4], ["Throat height (mm), 2-D nozzle", "A_t1/H", At / H * 1000],
+      ["ṁ (kg/s)", "0.0404 p₀A_t1/√T₀", t.mdot], { sub: "Test section" }, ["T (K)", "T₀/(1 + 0.2M²)", t.T], ["p (kPa)", "p₀/(p₀/p)", t.p / 1000], ["V (m/s)", "M√(γRT)", t.V],
+      ["q (kPa)", "½γpM²", t.q / 1000], ["Re per m", "ρV/μ (Sutherland)", t.Re_per_m], { sub: "Diffuser" },
+      ["p₀₂/p₀₁ at M", "normal shock", ns.p02_p01], ["A_t2 min (cm²)", "A_t1 · p₀₁/p₀₂", At / ns.p02_p01 * 1e4], ["p_b max to start (kPa)", "p₀ · p₀₂/p₀₁", p0 * ns.p02_p01 / 1000]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const At = UI.val("e2A") / 1e4, p0 = UI.val("e2p") * 1000, T0 = UI.val("e2T"), V = UI.val("e2V"), pi = UI.val("e2pi") * 1000;
+    const mdot = isen.massFlowParam(1, g, R) * At * p0 / Math.sqrt(T0), pf = 1.1 * p0;
+    const mi = pi * V / (R * T0), mf = pf * V / (R * T0);
+    const adi = blowdown({ V, pi, p0, margin: 0.1, Ti: T0, At, g, R, process: "adiabatic" });
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["ṁ (kg/s)", "0.0404 p₀A_t/√T₀", mdot], ["m_i (kg)", "p_iV/(RT)", mi], ["m_f (kg)", "1.1p₀V/(RT)", mf], ["Usable air (kg)", "m_i − m_f", mi - mf],
+      ["Run time, isothermal (s)", "(m_i − m_f)/ṁ", (mi - mf) / mdot], { sub: "For comparison" }, ["Run time, adiabatic tank (s)", "numerical integration", adi.t],
+      ["T₀ at end, adiabatic (K)", "T_i (m/m_i)^(γ−1)", adi.hist[adi.hist.length - 1].T]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const a = UI.val("e3a"), b = UI.val("e3b"), r = a / b;
+    if (!(r > 0 && r <= 1)) { document.getElementById("e3out").innerHTML = "<p class='status bad'>p₀₂/p₀₁ must lie between 0 and 1.</p>"; return; }
+    const M = normalShockFrom("p02_p01", r, g).M1;
+    UI.table("#e3out", ["Quantity", "Relation used", "Result"], [["p₀₂/p₀₁", "measured", r], ["M", "invert normal-shock p₀₂/p₀₁", M],
+      ["p/p₀₁", "isentropic", 1 / isen.p0_p(M, g)], ["p (kPa)", "", b / isen.p0_p(M, g)], ["Pitot/static p₀₂/p", "Rayleigh Pitot (check)", normalShock(M, g).p02_p1]], "ex");
+  });
+  UI.wire("#ex4", () => {
+    const M = UI.val("e4M"), Tr = UI.val("e4T"), r = UI.val("e4r");
+    const T = Tr / (1 + r * (g - 1) / 2 * M * M), T0 = T * isen.T0_T(M, g);
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [["T (K)", "T_r/(1 + r(γ−1)M²/2)", T], ["T₀ (K)", "T(1 + (γ−1)M²/2)", T0],
+      ["Error if T_r taken as T₀ (K)", "T₀ − T_r", T0 - Tr], ["Error (%)", "", (100 * (T0 - Tr) / T0).toFixed(2) + " %"]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "In a supersonic tunnel, which similarity parameter is hardest to match for a small-scale model?", opts: ["Mach number", "γ", "Reynolds number", "Prandtl number"], a: 2, why: "Mach is set by the nozzle; γ and Pr match automatically with air. Reynolds number needs ρV/μ multiplied by the scale factor, rarely achievable." },
+    { q: "The test-section Mach number of a supersonic tunnel is fixed by…", opts: ["the reservoir pressure", "the nozzle exit-to-throat area ratio", "the diffuser", "the back pressure"], a: 1, why: "A_test/A_t1 = A/A* at the test Mach number. Pressure changes alter density and Reynolds number, not M." },
+    { q: "The diffuser second throat must be at least as large as A_t1 times…", opts: ["p₀₂/p₀₁ at the test Mach", "p₀₁/p₀₂ at the test Mach", "A/A* at the test Mach", "1"], a: 1, why: "Behind the starting shock p₀ has dropped to p₀₂; mass conservation through choked throats gives p₀₁A_t1 = p₀₂A_t2*, so A_t2 ≥ A_t1 p₀₁/p₀₂." },
+    { q: "If the second throat is too small, then as the back pressure is lowered…", opts: ["the tunnel starts anyway", "the starting shock stays pinned in the nozzle", "the test Mach increases", "the throat unchokes"], a: 1, why: "The second throat chokes first; the shock can advance only until its p₀ loss matches A_t2/A_t1, wherever p_b is set." },
+    { q: "Why can a started tunnel run at a higher back pressure than was needed to start it?", opts: ["Because T₀ rises", "The terminal shock now sits at the lower Mach number of the second throat, so it loses less p₀", "Because the throat area changes", "It cannot"], a: 1, why: "Starting needs a normal shock at M_t; running needs only one at M_t2 < M_t, a smaller loss. This is the hysteresis of supersonic tunnels and inlets." },
+    { q: "In an adiabatic blowdown tank, compared with an isothermal one, the run is…", opts: ["longer, at constant T₀", "shorter, with T₀ falling", "the same", "longer, with T₀ rising"], a: 1, why: "The remaining air cools as it expands; colder supply air raises ṁ ∝ 1/√T₀ and the tank pressure falls faster (p ∝ m^γ)." },
+    { q: "Supersonic tunnel air must be dried because…", opts: ["water corrodes the nozzle", "the test-section static temperature is far below the frost point, so vapor condenses and releases heat into the supersonic stream", "humid air has a different γ", "it improves schlieren contrast"], a: 1, why: "Condensation releases latent heat, acting as heat addition in supersonic flow: it lowers the Mach number and can form condensation shocks." },
+    { q: "A test-section Mach number is usually calibrated by…", opts: ["measuring the velocity with a ruler", "a Pitot rake: p₀₂/p₀₁ gives M through the normal-shock relation", "the compressor speed", "the throat temperature"], a: 1, why: "Each Pitot probe reads p₀₂; dividing by the settling-chamber p₀₁ and inverting the normal-shock total-pressure ratio gives local M." },
+    { q: "A thermocouple in supersonic flow reads the recovery temperature, which is…", opts: ["equal to the static temperature", "between the static and total temperatures", "above the total temperature", "equal to the total temperature exactly"], a: 1, why: "T_r = T + rV²/(2c_p) with r ≈ 0.85–0.9 for a bare surface, so T < T_r < T₀." },
+    { q: "Pneumatic lag in pressure tubing scales with tube diameter d as…", opts: ["d", "1/d", "1/d²", "1/d⁴"], a: 3, why: "Poiseuille flow resistance ∝ L/d⁴, so τ ∝ μLV_t/(d⁴p̄): halving the diameter makes the lag 16 times longer." },
+    { q: "A schlieren system with a horizontal knife edge shows…", opts: ["ρ", "∂ρ/∂y (vertical gradients)", "∂ρ/∂x (horizontal gradients)", "∇²ρ"], a: 1, why: "The knife edge cuts rays deflected normal to its edge. A horizontal edge blocks vertical deflections, which are produced by ∂ρ/∂y." },
+    { q: "Which method gives quantitative density directly?", opts: ["Shadowgraph", "Schlieren", "Interferometry", "Oil flow"], a: 2, why: "Interferometers measure optical path, ∝ ∫ρ dz; each fringe is a fixed density change. Schlieren and shadowgraph respond to first and second derivatives." },
+  ]);
+})();
+</script>
+</body>
+</html>

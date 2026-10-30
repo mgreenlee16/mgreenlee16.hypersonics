@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supersonic Wind Tunnel Calculator · Compressible Flow Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Experiment</div>
+  <h1>Supersonic Wind Tunnel</h1>
+  <p class="lead">Size a supersonic tunnel and estimate its operating envelope: test-section conditions, nozzle throat, mass flow, diffuser second throat, starting and running pressure ratios, compressor power, blowdown run time, and the humidity limit for condensation.</p>
+</div>
+<section class="calc" id="wt">
+  <div class="inputs">
+    <label>Test Mach M<input type="number" id="M" value="2.5" step="any"></label>
+    <label>p₀ (kPa)<input type="number" id="p0" value="400" step="any"></label>
+    <label>T₀ (K)<input type="number" id="T0" value="290" step="any"></label>
+    <label>Test width (m)<input type="number" id="W" value="0.1" step="any"></label>
+    <label>Test height (m)<input type="number" id="H" value="0.1" step="any"></label>
+    <label>A_t2/A_t1 (blank = minimum)<input type="number" id="r2" step="any"></label>
+  </div>
+  <div class="inputs" style="margin-top:.6rem">
+    <label>Tank volume (m³)<input type="number" id="V" value="30" step="any"></label>
+    <label>Tank initial p (kPa)<input type="number" id="pi" value="2000" step="any"></label>
+    <label>Specific humidity (ppm by mass)<input type="number" id="w" value="100" step="any"></label>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="calc-grid results"><div id="o1"></div><div id="o2"></div></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>Test conditions from the isentropic relations; \(\dot m = 0.0404\,p_0A_{t1}/\sqrt{T_0}\) for air; \(A_{t1} = A_\text{test}/(A/A^*)\); second throat \(A_{t2}/A_{t1} \ge p_{0,1}/p_{0,2}\) at the test Mach number; starting ratio \(p_0/p_b \approx p_{0,1}/p_{0,2}(M_t)\) and running ratio \(p_{0,1}/p_{0,2}(M_{t2})\); ideal compressor power \(\dot mc_pT_0[(p_0/p_b)^{(\gamma-1)/\gamma}-1]\); isothermal blowdown run time \(V(p_i - 1.1p_0)/(RT_0\dot m)\). Viscosity from Sutherland's law. See <a href="../lessons/wind-tunnels.html">Lesson 8</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen, normalShock, tunnel, blowdown, dewPoint, vaporPressure, pSatWater } = GD, R = 287.05;
+  function run() {
+    const g = UI.gamma(), M = UI.val("M"), p0 = UI.val("p0") * 1000, T0 = UI.val("T0"), Wd = UI.val("W"), H = UI.val("H");
+    const r2in = parseFloat(document.getElementById("r2").value), V = UI.val("V"), pi = UI.val("pi") * 1000, w = UI.val("w") * 1e-6;
+    const err = document.getElementById("err");
+    if (!(M > 1 && p0 > 0 && T0 > 0 && Wd > 0 && H > 0)) { err.textContent = "Need M > 1 and positive pressures, temperature and dimensions."; return; }
+    err.textContent = "";
+    const At = Wd * H / isen.A_Astar(M, g), t = tunnel(M, p0, T0, g, R, At, isFinite(r2in) ? r2in : undefined);
+    const cp = g * R / (g - 1), P = (ratio) => t.mdot * cp * T0 * (Math.pow(ratio, (g - 1) / g) - 1);
+    UI.table("#o1", ["Test section and nozzle", "Value"], [
+      ["Static temperature T (K)", t.T], ["Static pressure p (kPa)", t.p / 1000], ["Density ρ (kg/m³)", t.rho], ["Velocity V (m/s)", t.V], ["Dynamic pressure q (kPa)", t.q / 1000],
+      ["Unit Reynolds number (1/m)", t.Re_per_m], ["Pitot pressure p₀₂ (kPa)", t.pitot / 1000], ["A/A* (test/throat)", t.AR], ["Throat area A_t1 (cm²)", At * 1e4],
+      ["Throat height for 2-D nozzle (mm)", At / Wd * 1000], ["Mass flow (kg/s)", t.mdot]]);
+    const bd = pi > 1.1 * p0 ? blowdown({ V, pi, p0, margin: 0.1, Ti: T0, At, g, R, process: "isothermal" }) : { t: 0 };
+    const bda = pi > 1.1 * p0 ? blowdown({ V, pi, p0, margin: 0.1, Ti: T0, At, g, R, process: "adiabatic" }) : { t: 0 };
+    const pv = vaporPressure(w, t.p), S = pv / pSatWater(t.T);
+    UI.table("#o2", ["Diffuser, power, run time", "Value"], [
+      ["A_t2/A_t1 minimum to start", t.At2_At1_min], ["A_t2/A_t1 used", t.At2_At1], ["Starts?", t.started ? "yes" : "no: second throat too small"],
+      ["p₀/p_b to start", t.p0_pb_start], ["p₀/p_b to run", t.p0_pb_run], ["Max back pressure to start (kPa)", p0 / t.p0_pb_start / 1000],
+      ["Ideal compressor power to run (kW)", P(t.p0_pb_run) / 1000], ["Ideal compressor power to start (kW)", P(t.p0_pb_start) / 1000],
+      ["Blowdown run, isothermal tank (s)", bd.t], ["Blowdown run, adiabatic tank (s)", bda.t],
+      ["Frost point of supply at p₀ (°C)", dewPoint(vaporPressure(w, p0)) - 273.15], ["Vapor saturation ratio in test section", S]]);
+  }
+  ["M", "p0", "T0", "W", "H", "r2", "V", "pi", "w"].forEach(id => document.getElementById(id).addEventListener("input", run));
+  UI.onGamma(run); run();
+})();
+</script>
+</body>
+</html>

@@ -10,9 +10,9 @@
 <main class="prose">
   <div class="eyebrow">About</div>
   <h1>About this site</h1>
-  <p>Compressible Flow Lab is a self-study site for compressible aerodynamics. The format (short derivations paired with live, adjustable figures, plus calculators that replace the tables) was inspired by Kursat Kara's open <a href="https://kursatkara.github.io/MAE3293_Fundamentals_of_Aerodynamics/">Fundamentals of Aerodynamics</a> course site.</p>
+  <p>Compressible Flow Lab is a self-study site for compressible aerodynamics and supersonic testing. The format (short derivations paired with live, adjustable figures, plus calculators that replace the tables) was inspired by Kursat Kara's open <a href="https://kursatkara.github.io/MAE3293_Fundamentals_of_Aerodynamics/">Fundamentals of Aerodynamics</a> course site.</p>
   <h2>How it is built</h2>
-  <p>Plain HTML, CSS and JavaScript with no build step, so it runs straight from GitHub Pages. All physics lives in one file, <code>assets/js/gasdyn.js</code>: the isentropic, normal-shock, oblique-shock, Prandtl–Meyer, Rayleigh and Fanno relations, shock-expansion theory, compressibility corrections, and the 1976 U.S. Standard Atmosphere. Lessons and calculators call the same functions. Equations are typeset with KaTeX.</p>
+  <p>Plain HTML, CSS and JavaScript with no build step, so it runs straight from GitHub Pages. All physics lives in one file, <code>assets/js/gasdyn.js</code>: the isentropic, normal-shock, oblique-shock, Prandtl–Meyer, Rayleigh and Fanno relations, shock-expansion theory, compressibility corrections, the 1976 U.S. Standard Atmosphere, and supersonic wind-tunnel models (starting, blowdown run time, condensation). Lessons and calculators call the same functions. Equations are typeset with KaTeX.</p>
   <h2>Accuracy</h2>
   <p>The functions reproduce the standard tables. For M = 2 and γ = 1.4: p₀/p = 7.824, A/A* = 1.688, normal-shock p₀₂/p₀₁ = 0.7209, a θ = 10° wedge gives β = 39.31° (weak) or 83.70° (strong), θ<sub>max</sub> = 22.97°, ν = 26.38°, Fanno 4fL*/D = 0.3050, and Rayleigh T₀/T₀* = 0.7934. Inverse problems are solved by bisection to near machine precision.</p>
   <h2>References</h2>
@@ -22,6 +22,10 @@
     <li>H. W. Liepmann &amp; A. Roshko, <i>Elements of Gasdynamics</i>, Dover.</li>
     <li>A. H. Shapiro, <i>The Dynamics and Thermodynamics of Compressible Fluid Flow</i>, Ronald Press.</li>
     <li>NACA Report 1135, <i>Equations, Tables, and Charts for Compressible Flow</i> (1953).</li>
+    <li>A. Pope &amp; K. L. Goin, <i>High-Speed Wind Tunnel Testing</i>, Wiley.</li>
+    <li>J. B. Barlow, W. H. Rae &amp; A. Pope, <i>Low-Speed Wind Tunnel Testing</i>, Wiley (instrumentation and data reduction).</li>
+    <li>G. S. Settles, <i>Schlieren and Shadowgraph Techniques</i>, Springer.</li>
+    <li>W. Merzkirch, <i>Flow Visualization</i>, Academic Press.</li>
     <li>U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF).</li>
   </ul>
   <h2>License</h2>
