@@ -16,6 +16,7 @@
     <li><a href="#dup">Duplication versus simulation</a></li>
     <li><a href="#liq">Heating the air: the liquefaction limit</a></li>
     <li><a href="#ludwieg">Ludwieg tubes and quiet tunnels</a></li>
+    <li><a href="#bam6qt">The BAM6QT: a user's guide</a></li>
     <li><a href="#shock">Shock tubes and reflected-shock tunnels</a></li>
     <li><a href="#other">Expansion tubes, arc jets and ballistic ranges</a></li>
     <li><a href="#instr">Instrumentation for short, fast flows</a></li>
@@ -95,7 +96,7 @@
   $$\Delta t \approx \frac{L}{a_i} + \frac{L}{u + a} \approx \frac{2L}{a_i},$$
   <p>after which the cycle repeats at a slightly lower pressure. The reservoir state follows from the unsteady expansion (the Riemann invariant \(u + 2a/(\gamma-1)\) is constant):</p>
   $$\frac{a}{a_i} = \frac{1}{1 + \frac{\gamma-1}{2}M_t},\qquad \frac{p}{p_i} = \left(\frac{a}{a_i}\right)^{\frac{2\gamma}{\gamma-1}},\qquad \frac{p_0}{p_i} = \frac{p}{p_i}\left(1 + \frac{\gamma-1}{2}M_t^2\right)^{\frac{\gamma}{\gamma-1}}.$$
-  <p>Ludwieg tubes are simple and cheap to run, give clean flow without a pressure regulator, and are ideal for <b class="term">quiet tunnels</b>. The Boeing/AFOSR Mach-6 Quiet Tunnel at Purdue is a Ludwieg tube with a heated driver tube, a long polished nozzle that keeps its wall boundary layer laminar, and bleed slots at the throat that remove the incoming boundary layer. Its test-section noise is below about 0.05% of the mean pressure, compared with 1–3% in conventional tunnels. Each run consists of a few seconds of repeated cycles of a few tenths of a second.</p>
+  <p>Ludwieg tubes are simple and cheap to run, give clean flow without a pressure regulator, and are ideal for <b class="term">quiet tunnels</b>. The Boeing/AFOSR Mach-6 Quiet Tunnel at Purdue is a Ludwieg tube with a heated driver tube, a long polished nozzle that keeps its wall boundary layer laminar, and bleed slots at the throat that remove the incoming boundary layer. Its test-section noise is below about 0.05% of the mean pressure, compared with about 3% in conventional tunnels. Each run consists of several seconds of repeated cycles of about 0.2 s. Section 15.4 gives the details.</p>
 </div>
 
 <section class="lab" id="lab3">
@@ -104,7 +105,7 @@
     <div class="ctl"><label for="gL">Driver-tube length L (m) <output for="gL"></output></label>
       <input type="range" id="gL" min="5" max="60" step="0.5" value="37" data-dec="1"></div>
     <div class="ctl"><label for="gD">Driver-tube diameter (m) <output for="gD"></output></label>
-      <input type="range" id="gD" min="0.1" max="0.8" step="0.005" value="0.445" data-dec="3"></div>
+      <input type="range" id="gD" min="0.1" max="0.8" step="0.005" value="0.457" data-dec="3"></div>
     <div class="ctl"><label for="gE">Nozzle-exit diameter (m) <output for="gE"></output></label>
       <input type="range" id="gE" min="0.1" max="0.6" step="0.005" value="0.24" data-dec="3"></div>
     <div class="ctl"><label for="gp">Initial driver pressure p<sub>i</sub> (MPa) <output for="gp"></output></label>
@@ -112,17 +113,57 @@
     <div class="ctl"><label for="gT">Initial driver temperature T<sub>i</sub> (K) <output for="gT"></output></label>
       <input type="range" id="gT" min="300" max="500" step="1" value="433" data-dec="0"></div>
     <div class="presets"><span>Try</span>
-      <button data-preset='{"gL":37,"gD":0.445,"gE":0.24,"gp":1,"gT":433}'>BAM6QT-like</button>
-      <button data-preset='{"gL":37,"gD":0.445,"gE":0.24,"gp":0.3,"gT":433}'>Low-Re quiet run</button>
+      <button data-preset='{"gL":37,"gD":0.457,"gE":0.24,"gp":1,"gT":433}'>BAM6QT-like</button>
+      <button data-preset='{"gL":37,"gD":0.457,"gE":0.24,"gp":0.3,"gT":433}'>Low-Re quiet run</button>
       <button data-preset='{"gL":15,"gD":0.2,"gE":0.24,"gp":1,"gT":433}'>Narrow tube</button>
     </div>
     <div id="ro3" class="readout"></div>
   </div>
-  <div class="views"><figure><div id="plot3"></div><figcaption>Reservoir pressure during a run (first cycles from the unsteady expansion; later cycles repeat the same fractional drop, an approximation). Each step is one round trip of the expansion wave.</figcaption></figure></div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Reservoir pressure during a run (first cycles from the unsteady expansion; later cycles repeat the same fractional drop, an approximation). Each step is one round trip of the expansion wave. This ideal model gives a drop of about 0.4% per cycle for the BAM6QT geometry; the measured drop is about 1%, because the model ignores the extra mass drawn through the throat bleed slots and losses in the tube.</figcaption></figure></div>
 </section>
 
+
 <div class="prose">
-  <h2 id="shock"><span class="sec">Section 15.4</span>Shock tubes and reflected-shock tunnels</h2>
+  <h2 id="bam6qt"><span class="sec">Section 15.4</span>The BAM6QT: a user's guide</h2>
+  <p>The Boeing/AFOSR Mach-6 Quiet Tunnel in Purdue's Aerospace Sciences Laboratory was built in the late 1990s and early 2000s under Steven Schneider to give hypersonic transition research a flight-like, low-noise freestream. It first ran quiet at high Reynolds number in 2006. The figures below come from Purdue's published facility papers. Operating limits change as the tunnel is maintained, so check current values with the lab before planning a test.</p>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Item</th><th>Value (published)</th><th>Notes</th></tr></thead><tbody>
+  <tr><td>Type</td><td>Ludwieg tube</td><td>Driver tube → contraction → quiet nozzle → test section → diffuser → diaphragms → vacuum tank</td></tr>
+  <tr><td>Mach number</td><td>6.0 quiet; about 5.8 noisy</td><td>The noisy-flow Mach number is lower because the nozzle-wall boundary layer is thicker</td></tr>
+  <tr><td>Driver tube</td><td>37.3 m (122 ft) long, 18 in (0.46 m) diameter</td><td>Heated, so the reservoir starts at the run temperature</td></tr>
+  <tr><td>Nozzle exit diameter</td><td>9.5 in (0.241 m)</td><td>Long, highly polished nozzle to keep its wall boundary layer laminar</td></tr>
+  <tr><td>Vacuum tank</td><td>about 113 m³</td><td>Its pressure rise limits the run</td></tr>
+  <tr><td>Stagnation temperature</td><td>160 °C (433 K) design</td><td>High enough to avoid liquefaction at Mach 6 (Section 15.2)</td></tr>
+  <tr><td>Maximum quiet stagnation pressure</td><td>145 psia when first quiet (2006), later about 170 psia; reported as 135 psia from late 2016 after contraction maintenance</td><td>Above this, the nozzle-wall boundary layer becomes turbulent and the flow is noisy</td></tr>
+  <tr><td>Quiet unit Reynolds number</td><td>up to about 11 × 10⁶ /m (3.5 × 10⁶ /ft)</td><td>Use Interactive 3 to convert p₀ to Re/m</td></tr>
+  <tr><td>Freestream noise (p'<sub>rms</sub>/p̄ of Pitot pressure)</td><td>below about 0.05%, as low as about 0.02%, quiet; about 3% (2–4.5%) noisy</td><td>Noisy flow is produced by closing the throat bleed</td></tr>
+  <tr><td>Cycle and run</td><td>about 0.2 s per expansion-wave cycle; p₀ falls about 1% per cycle; runs of roughly 5–10 s</td><td>Quiet flow ends when the expansion-wave cycles drop the pressure below the quiet limit or the tank pressure rises too far</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <h3>How the flow is made quiet</h3>
+  <ul>
+    <li><b>Throat bleed slots</b> just upstream of the throat remove the contraction-wall boundary layer, which is turbulent, so a fresh laminar boundary layer starts at the throat. The bleed is ducted to the vacuum tank. Closing it gives conventional, noisy flow in the same tunnel, which makes direct quiet/noisy comparisons possible.</li>
+    <li><b>A long, highly polished nozzle</b> with a gentle curvature delays Görtler and roughness-induced transition of the nozzle-wall boundary layer.</li>
+    <li><b>Particle filtering</b> of the air, because particles impacting the polished nozzle damage it and trip the flow.</li>
+    <li><b>Diaphragms downstream of the test section.</b> The burst happens behind the model, so the flow through the nozzle starts without diaphragm fragments or the starting disturbances of an upstream valve.</li>
+  </ul>
+  <h3>Planning and running a test</h3>
+  <ol>
+    <li><b>Choose the condition.</b> Pick the unit Reynolds number, then p₀ from it (Interactive 3, or the <a href="../calculators/shock-tube.html">Ludwieg-tube calculator</a>). Stay below the current quiet limit if you want quiet flow, and decide whether you also need a noisy run for comparison.</li>
+    <li><b>Predict the flow on the model.</b> Get the edge conditions on a cone from Taylor–Maccoll (<a href="../calculators/cone.html">conical-flow calculator</a>). Estimate δ and the second-mode frequency (<a href="aeroheating.html#mack">Lesson 12</a>) to choose sensor bandwidth and sampling rate. Run stability computations (for example, STABL with DPLR mean flow and PSE-Chem) to predict N-factors at the sensor stations.</li>
+    <li><b>Check the model will start the tunnel.</b> A large model, a large cone half-angle or a high angle of attack blocks the flow, and the tunnel does not start (Lesson 8). Slender cones are routine. Blunt and large-angle bodies need checking first, and studies of larger cones in the BAM6QT have looked at which half-angles still allow a start.</li>
+    <li><b>Prepare the run.</b> Heat the driver to the run temperature and fill it with filtered, dry air. Pump down the tank and the section downstream of the diaphragms. Then arm the data system with a trigger on the burst.</li>
+    <li><b>Record the run.</b> The reservoir pressure p₀ and temperature are measured at the upstream end of the nozzle. Use them, together with the isentropic relations at Mach 6, to compute the freestream for each cycle.</li>
+    <li><b>Reduce the data.</b> Take power spectral densities of the fast-pressure signals over short windows within a single cycle, where p₀ is nearly constant. Normalize amplitudes by the mean surface pressure. Compare peak frequencies and growth along the model with the stability predictions.</li>
+  </ol>
+  <p>The University of Notre Dame has since built a larger Mach-6 quiet Ludwieg tube on the same principles. Other quiet facilities include the NASA Langley Mach-6 quiet tunnel (now decommissioned) and Mach-6 quiet tunnels in China.</p>
+  <p class="note"><b>Sources</b>Purdue's facility pages and papers: <a href="https://engineering.purdue.edu/AAE/research/aerodynamics/mach6">The Boeing/AFOSR Mach-6 Quiet Tunnel</a>, <a href="https://engineering.purdue.edu/~aae519/BAM6QT-Mach-6-tunnel/short-summary-w-bio.pdf">brief summary</a>, Juliano &amp; Schneider, <a href="https://engineering.purdue.edu/~aae519/BAM6QT-Mach-6-tunnel/tunnelpapers/juliano-AIAAJ-M6quiet-jul08.pdf">"Quiet-flow Ludwieg tube for hypersonic transition research," AIAA J. (2008)</a>, and <a href="https://engineering.purdue.edu/~aae519/BAM6QT-Mach-6-tunnel/tunnelpapers/2017-3632.pdf">AIAA 2017-3632</a>; the review of cone-cylinder-flare tests in <a href="https://arxiv.org/pdf/2509.10411">arXiv:2509.10411</a>.</p>
+</div>
+
+<div class="prose">
+  <h2 id="shock"><span class="sec">Section 15.5</span>Shock tubes and reflected-shock tunnels</h2>
   <p>To reach flight enthalpies, the test gas must be heated to thousands of kelvin, which a heater cannot do. A <b class="term">shock tube</b> does it with a shock wave. A high-pressure driver (region 4) is separated from low-pressure test gas (region 1) by a diaphragm. When the diaphragm bursts, a shock runs into the test gas, heating and accelerating it (region 2), while an expansion runs back into the driver. The driver gas behind the expansion (region 3) is separated from the shocked test gas by a contact surface. Matching pressure and velocity across the contact surface gives the shock-tube equation:</p>
   $$\frac{p_4}{p_1} = \frac{p_2}{p_1}\left[1 - \frac{(\gamma_4-1)(a_1/a_4)(p_2/p_1 - 1)}{\sqrt{2\gamma_1\left[2\gamma_1 + (\gamma_1+1)(p_2/p_1 - 1)\right]}}\right]^{-2\gamma_4/(\gamma_4-1)}.$$
   <p>A light, hot driver (helium or hydrogen, large \(a_4\)) gives a much stronger shock for the same pressure ratio. In a <b class="term">reflected-shock tunnel</b> the incident shock reflects from the end wall, bringing the test gas to rest at very high pressure and temperature (region 5). That gas then expands through a nozzle as the reservoir of a short-duration hypersonic tunnel. Facilities of this kind, including free-piston "Stalker" tunnels (T4 and T5 at Caltech, HEG at DLR) and detonation-driven tunnels, reach stagnation enthalpies of 10–25 MJ/kg for test times of about a millisecond. The reflected shock satisfies</p>
@@ -151,7 +192,7 @@
 </section>
 
 <div class="prose">
-  <h2 id="other"><span class="sec">Section 15.5</span>Expansion tubes, arc jets and ballistic ranges</h2>
+  <h2 id="other"><span class="sec">Section 15.6</span>Expansion tubes, arc jets and ballistic ranges</h2>
   <ul>
     <li><b>Expansion tubes</b> add a second, low-pressure acceleration tube downstream of the shock tube. The test gas is accelerated by an unsteady expansion rather than stagnated, which avoids dissociating it in a reservoir. They reach orbital and super-orbital velocities for tens to hundreds of microseconds (for example, the X-series tubes at the University of Queensland).</li>
     <li><b>Arc-jet facilities</b> heat air with an electric arc and expand it over a material sample for minutes. They duplicate the stagnation enthalpy and heat flux, not the flow field, and they are where heat-shield materials such as PICA and tile coatings are qualified (for example, NASA Ames and JSC arc jets).</li>
@@ -159,20 +200,23 @@
     <li><b>Flight experiments</b> (HIFiRE, X-43A, X-51A, BOLT, and sounding-rocket transition experiments) remain the final check, which is why ground facilities and CFD are validated against them.</li>
   </ul>
 
-  <h2 id="instr"><span class="sec">Section 15.6</span>Instrumentation for short, fast flows</h2>
+  <h2 id="instr"><span class="sec">Section 15.7</span>Instrumentation for short, fast flows</h2>
 </div>
 <div class="prose">
-<table class="data text"><thead><tr><th>Measurement</th><th>Technique</th><th>Notes</th></tr></thead><tbody>
-  <tr><td>Instability waves</td><td>High-frequency piezoelectric pressure sensors (PCB 132 type)</td><td>Bandwidth of order 1 MHz: resolves second-mode waves at 100–500 kHz (Lesson 12)</td></tr>
-  <tr><td>Mean and fluctuating pressure</td><td>Piezoresistive transducers (Kulite type)</td><td>Flat response to tens of kHz; also used in Pitot probes for noise measurement</td></tr>
-  <tr><td>Heat flux, short tests</td><td>Platinum thin-film gauges on insulating substrates; coaxial thermocouples</td><td>Microsecond response; heat flux from surface temperature history (Section 15.7)</td></tr>
-  <tr><td>Heat-flux maps</td><td>Temperature-sensitive paint (TSP), infrared thermography, phosphor thermography</td><td>Global surface temperature; resolves transition fronts and streaks</td></tr>
-  <tr><td>Flow visualization</td><td>High-speed schlieren and shadowgraph (Lesson 8)</td><td>Hundreds of thousands of frames per second capture wave packets</td></tr>
-  <tr><td>Freestream disturbances</td><td>Focused laser differential interferometry (FLDI); hot wires</td><td>Non-intrusive, focused measurements of density fluctuations</td></tr>
+<table class="data text"><thead><tr><th>Measurement</th><th>Technique</th><th>What a user needs to know</th></tr></thead><tbody>
+  <tr><td>Instability waves on the model</td><td>PCB 132-series piezoelectric sensors (132A31, 132B38)</td><td>Resonance above 1 MHz, about 140 mV/psi, 50 psi range, 0.001 psi resolution, rise time of a few μs. They have a built-in high-pass near 11 kHz, so they measure <em>fluctuations only</em>, not mean pressure. They are the standard second-mode sensor (200–400 kHz on 7° cones in the BAM6QT). Mount them flush; a recessed or protruding sensor acts as roughness. Their amplitude calibration at these frequencies is still uncertain, and shock-tube calibration is an active topic, so compare frequencies with confidence and amplitudes with care.</td></tr>
+  <tr><td>Mean and low-frequency pressure</td><td>Kulite piezoresistive transducers (for example, XCQ-062 series)</td><td>Give the mean pressure as well as fluctuations, but are usually trusted only to about 50 kHz. They are used for surface pressure, low-frequency unsteadiness (separation bubbles, flare shocks) and Pitot probes.</td></tr>
+  <tr><td>Freestream noise</td><td>Pitot probe with a fast Kulite sensor</td><td>Noise is defined as the rms Pitot-pressure fluctuation divided by the mean Pitot pressure. This is how "quiet" (&lt; 0.05%) and "noisy" (≈ 3%) are established.</td></tr>
+  <tr><td>Heat-transfer maps</td><td>Infrared thermography; temperature-sensitive paint (TSP)</td><td>IR is the main heat-transfer tool. Reducing it needs radiometric and optical calibration of the camera, the spectral emissivity of the model surface, correction for model motion during the run, and mapping onto the 3-D surface. TSP gives similar maps through a window with a UV light source and a camera, and resolves transition fronts, streaks from roughness or crossflow, and the heating peaks of second-mode breakdown.</td></tr>
+  <tr><td>Heat flux at points</td><td>Thin-film gauges, coaxial thermocouples, Schmidt–Boelter gauges</td><td>Heat flux comes from the surface-temperature history (Section 15.8).</td></tr>
+  <tr><td>Flow visualization and wave packets</td><td>High-speed schlieren (z-type)</td><td>The BAM6QT system uses a pulsed laser light source and a high-speed camera at up to about 1.75 million frames per second. Spectra taken from schlieren video correlate with the surface-sensor spectra and show the wave packets away from the wall.</td></tr>
+  <tr><td>Off-surface disturbances</td><td>Focused laser differential interferometry (FLDI)</td><td>Measures density fluctuations at a focused point through contoured windows, without touching the flow. It is used for instabilities over separation bubbles and in the freestream.</td></tr>
+  <tr><td>Reservoir conditions</td><td>Pressure transducer and thermocouple at the upstream end of the nozzle</td><td>Freestream p, T, ρ, V and Re/m follow from p₀, T₀ and the isentropic relations at the calibrated Mach number, cycle by cycle.</td></tr>
 </tbody></table>
+<p>Data acquisition must match the sensors. Second-mode signals at a few hundred kHz need sampling at several MHz with anti-alias filtering. A run lasting seconds therefore produces large files, so plan the triggers and the analysis windows (one cycle or less) in advance. Sources: PCB data sheets for the <a href="https://www.pcb.com/contentstore/docs/pcb_corporate/pressure/products/manuals/132b38.pdf">132B38</a> and <a href="https://www.pcb.com/contentstore/docs/pcb_corporate/pressure/products/manuals/132a31.pdf">132A31</a>; BAM6QT transition papers (<a href="https://engineering.purdue.edu/~aae519/BAM6QT-Mach-6-tunnel/tunnelpapers/2017-0068.pdf">AIAA 2017-0068</a>, <a href="https://engineering.purdue.edu/~aae519/BAM6QT-Mach-6-tunnel/tunnelpapers/2012-0282.pdf">AIAA 2012-0282</a>); <a href="https://ntrs.nasa.gov/api/citations/20120012062/downloads/20120012062.pdf">NASA NTRS 20120012062</a>; the Purdue theses on <a href="https://hammer.purdue.edu/articles/thesis/Roughness_Effects_on_Boundary-Layer_Transition_and_Schlieren_Development_in_the_Boeing_AFOSR_Mach-6_Quiet_Tunnel/24749364">schlieren development</a> and <a href="https://hammer.purdue.edu/articles/thesis/Instability_Measurements_on_Two_Cone-Cylinder-Flares_at_Mach_6/15050058">FLDI on cone-cylinder-flares</a>; and the IR procedure in <a href="https://www.sciencedirect.com/science/article/abs/pii/S001793102033355X">Int. J. Heat Mass Transfer (2020)</a>.</p>
 </div>
 <div class="prose">
-  <h2 id="heat"><span class="sec">Section 15.7</span>Measuring heat flux with surface gauges</h2>
+  <h2 id="heat"><span class="sec">Section 15.8</span>Measuring heat flux with surface gauges</h2>
   <p>A thin-film gauge measures the surface temperature of an insulating substrate. Over a short test the substrate behaves as a semi-infinite solid, and the one-dimensional heat equation links the surface temperature rise to the heat flux. For a constant heat flux q applied at t = 0,</p>
   $$\Delta T_s(t) = \frac{2q}{\sqrt\pi}\frac{\sqrt t}{\sqrt{\rho ck}},$$
   <p>where \(\sqrt{\rho ck}\) is the thermal effusivity of the substrate. For a measured history \(T_s(t)\), the heat flux follows from the Cook–Felderman integral:</p>
@@ -192,7 +236,7 @@
   <div class="views"><figure><div id="plot5"></div><figcaption>Surface temperature rise against time for a constant heat flux on four substrates. Dots: the temperature rise recovered from the Cook–Felderman integral applied to the sampled signal (it returns the imposed q).</figcaption></figure></div>
 </section>
 
-<div class="prose"><h2 id="examples"><span class="sec">Section 15.8</span>Worked examples</h2></div>
+<div class="prose"><h2 id="examples"><span class="sec">Section 15.9</span>Worked examples</h2></div>
 <div class="tabs">
   <div class="tablist"><span class="tab-title">Worked examples</span>
     <button>Ex 15.1 · Tunnel vs flight</button><button>Ex 15.2 · Liquefaction</button><button>Ex 15.3 · Shock tube</button><button>Ex 15.4 · Ludwieg run time</button></div>
@@ -213,12 +257,12 @@
   </div>
   <div class="panel" id="ex4">
     <p>A Ludwieg tube of length L and diameter D, initially at \(p_i\) and \(T_i\), feeds a Mach-6 nozzle of exit diameter \(D_e\). Find the tube Mach number, the reservoir pressure and temperature during the first cycle, and its duration.</p>
-    <div class="given"><label>L (m)<input type="number" id="e4L" value="37" step="any"></label><label>D (m)<input type="number" id="e4D" value="0.445" step="any"></label><label>D_e (m)<input type="number" id="e4E" value="0.24" step="any"></label><label>p_i (MPa)<input type="number" id="e4p" value="1" step="any"></label><label>T_i (K)<input type="number" id="e4T" value="433" step="any"></label></div>
+    <div class="given"><label>L (m)<input type="number" id="e4L" value="37" step="any"></label><label>D (m)<input type="number" id="e4D" value="0.457" step="any"></label><label>D_e (m)<input type="number" id="e4E" value="0.24" step="any"></label><label>p_i (MPa)<input type="number" id="e4p" value="1" step="any"></label><label>T_i (K)<input type="number" id="e4T" value="433" step="any"></label></div>
     <div id="e4out"></div>
   </div>
 </div>
 
-<div class="prose"><h2 id="check"><span class="sec">Section 15.9</span>Self-check</h2></div>
+<div class="prose"><h2 id="check"><span class="sec">Section 15.10</span>Self-check</h2></div>
 <div id="quiz"></div>
 
 <div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
