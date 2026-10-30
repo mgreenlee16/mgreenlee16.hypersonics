@@ -466,7 +466,8 @@
     };
   }
   // Planar 3-DOF entry over a spherical, non-rotating Earth with lift (constant L/D and bank angle).
-  //   o: { h0, V0, gamma0Deg (negative = descending), beta (m/(CD A)), LD, bankDeg, Rn, dt, hEnd, Vend }
+  //   o: { h0, V0, gamma0Deg (negative = descending), beta (m/(CD A)), LD, bankDeg, Rn, dt, hEnd, Vend,
+  //        skipMargin (climb above h0 that counts as skip-out, default 1 km) }
   function entry(o) {
     const mu = EARTH.mu, Re = EARTH.R, cb = Math.cos((o.bankDeg || 0) * DEG), LD = o.LD || 0;
     const f = (t, y) => {
@@ -492,7 +493,7 @@
       qmax = Math.max(qmax, r.q); nmax = Math.max(nmax, r.n); qdynMax = Math.max(qdynMax, r.qdyn);
       minH = Math.min(minH, r.h);
       if (i % 5 === 0) hist.push(r);
-      if (r.h > o.h0 + 1000 && r.gamma > 0) { skipped = true; hist.push(r); break; }
+      if ((r.h > o.h0 + (o.skipMargin === undefined ? 1000 : o.skipMargin) || r.h > 150000) && r.gamma > 0) { skipped = true; hist.push(r); break; }
       if (r.h <= (o.hEnd || 0) || r.V <= (o.Vend || 200)) { hist.push(r); break; }
     }
     return { hist, Q, qmax, nmax, qdynMax, tf: t, skipped, range: y[3] };

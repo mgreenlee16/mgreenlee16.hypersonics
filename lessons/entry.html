@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmospheric Entry · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="entry">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 13 · Part VI</div>
+  <h1>Atmospheric Entry</h1>
+  <p class="lead">Coming home from orbit means getting rid of about 30 MJ of kinetic energy per kilogram of vehicle, more than enough to vaporize it several times over. The atmosphere does the work, but how it does it depends on the trajectory: how steeply the vehicle enters, how much drag and lift it has, and how it steers. This lesson derives the classic ballistic-entry solution of Allen and Eggers, the equilibrium glide of a lifting vehicle, and the entry corridor. It then puts them together in a three-degree-of-freedom trajectory simulator.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#energy">The energy problem</a></li>
+    <li><a href="#eom">Equations of motion</a></li>
+    <li><a href="#ballistic">Ballistic entry: Allen and Eggers</a></li>
+    <li><a href="#glide">Lifting entry and equilibrium glide</a></li>
+    <li><a href="#corridor">The entry corridor and skip-out</a></li>
+    <li><a href="#tradeoff">Peak heating versus heat load</a></li>
+    <li><a href="#sim">A trajectory simulator</a></li>
+    <li><a href="#guidance">Steering: bank-angle modulation</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="energy"><span class="sec">Section 13.1</span>The energy problem</h2>
+  <p>At orbital speed, 7.8 km/s, the specific kinetic energy is \(V^2/2\) ≈ 30 MJ/kg; at lunar return, 11 km/s, it is 60 MJ/kg. All of it must go somewhere. Allen and Eggers (NACA, 1953–1957) showed that the fraction that ends up in the vehicle as heat is proportional to the ratio of skin-friction drag to total drag. A slender, low-drag body decelerates mainly by friction and absorbs a large fraction. A blunt, high-drag body puts most of the energy into the shock layer and its wake, which carry it away. This is why every crewed re-entry vehicle has been blunt, and why the 1950s search for a re-entry shape ended with blunt capsules and blunted reentry-vehicle noses.</p>
+  <p>Hirschel and Weiland's classes face this problem differently. A capsule (RV-NW) decelerates fast and high, with a short, intense heat pulse. A winged orbiter (RV-W) glides for 20–30 minutes at lower heat flux but larger total heat load. A cruise vehicle (CAV) never sheds its energy at all, and must survive steady heating for the whole flight.</p>
+
+  <h2 id="eom"><span class="sec">Section 13.2</span>Equations of motion</h2>
+  <p>For a vehicle of mass m flying over a spherical, non-rotating planet in a vertical plane, with velocity V, flight-path angle γ (positive above the local horizontal), altitude h, radius r = R + h and bank angle σ (the angle by which the lift vector is rolled away from the vertical), the equations are</p>
+  $$\frac{dV}{dt} = -\frac{D}{m} - g\sin\gamma,\qquad V\frac{d\gamma}{dt} = \frac{L\cos\sigma}{m} - \left(g - \frac{V^2}{r}\right)\cos\gamma,$$
+  $$\frac{dh}{dt} = V\sin\gamma,\qquad \frac{ds}{dt} = \frac{R}{r}V\cos\gamma,\qquad D = \frac{\tfrac12\rho V^2}{\beta}\,m,\quad L = \frac{L}{D}D,\quad g = \frac{\mu}{r^2}.$$
+  <p>The vehicle enters through only two parameters: the <b class="term">ballistic coefficient</b> \(\beta = m/(C_DA)\) and the lift-to-drag ratio L/D. The term \(V^2/r\) is the centrifugal relief that keeps an orbiting body up. Below circular speed, gravity wins and the vehicle must descend unless lift holds it up. The simulator on this page integrates these equations with a fourth-order Runge–Kutta scheme, using the 1976 U.S. Standard Atmosphere extended to 150 km, and Sutton–Graves stagnation heating.</p>
+
+  <h2 id="ballistic"><span class="sec">Section 13.3</span>Ballistic entry: Allen and Eggers</h2>
+  <p>For a steep, non-lifting entry, gravity is small compared with drag, and γ stays nearly constant at its entry value \(\gamma_E\) (taken positive downward here). With an exponential atmosphere \(\rho = \rho_0e^{-h/H}\), \(dh = -V\sin\gamma_E\,dt\), and \(dV/dt = -\rho V^2/(2\beta)\):</p>
+  $$\frac{dV}{V} = \frac{\rho\,dh}{2\beta\sin\gamma_E}\quad\Rightarrow\quad V = V_E\exp\!\left(-\frac{\rho_0H}{2\beta\sin\gamma_E}e^{-h/H}\right).$$
+  <p>Differentiating the deceleration \(\rho V^2/(2\beta)\) with respect to altitude gives the peak deceleration and where it occurs:</p>
+  $$a_{\max} = \frac{V_E^2\sin\gamma_E}{2eH}\ \text{ at }\ V = V_Ee^{-1/2} = 0.61V_E,\qquad \rho = \frac{\beta\sin\gamma_E}{H}.$$
+  <p>Two results stand out. The peak deceleration <em>does not depend on β</em>: a heavy, dense vehicle reaches the same g-load as a light one, only deeper in the atmosphere. And it is set by the entry angle. A 20° entry from orbit gives over 40 g, which is survivable by instruments but not by people. Applying the same analysis to Sutton–Graves heating, \(q \propto \sqrt\rho V^3\), gives peak heating at \(V = V_Ee^{-1/6} = 0.85V_E\) and \(\rho = \beta\sin\gamma_E/(3H)\): earlier and higher than the peak deceleration.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Allen–Eggers against a full simulation</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="aV">Entry velocity V<sub>E</sub> (km/s) <output for="aV"></output></label>
+      <input type="range" id="aV" min="3" max="12" step="0.1" value="7" data-dec="1"></div>
+    <div class="ctl"><label for="ag">Entry angle γ<sub>E</sub> (below horizontal) <output for="ag"></output></label>
+      <input type="range" id="ag" min="2" max="60" step="0.5" value="20" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="ab">Ballistic coefficient β (kg/m²) <output for="ab"></output></label>
+      <input type="range" id="ab" min="50" max="20000" step="50" value="5000" data-dec="0"></div>
+    <div class="ctl"><label for="aH">Scale height H (km) <output for="aH"></output></label>
+      <input type="range" id="aH" min="6" max="8.5" step="0.05" value="7.2" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"aV":7,"ag":25,"ab":10000}'>Reentry vehicle</button>
+      <button data-preset='{"aV":7.6,"ag":3,"ab":350}'>Shallow capsule</button>
+      <button data-preset='{"aV":12.9,"ag":8.2,"ab":60}'>Stardust</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot1a"></div><figcaption>Velocity against altitude: Allen–Eggers (dashed) and the numerical solution with gravity, curvature and the real atmosphere (solid).</figcaption></figure>
+    <figure><div id="plot1b"></div><figcaption>Deceleration (g) against altitude. The analytic peak (dot) does not depend on β; β only shifts it in altitude.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="glide"><span class="sec">Section 13.4</span>Lifting entry and equilibrium glide</h2>
+  <p>A vehicle with lift can fly a shallow path on which lift, plus centrifugal relief, balances gravity: \(d\gamma/dt \approx 0\) with γ ≈ 0. This <b class="term">equilibrium glide</b> gives</p>
+  $$\tfrac12\rho V^2\frac{C_LA}{m} = g - \frac{V^2}{r}\quad\Rightarrow\quad \rho_\text{eq}(V) = \frac{2m}{C_LA}\,\frac{g - V^2/r}{V^2},$$
+  <p>a unique altitude for each velocity. As the vehicle slows, it descends along this curve. Integrating \(ds = V\,dt\) with \(dV/dt = -D/m\) gives the glide range from \(V_0\) to \(V_f\):</p>
+  $$s = \frac{r}{2}\frac{L}{D}\ln\frac{gr - V_f^2}{gr - V_0^2}.$$
+  <p>For L/D = 1 from orbital speed this is about 8,000 km. Lift buys cross-range and down-range control, and keeps the deceleration low: in equilibrium glide the g-load is \((g - V^2/r)\sqrt{1 + (L/D)^2}/(L/D)/g_0\), only about 1.5 g at the end for L/D = 1. The Shuttle Orbiter flew close to an equilibrium glide, banking to hold its drag on a planned drag–velocity profile.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Equilibrium glide</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="gLD">Lift-to-drag ratio L/D <output for="gLD"></output></label>
+      <input type="range" id="gLD" min="0.2" max="4" step="0.05" value="1" data-dec="2"></div>
+    <div class="ctl"><label for="gW">Wing loading m/(C<sub>L</sub>A) (kg/m²) <output for="gW"></output></label>
+      <input type="range" id="gW" min="100" max="3000" step="10" value="450" data-dec="0"></div>
+    <div class="ctl"><label for="gV">Initial velocity V₀ (km/s) <output for="gV"></output></label>
+      <input type="range" id="gV" min="3" max="7.8" step="0.05" value="7.5" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"gLD":1,"gW":450,"gV":7.5}'>Orbiter-like</button>
+      <button data-preset='{"gLD":2.5,"gW":1200,"gV":6}'>Hypersonic glide vehicle</button>
+      <button data-preset='{"gLD":0.3,"gW":1200,"gV":7.5}'>Capsule (L/D 0.3)</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot2a"></div><figcaption>Equilibrium-glide altitude against velocity (solid) and a simulated lifting entry with zero bank from the same start (dashed), which oscillates about it in a phugoid.</figcaption></figure>
+    <figure><div id="plot2b"></div><figcaption>Glide range from V₀ to 0.3 km/s against L/D (closed form); dot = current L/D.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="corridor"><span class="sec">Section 13.5</span>The entry corridor and skip-out</h2>
+  <p>Enter too steeply and the deceleration or heating exceeds what the crew or the vehicle can stand. Enter too shallowly at supercircular speed and the vehicle does not lose enough energy on its first pass: it <b class="term">skips</b> back out of the atmosphere, possibly onto an orbit that does not return for a long time. The range of acceptable entry angles is the <b class="term">entry corridor</b>.</p>
+  <p>For a lifting capsule the corridor is defined by its two extreme lift orientations. The <em>overshoot</em> (shallow) boundary is the shallowest angle at which the vehicle is still captured flying <b>lift down</b>. The <em>undershoot</em> (steep) boundary is the steepest angle at which it stays within the g-limit flying <b>lift up</b>. Between them, the guidance can roll the lift vector to steer. For Apollo lunar returns the corridor was only about 2–3° wide, centered near −6.5°, a narrow target for a spacecraft arriving from 400,000 km away. The simplified model below (constant L/D, no guidance, Sutton–Graves heating) gives a corridor of similar width that opens once the g-limit is about 12 g; with 10 g it closes. That shows how sensitive the corridor is to L/D and to the load limit.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Finding the entry corridor</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cV">Entry velocity (km/s) <output for="cV"></output></label>
+      <input type="range" id="cV" min="7.5" max="12" step="0.1" value="11" data-dec="1"></div>
+    <div class="ctl"><label for="cLD">L/D <output for="cLD"></output></label>
+      <input type="range" id="cLD" min="0" max="0.6" step="0.01" value="0.3" data-dec="2"></div>
+    <div class="ctl"><label for="cb">β (kg/m²) <output for="cb"></output></label>
+      <input type="range" id="cb" min="100" max="1000" step="10" value="350" data-dec="0"></div>
+    <div class="ctl"><label for="cg">g-limit <output for="cg"></output></label>
+      <input type="range" id="cg" min="4" max="20" step="0.5" value="12" data-dec="1"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"cV":11,"cLD":0.3,"cb":350,"cg":12}'>Apollo lunar return</button>
+      <button data-preset='{"cV":11,"cLD":0.3,"cb":350,"cg":10}'>Same, 10 g limit</button>
+      <button data-preset='{"cV":11,"cLD":0.4,"cb":350,"cg":10}'>More lift: L/D 0.4</button>
+      <button data-preset='{"cV":7.8,"cLD":0.3,"cb":350,"cg":10}'>From low orbit</button>
+    </div>
+    <div id="status3" class="status"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Peak g-load against entry angle for lift-up (solid) and lift-down (dashed) flight, each from a full simulation. Small gray points skipped out. The corridor (band) lies between the overshoot boundary (lift down, still captured) and the undershoot boundary (lift up, within the g-limit).</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="tradeoff"><span class="sec">Section 13.6</span>Peak heating versus heat load</h2>
+  <p>A steep entry concentrates the heating into a short, intense pulse; a shallow one spreads it out. The <b>peak heat flux</b> sets the temperature the TPS must survive, and so the choice of material. The integrated <b>heat load</b> \(Q = \int q\,dt\) sets how much of it is needed: ablator thickness, or how deep the heat soaks into an insulator. A trajectory designer trades one against the other. Winged vehicles accept large heat loads at modest fluxes and use reusable radiative TPS. Capsules accept high fluxes for a short time and use ablators.</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">The heating trade-off</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="tV">Entry velocity (km/s) <output for="tV"></output></label>
+      <input type="range" id="tV" min="6" max="12" step="0.1" value="7.6" data-dec="1"></div>
+    <div class="ctl"><label for="tb">β (kg/m²) <output for="tb"></output></label>
+      <input type="range" id="tb" min="50" max="2000" step="10" value="350" data-dec="0"></div>
+    <div class="ctl"><label for="tR">Nose radius (m) <output for="tR"></output></label>
+      <input type="range" id="tR" min="0.2" max="5" step="0.05" value="2" data-dec="2"></div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot4a"></div><figcaption>Peak stagnation heat flux against entry angle (ballistic).</figcaption></figure>
+    <figure><div id="plot4b"></div><figcaption>Integrated stagnation heat load against entry angle. Steeper entries cut the load but raise the peak.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="sim"><span class="sec">Section 13.7</span>A trajectory simulator</h2>
+  <p>The presets below approximate real vehicles from public data: mass, diameter and drag set β; L/D comes from the trim angle (Lesson 10). The bank angle is held constant, whereas real vehicles modulate it, so the results are illustrative rather than flight reconstructions.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Entry trajectory simulator</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sV">Entry velocity (km/s) at 122 km <output for="sV"></output></label>
+      <input type="range" id="sV" min="3" max="13" step="0.05" value="11" data-dec="2"></div>
+    <div class="ctl"><label for="sg">Entry flight-path angle γ<sub>E</sub> <output for="sg"></output></label>
+      <input type="range" id="sg" min="-30" max="-0.5" step="0.05" value="-6.5" data-dec="2" data-unit="°"></div>
+    <div class="ctl"><label for="sb">β (kg/m²) <output for="sb"></output></label>
+      <input type="range" id="sb" min="20" max="20000" step="10" value="350" data-dec="0"></div>
+    <div class="ctl"><label for="sLD">L/D <output for="sLD"></output></label>
+      <input type="range" id="sLD" min="0" max="3" step="0.01" value="0.3" data-dec="2"></div>
+    <div class="ctl"><label for="sB">Bank angle σ (0 = lift up) <output for="sB"></output></label>
+      <input type="range" id="sB" min="0" max="180" step="1" value="60" data-dec="0" data-unit="°"></div>
+    <div class="ctl"><label for="sR">Nose radius R<sub>n</sub> (m) <output for="sR"></output></label>
+      <input type="range" id="sR" min="0.02" max="5" step="0.01" value="4.7" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"sV":11,"sg":-6.5,"sb":350,"sLD":0.3,"sB":60,"sR":4.7}'>Apollo lunar return</button>
+      <button data-preset='{"sV":7.6,"sg":-1.2,"sb":400,"sLD":1,"sB":70,"sR":1}'>Winged orbiter</button>
+      <button data-preset='{"sV":7.6,"sg":-1.35,"sb":400,"sLD":0.25,"sB":45,"sR":2.2}'>Soyuz-like</button>
+      <button data-preset='{"sV":12.9,"sg":-8.2,"sb":60,"sLD":0,"sB":0,"sR":0.23}'>Stardust (12.9 km/s)</button>
+      <button data-preset='{"sV":7,"sg":-25,"sb":10000,"sLD":0,"sB":0,"sR":0.05}'>Ballistic RV</button>
+      <button data-preset='{"sV":11,"sg":-5.2,"sb":350,"sLD":0.3,"sB":0,"sR":4.7}'>Skip-out</button>
+    </div>
+    <div id="status5" class="status"></div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views">
+    <div class="two-up">
+      <figure><div id="plot5a"></div><figcaption>Altitude against velocity.</figcaption></figure>
+      <figure><div id="plot5b"></div><figcaption>Altitude against downrange distance.</figcaption></figure>
+    </div>
+    <div class="two-up">
+      <figure><div id="plot5c"></div><figcaption>Deceleration (g) against time.</figcaption></figure>
+      <figure><div id="plot5d"></div><figcaption>Stagnation heat flux (W/cm²) against time.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="guidance"><span class="sec">Section 13.8</span>Steering: bank-angle modulation</h2>
+  <p>A lifting entry vehicle steers by rolling its lift vector about the velocity vector. The vertical component \(L\cos\sigma\) controls the descent rate and so the down-range distance. The horizontal component \(L\sin\sigma\) turns the trajectory sideways, giving cross-range. Because the horizontal component would steadily build up a cross-range error, the vehicle periodically reverses the sign of σ, the <b>roll reversals</b> visible in Shuttle ground tracks. Apollo's guidance flew lift up after entry interface to avoid excessive g, and could perform a controlled "skip" for long ranges. Orion's skip-entry guidance extends this idea, lofting the capsule partly back out of the atmosphere to reach a distant landing site and spread the heat load. Capsules without wings get the same control from their small L/D, which is why a few percent of CG offset (Lesson 10) matters so much.</p>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 13.9</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 13.1 · Peak deceleration</button><button>Ex 13.2 · Peak heating</button><button>Ex 13.3 · Equilibrium glide</button><button>Ex 13.4 · Simulated entry</button></div>
+  <div class="panel" id="ex1">
+    <p>A ballistic vehicle enters at \(V_E\) and angle \(\gamma_E\). Using Allen–Eggers with scale height H, find the peak deceleration, the velocity there, and its altitude for ballistic coefficient β.</p>
+    <div class="given"><label>V_E (km/s)<input type="number" id="e1V" value="7.5" step="any"></label><label>γ_E (deg)<input type="number" id="e1g" value="10" step="any"></label><label>β (kg/m²)<input type="number" id="e1b" value="1000" step="any"></label><label>H (km)<input type="number" id="e1H" value="7.2" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>For the same ballistic entry, find the peak stagnation heat flux with Sutton–Graves and nose radius \(R_n\), in closed form.</p>
+    <div class="given"><label>V_E (km/s)<input type="number" id="e2V" value="7.5" step="any"></label><label>γ_E (deg)<input type="number" id="e2g" value="10" step="any"></label><label>β (kg/m²)<input type="number" id="e2b" value="1000" step="any"></label><label>R_n (m)<input type="number" id="e2R" value="0.5" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A glider with L/D and wing loading \(m/(C_LA)\) flies an equilibrium glide. Find its altitude at velocity V and the range to 0.3 km/s.</p>
+    <div class="given"><label>L/D<input type="number" id="e3LD" value="1" step="any"></label><label>m/(C_LA) (kg/m²)<input type="number" id="e3W" value="450" step="any"></label><label>V (km/s)<input type="number" id="e3V" value="6" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>Simulate an entry from 122 km with the given parameters and report the key loads.</p>
+    <div class="given"><label>V_E (km/s)<input type="number" id="e4V" value="7.6" step="any"></label><label>γ_E (deg)<input type="number" id="e4g" value="-1.5" step="any"></label><label>β (kg/m²)<input type="number" id="e4b" value="350" step="any"></label><label>L/D<input type="number" id="e4LD" value="0.3" step="any"></label><label>σ (deg)<input type="number" id="e4s" value="45" step="any"></label><label>R_n (m)<input type="number" id="e4R" value="2" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 13.10</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Equations of motion</h4>
+    $$\dot V = -\frac{\rho V^2}{2\beta} - g\sin\gamma,\quad V\dot\gamma = \frac{L\cos\sigma}{m} - \left(g - \frac{V^2}{r}\right)\cos\gamma$$</div>
+  <div><h4>Allen–Eggers (ballistic)</h4>
+    $$V = V_E\exp\!\left(-\frac{\rho_0H e^{-h/H}}{2\beta\sin\gamma_E}\right),\quad a_{\max} = \frac{V_E^2\sin\gamma_E}{2eH}$$
+    $$V_{a,\max} = 0.61V_E,\qquad V_{q,\max} = 0.85V_E$$</div>
+  <div><h4>Equilibrium glide</h4>
+    $$\rho_\text{eq} = \frac{2m}{C_LA}\frac{g - V^2/r}{V^2},\quad s = \frac{r}{2}\frac{L}{D}\ln\frac{gr - V_f^2}{gr - V_0^2}$$</div>
+  <div><h4>Heating</h4>
+    $$q_{\max} = k\sqrt{\frac{\beta\sin\gamma_E}{3HR_n}}\left(V_Ee^{-1/6}\right)^3,\qquad Q = \int q\,dt$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { DEG, bisect, G0 } = GD;
+  const { atmosphere, allenEggers, entry, glideRange, SG_K, EARTH } = HY;
+  const zOfRho = rho => (rho >= 1.225 ? 0 : rho < 2.1e-9 ? NaN : bisect(z => atmosphere(z).rho - rho, 0, 150000, 1));
+
+  // ---------- 1 ----------
+  UI.wire("#lab1", () => {
+    const VE = UI.val("aV") * 1000, gE = UI.val("ag") * DEG, beta = UI.val("ab"), H = UI.val("aH") * 1000;
+    const ae = allenEggers({ VE, gammaE: gE, beta, H });
+    const sim = entry({ h0: 121920, V0: VE, gamma0Deg: -gE / DEG, beta, LD: 0, Rn: 1, dt: gE > 15 * DEG ? 0.02 : 0.1 });
+    const hs = UI.linspace(0, 120000, 200);
+    UI.plot("#plot1a", { xlabel: "Velocity (km/s)", ylabel: "Altitude (km)", xlim: [0, VE / 1000 * 1.05], ylim: [0, 120],
+      series: [{ x: sim.hist.map(p => p.V / 1000), y: sim.hist.map(p => p.h / 1000), c: 1, label: "simulation" }, { x: hs.map(h => ae.V(h) / 1000), y: hs.map(h => h / 1000), c: 4, dash: true, label: "Allen–Eggers" }],
+      legend: "tl", legendWidth: 120 });
+    const simMax = sim.hist.reduce((m, p) => p.n > m.n ? p : m, sim.hist[0]);
+    UI.plot("#plot1b", { xlabel: "Deceleration (g)", ylabel: "Altitude (km)", ylim: [0, 120], xlim: [0, Math.max(ae.aMax / G0, simMax.n) * 1.1],
+      series: [{ x: sim.hist.map(p => p.n), y: sim.hist.map(p => p.h / 1000), c: 1, label: "simulation" }, { x: hs.map(h => ae.decel(h) / G0), y: hs.map(h => h / 1000), c: 4, dash: true, label: "Allen–Eggers" }],
+      points: [{ x: ae.aMax / G0, y: ae.hAmax / 1000, c: 4 }], legend: "tr", legendWidth: 120 });
+    UI.readout("#ro1", [["a_max Allen–Eggers (g)", ae.aMax / G0], ["a_max simulated (g)", simMax.n], ["altitude of a_max, AE (km)", ae.hAmax / 1000], ["altitude, simulated (km)", simMax.h / 1000],
+      ["V at a_max, AE (km/s)", ae.VAmax / 1000], ["V at a_max, simulated", simMax.V / 1000], ["altitude of q_max, AE (km)", ae.hQmax / 1000]]);
+  });
+
+  // ---------- 2 ----------
+  UI.wire("#lab2", () => {
+    const LD = UI.val("gLD"), W = UI.val("gW"), V0 = UI.val("gV") * 1000, r = EARTH.R + 60000, g = EARTH.mu / (r * r);
+    const Vs = UI.linspace(300, Math.min(V0, Math.sqrt(g * r) * 0.999), 120);
+    const zeq = Vs.map(V => zOfRho(2 * W * (g - V * V / r) / (V * V)) / 1000);
+    const z0 = zOfRho(2 * W * (g - V0 * V0 / r) / (V0 * V0));
+    const sim = isFinite(z0) ? entry({ h0: z0, V0, gamma0Deg: 0, beta: W * LD, LD, bankDeg: 0, Rn: 1, dt: 0.2, skipMargin: 40000 }) : null;
+    UI.plot("#plot2a", { xlabel: "Velocity (km/s)", ylabel: "Altitude (km)", xlim: [0, 8], ylim: [0, 100],
+      series: [{ x: Vs.map(v => v / 1000), y: zeq, c: 1, label: "equilibrium glide" }].concat(sim ? [{ x: sim.hist.map(p => p.V / 1000), y: sim.hist.map(p => p.h / 1000), c: 4, dash: true, label: "simulated, σ = 0" }] : []),
+      legend: "tl", legendWidth: 150 });
+    const LDs = UI.linspace(0.1, 4, 80);
+    UI.plot("#plot2b", { xlabel: "L/D", ylabel: "Range (1000 km)", xlim: [0, 4], ylim: [0, Math.max(5, glideRange(V0, 300, 4) / 1e6 * 1.05)],
+      series: [{ x: LDs, y: LDs.map(l => glideRange(V0, 300, l) / 1e6), c: 2 }], points: [{ x: LD, y: glideRange(V0, 300, LD) / 1e6, c: 4 }], legend: false });
+    const nEnd = (g - 300 * 300 / r) * Math.sqrt(1 + LD * LD) / LD / G0;
+    UI.readout("#ro2", [["Glide range (km)", glideRange(V0, 300, LD) / 1000], ["Equilibrium altitude at V₀ (km)", z0 / 1000], ["Ballistic coeff. β = (m/C_LA)·L/D", W * LD], ["g-load at low speed", nEnd],
+      ["Simulated range (km)", sim ? sim.range / 1000 : "—"], ["Simulated peak g", sim ? sim.nmax : "—"]]);
+  });
+
+  // ---------- 3: corridor ----------
+  UI.wire("#lab3", () => {
+    const V = UI.val("cV") * 1000, LD = UI.val("cLD"), beta = UI.val("cb"), gl = UI.val("cg");
+    const gs = UI.linspace(-2, -12, 41);
+    const run = bank => gs.map(gE => { const r = entry({ h0: 121920, V0: V, gamma0Deg: gE, beta, LD, bankDeg: bank, Rn: 1, dt: 0.2 }); return { gE, n: r.nmax, skip: r.skipped }; });
+    const up = run(0), dn = LD > 0 ? run(180) : up;
+    // overshoot: shallowest γ (largest, closest to 0) that is captured lift-down; undershoot: steepest within g-limit lift-up
+    const capt = dn.filter(p => !p.skip), over = capt.length ? Math.max(...capt.map(p => p.gE)) : NaN;
+    const ok = up.filter(p => !p.skip && p.n <= gl), under = ok.length ? Math.min(...ok.map(p => p.gE)) : NaN;
+    const width = isFinite(over) && isFinite(under) && under <= over ? over - under : NaN;
+    const toPts = (arr, c) => arr.map(p => ({ x: -p.gE, y: Math.min(p.n, 79), c: p.skip ? 6 : c, r: p.skip ? 3 : 4.5 }));
+    UI.plot("#plot3", { xlabel: "Entry angle below horizontal, −γ_E (deg)", ylabel: "Peak deceleration (g)", xlim: [2, 12], ylim: [0, Math.min(80, Math.max(30, ...up.concat(dn).filter(p => !p.skip).map(p => p.n)) * 1.05)],
+      series: [{ x: up.map(p => -p.gE), y: up.map(p => p.skip ? NaN : p.n), c: 1, label: "lift up (σ = 0°)" }, { x: dn.map(p => -p.gE), y: dn.map(p => p.skip ? NaN : p.n), c: 4, dash: true, label: "lift down (σ = 180°)" }],
+      points: toPts(up, 1).concat(toPts(dn, 4)), hlines: [{ y: gl, label: "g-limit", c: 3 }],
+      bands: isFinite(width) ? [{ x0: -over, x1: -under, label: "corridor" }] : [], legend: "tl", legendWidth: 150, h: 380 });
+    const st = document.getElementById("status3");
+    st.className = "status " + (isFinite(width) ? "good" : "bad");
+    st.innerHTML = isFinite(width) ? `Corridor from γ<sub>E</sub> = ${over.toFixed(1)}° to ${under.toFixed(1)}°: about ${width.toFixed(1)}° wide (grid of 0.25°).` : "No corridor: either every angle skips lift-down, or every captured entry exceeds the g-limit.";
+    UI.readout("#ro3", [["Overshoot boundary (°)", over], ["Undershoot boundary (°)", under], ["Corridor width (°)", width]]);
+  });
+
+  // ---------- 4: trade-off ----------
+  UI.wire("#lab4", () => {
+    const V = UI.val("tV") * 1000, beta = UI.val("tb"), Rn = UI.val("tR");
+    const gs = UI.linspace(-1.2, -30, 30);
+    const res = gs.map(gE => { const r = entry({ h0: 121920, V0: V, gamma0Deg: gE, beta, LD: 0, Rn, dt: gE < -10 ? 0.05 : 0.2 }); return { gE, q: r.qmax, Q: r.Q, skip: r.skipped }; });
+    const x = res.map(p => -p.gE);
+    UI.plot("#plot4a", { xlabel: "−γ_E (deg)", ylabel: "q_max (W/cm²)", xlim: [0, 30], series: [{ x, y: res.map(p => p.skip ? NaN : p.q / 1e4), c: 4 }], legend: false });
+    UI.plot("#plot4b", { xlabel: "−γ_E (deg)", ylabel: "Q (MJ/m²)", xlim: [0, 30], series: [{ x, y: res.map(p => p.skip ? NaN : p.Q / 1e6), c: 1 }], legend: false });
+    const a = res.find(p => Math.abs(p.gE + 2.2) < 0.6) || res[1], b = res[res.length - 1];
+    UI.readout("#ro4", [["q_max at shallow end (W/cm²)", a.q / 1e4], ["Q at shallow end (MJ/m²)", a.Q / 1e6], ["q_max at 30° (W/cm²)", b.q / 1e4], ["Q at 30° (MJ/m²)", b.Q / 1e6]]);
+  });
+
+  // ---------- 5: simulator ----------
+  UI.wire("#lab5", () => {
+    const o = { h0: 121920, V0: UI.val("sV") * 1000, gamma0Deg: UI.val("sg"), beta: UI.val("sb"), LD: UI.val("sLD"), bankDeg: UI.val("sB"), Rn: UI.val("sR") };
+    o.dt = o.gamma0Deg < -12 ? 0.02 : 0.1;
+    const r = entry(o), H = r.hist, st = document.getElementById("status5");
+    UI.plot("#plot5a", { w: 420, h: 300, xlabel: "V (km/s)", ylabel: "h (km)", xlim: [0, 13], ylim: [0, 130], series: [{ x: H.map(p => p.V / 1000), y: H.map(p => p.h / 1000), c: 1 }], legend: false });
+    UI.plot("#plot5b", { w: 420, h: 300, xlabel: "Downrange (km)", ylabel: "h (km)", ylim: [0, 130], series: [{ x: H.map(p => p.s / 1000), y: H.map(p => p.h / 1000), c: 2 }], legend: false });
+    UI.plot("#plot5c", { w: 420, h: 300, xlabel: "t (s)", ylabel: "g-load", series: [{ x: H.map(p => p.t), y: H.map(p => p.n), c: 4 }], legend: false });
+    UI.plot("#plot5d", { w: 420, h: 300, xlabel: "t (s)", ylabel: "q (W/cm²)", series: [{ x: H.map(p => p.t), y: H.map(p => p.q / 1e4), c: 3 }], legend: false });
+    st.className = "status " + (r.skipped ? "warn" : r.nmax > 12 ? "bad" : "good");
+    st.innerHTML = r.skipped ? "The vehicle skipped back out of the atmosphere." : r.nmax > 12 ? `Captured, but the peak load of ${r.nmax.toFixed(1)} g is beyond what a crew should face.` : `Captured; peak load ${r.nmax.toFixed(1)} g.`;
+    UI.readout("#ro5", [["Peak g", r.nmax], ["Peak q (W/cm²)", r.qmax / 1e4], ["Heat load (MJ/m²)", r.Q / 1e6], ["Peak dynamic pressure (kPa)", r.qdynMax / 1000], ["Downrange (km)", r.range / 1000], ["Flight time (s)", r.tf],
+      ["Kinetic energy per kg (MJ)", 0.5 * o.V0 * o.V0 / 1e6]]);
+    UI.live("#lab5", r.skipped ? "skip-out" : "captured");
+  });
+
+  // ---------- examples ----------
+  UI.wire("#ex1", () => {
+    const VE = UI.val("e1V") * 1000, gE = UI.val("e1g") * DEG, beta = UI.val("e1b"), H = UI.val("e1H") * 1000, ae = allenEggers({ VE, gammaE: gE, beta, H });
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["a_max (m/s²)", "V_E² sin γ_E/(2eH)", ae.aMax], ["a_max (g)", "÷ 9.807", ae.aMax / G0], ["V at a_max (km/s)", "V_E e^(−1/2)", ae.VAmax / 1000],
+      ["ρ at a_max (kg/m³)", "β sin γ_E / H", beta * Math.sin(gE) / H], ["Altitude of a_max (km)", "H ln(ρ₀H/(β sin γ_E))", ae.hAmax / 1000]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const VE = UI.val("e2V") * 1000, gE = UI.val("e2g") * DEG, beta = UI.val("e2b"), Rn = UI.val("e2R"), H = 7200;
+    const rho = beta * Math.sin(gE) / (3 * H), V = VE * Math.exp(-1 / 6), q = SG_K * Math.sqrt(rho / Rn) * V ** 3;
+    const sim = entry({ h0: 121920, V0: VE, gamma0Deg: -gE / DEG, beta, LD: 0, Rn, dt: 0.05 });
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["V at q_max (km/s)", "V_E e^(−1/6)", V / 1000], ["ρ at q_max (kg/m³)", "β sin γ_E/(3H)", rho], ["Altitude (km)", "H ln(ρ₀/ρ)", -H * Math.log(rho / 1.225) / 1000],
+      ["q_max (W/cm²)", "k √(ρ/R_n) V³", q / 1e4], ["q_max simulated (W/cm²)", "full trajectory", sim.qmax / 1e4]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const LD = UI.val("e3LD"), W = UI.val("e3W"), V = UI.val("e3V") * 1000, r = EARTH.R + 50000, g = EARTH.mu / (r * r);
+    const rho = 2 * W * (g - V * V / r) / (V * V);
+    UI.table("#e3out", ["Quantity", "Relation used", "Result"], [
+      ["g − V²/r (m/s²)", "r = R + 50 km", g - V * V / r], ["ρ_eq (kg/m³)", "2(m/C_LA)(g − V²/r)/V²", rho], ["Altitude (km)", "1976 atmosphere", zOfRho(rho) / 1000],
+      ["Range to 0.3 km/s (km)", "(r/2)(L/D) ln[(gr − V_f²)/(gr − V²)]", glideRange(V, 300, LD) / 1000]], "ex");
+  });
+  UI.wire("#ex4", () => {
+    const o = { h0: 121920, V0: UI.val("e4V") * 1000, gamma0Deg: UI.val("e4g"), beta: UI.val("e4b"), LD: UI.val("e4LD"), bankDeg: UI.val("e4s"), Rn: UI.val("e4R") };
+    const r = entry(o), pk = r.hist.reduce((m, p) => p.q > m.q ? p : m, r.hist[0]);
+    UI.table("#e4out", ["Quantity", "Result"], [["Skipped out?", r.skipped ? "yes" : "no"], ["Peak g", r.nmax], ["Peak q (W/cm²)", r.qmax / 1e4], ["Altitude of peak q (km)", pk.h / 1000],
+      ["Velocity at peak q (km/s)", pk.V / 1000], ["Heat load (MJ/m²)", r.Q / 1e6], ["Downrange (km)", r.range / 1000], ["Time to 200 m/s (s)", r.tf]]);
+  });
+
+  UI.quiz("#quiz", [
+    { q: "In a steep ballistic entry, the peak deceleration depends on…", opts: ["β only", "V_E and γ_E, not β", "β and γ_E", "the nose radius"], a: 1, why: "a_max = V_E² sin γ_E/(2eH). β only sets the altitude at which it occurs." },
+    { q: "Peak deceleration occurs at what fraction of the entry velocity?", opts: ["0.85", "0.61", "0.5", "0.1"], a: 1, why: "V = V_E e^(−1/2) ≈ 0.61 V_E (Allen–Eggers)." },
+    { q: "Peak stagnation heating occurs…", opts: ["after peak deceleration, lower down", "before peak deceleration, higher up", "at the same point", "at landing"], a: 1, why: "q ∝ √ρ V³ peaks at V = 0.85 V_E and ρ = β sin γ/(3H), a third of the density at peak deceleration: higher altitude, earlier." },
+    { q: "A heavier vehicle with the same shape (higher β) decelerates…", opts: ["higher in the atmosphere", "lower in the atmosphere", "at the same altitude", "faster"], a: 1, why: "Peak deceleration is at ρ = β sin γ_E/H: higher β needs higher density, deeper down." },
+    { q: "Why are crewed entry vehicles blunt?", opts: ["For high L/D", "So that most of the energy goes into the shock layer rather than the vehicle", "To reduce drag", "For stability only"], a: 1, why: "Allen and Eggers: the heat fraction absorbed scales with friction drag over total drag; blunt bodies have high pressure drag." },
+    { q: "In an equilibrium glide, lift balances…", opts: ["drag", "gravity minus centrifugal relief, g − V²/r", "thrust", "nothing"], a: 1, why: "½ρV²C_LA/m = g − V²/r, giving one equilibrium altitude for each velocity." },
+    { q: "The overshoot boundary of a lifting capsule's corridor is set flying…", opts: ["lift up", "lift down", "ballistic", "with full thrust"], a: 1, why: "Lift down gives the strongest pull into the atmosphere: the shallowest entry still captured with lift down is the overshoot boundary." },
+    { q: "Entering too shallowly at lunar-return speed risks…", opts: ["excessive g-loads", "skipping back out of the atmosphere", "burning up", "landing short"], a: 1, why: "At supercircular speed, a shallow pass may not shed enough energy; lift and centrifugal force carry the vehicle back out." },
+    { q: "A steeper entry, for the same vehicle, gives…", opts: ["higher peak heating and lower heat load", "lower peak heating and higher heat load", "both higher", "both lower"], a: 0, why: "The heating pulse is shorter and sharper: q_max rises (∝ √sin γ_E) while the integrated load Q falls." },
+    { q: "A lifting vehicle controls its down-range distance mainly by…", opts: ["changing L/D continuously with flaps", "rolling the lift vector (bank angle)", "deploying parachutes", "throttling engines"], a: 1, why: "Bank-angle modulation changes the vertical lift L cos σ; roll reversals keep cross-range in check." },
+  ]);
+})();
+</script>
+</body>
+</html>
