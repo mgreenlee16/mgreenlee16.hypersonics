@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newtonian Theory &amp; Hypersonic Aerodynamics · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="newtonian">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 10 · Part V</div>
+  <h1>Newtonian Theory &amp; Hypersonic Aerodynamics</h1>
+  <p class="lead">Newton modeled a fluid as a stream of particles that hit a surface, lose their normal momentum and slide along it. The model fails at low speeds, but in the thin shock layers of hypersonic flow it becomes surprisingly good. This lesson builds the sine-squared law and its modified form, then uses it to find the forces on flat plates, cones, blunted cones and re-entry capsules. It compares the results with exact Taylor–Maccoll cone solutions, and shows how a capsule trims and why its lift points the "wrong" way.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#newton">Newton's sine-squared law</a></li>
+    <li><a href="#modified">Modified Newtonian theory</a></li>
+    <li><a href="#plate">The flat plate: lift, drag and L/D</a></li>
+    <li><a href="#cone">Cones: Newtonian versus exact</a></li>
+    <li><a href="#local">Local surface-inclination methods</a></li>
+    <li><a href="#bodies">Blunt bodies and capsules at incidence</a></li>
+    <li><a href="#trim">Trim and static stability</a></li>
+    <li><a href="#blunt">Bluntness and drag</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="newton"><span class="sec">Section 10.1</span>Newton's sine-squared law</h2>
+  <p>Let a uniform stream of particles at speed \(V_\infty\) and density \(\rho_\infty\) strike a flat surface of area A inclined at angle θ to the stream. The mass flux hitting the surface is \(\rho_\infty V_\infty A\sin\theta\). Each particle loses its momentum component normal to the surface, \(V_\infty\sin\theta\), and keeps its tangential component. The normal force is the rate of change of momentum:</p>
+  $$N = \rho_\infty V_\infty^2 A\sin^2\theta \quad\Rightarrow\quad C_p = \frac{p - p_\infty}{\tfrac12\rho_\infty V_\infty^2} = 2\sin^2\theta.$$
+  <p>This is <b class="term">Newton's sine-squared law</b>. Surfaces turned away from the flow ("in the shadow") receive no impacts, and Newtonian theory sets \(C_p = 0\) there. Comparing with Lesson 9: in the hypersonic limit with γ → 1, the shock lies on the surface (β → θ) and \(C_{p,2} = 4\sin^2\beta/(\gamma+1) \to 2\sin^2\theta\). Newtonian flow is the double limit \(M_\infty \to \infty\), \(\gamma \to 1\).</p>
+
+  <h2 id="modified"><span class="sec">Section 10.2</span>Modified Newtonian theory</h2>
+  <p>Lees (1955) observed that the stagnation point of a blunt body does not have \(C_p = 2\). It has the value behind a normal shock, decelerated isentropically to rest: the Rayleigh–Pitot pressure \(p_{0,2}\). Scaling the sine-squared law to match it gives <b class="term">modified Newtonian</b> theory:</p>
+  $$C_p = C_{p,\max}\sin^2\theta, \qquad C_{p,\max} = \frac{p_{0,2} - p_\infty}{q_\infty} = \frac{2}{\gamma M_\infty^2}\left(\frac{p_{0,2}}{p_\infty} - 1\right).$$
+  <p>As \(M_\infty \to \infty\), \(C_{p,\max} \to \frac{4}{\gamma+1}\left[\frac{(\gamma+1)^2}{4\gamma}\right]^{\gamma/(\gamma-1)}\), which is 1.839 for γ = 1.4 and approaches 2 as γ → 1. Modified Newtonian theory is accurate on the windward faces of blunt bodies and is the workhorse of conceptual design for capsules and winged re-entry vehicles. It is less accurate on slender bodies and near shoulders, where the flow expands. The <b>Newton–Busemann</b> correction adds the centrifugal force of the gas flowing along a curved surface; in practice it often makes agreement worse for blunt bodies, and plain modified Newtonian is preferred.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Pressure on a sphere or cylinder</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cM">Freestream Mach M∞ <output for="cM"></output></label>
+      <input type="range" id="cM" min="1.5" max="30" step="0.1" value="8" data-dec="1"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"cM":3}'>M 3</button><button data-preset='{"cM":8}'>M 8</button><button data-preset='{"cM":25}'>M 25</button>
+      <button data-preset='{"cM":10,"gamma":1.2}'>γ = 1.2</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot1a"></div><figcaption>Cp around a sphere or circular cylinder against the angle φ from the stagnation point: Newtonian (2cos²φ) and modified (C<sub>p,max</sub> cos²φ). The surface inclination is θ = 90° − φ.</figcaption></figure>
+    <figure><div id="plot1b"></div><figcaption>C<sub>p,max</sub> versus Mach number for the current γ, approaching its limit (dashed).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="plate"><span class="sec">Section 10.3</span>The flat plate: lift, drag and L/D</h2>
+  <p>A flat plate at angle of attack α has its lower surface at inclination α and its upper surface in the shadow. With \(C_p = C_{p,\max}\sin^2\alpha\) on the lower surface,</p>
+  $$C_N = C_{p,\max}\sin^2\alpha, \qquad C_L = C_{p,\max}\sin^2\alpha\cos\alpha, \qquad C_D = C_{p,\max}\sin^3\alpha, \qquad \frac{L}{D} = \cot\alpha.$$
+  <p>Lift is proportional to \(\alpha^2\) at small angles, not to α as at low speed. \(C_L\) is greatest at α = 54.7° (where \(\tan^2\alpha = 2\)). The inviscid L/D grows without limit as α → 0, but skin friction stops that. With a friction drag coefficient \(C_{D,f}\) (both sides of the plate), L/D has a maximum near \(\alpha \approx (C_{D,f}/C_{p,\max})^{1/3}\cdot 2^{1/3}\), and \((L/D)_{\max}\) falls as friction grows. That is the root of the "L/D barrier" of hypersonic vehicles: well-designed waveriders and CAV configurations reach roughly 4–6 at high Mach number, against 15–20 for subsonic transports.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Flat plate: Newtonian versus exact</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="pM">Freestream Mach M∞ <output for="pM"></output></label>
+      <input type="range" id="pM" min="2" max="30" step="0.1" value="10" data-dec="1"></div>
+    <div class="ctl"><label for="pA">Angle of attack α <output for="pA"></output></label>
+      <input type="range" id="pA" min="1" max="60" step="0.5" value="15" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="pCf">Friction drag C<sub>D,f</sub> (both sides) <output for="pCf"></output></label>
+      <input type="range" id="pCf" min="0" max="0.01" step="0.0002" value="0.003" data-dec="4"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"pM":3,"pA":5}'>M 3, α 5° (supersonic)</button>
+      <button data-preset='{"pM":10,"pA":15}'>M 10, α 15°</button>
+      <button data-preset='{"pM":20,"pA":40}'>Orbiter-like α 40°</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot2a"></div><figcaption>C<sub>L</sub> and C<sub>D</sub> against α: exact shock-expansion (solid), modified Newtonian (dashed).</figcaption></figure>
+    <figure><div id="plot2b"></div><figcaption>L/D with skin friction: exact (solid) and modified Newtonian (dashed). The dot marks the current α.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="cone"><span class="sec">Section 10.4</span>Cones: Newtonian versus exact</h2>
+  <p>A sharp cone at zero incidence in supersonic flow has an attached conical shock (Lesson 5). Behind it, the flow is not uniform: it keeps turning and compressing isentropically on its way to the surface. The exact inviscid solution satisfies the <b class="term">Taylor–Maccoll equation</b>, an ordinary differential equation in the polar angle θ from the axis, written with velocities scaled by \(V_{\max} = \sqrt{2h_0}\):</p>
+  $$\frac{\gamma-1}{2}\left[1 - V_r^2 - \left(\frac{dV_r}{d\theta}\right)^2\right]\left[2V_r + \frac{dV_r}{d\theta}\cot\theta + \frac{d^2V_r}{d\theta^2}\right] - \frac{dV_r}{d\theta}\left[V_r\frac{dV_r}{d\theta} + \frac{dV_r}{d\theta}\frac{d^2V_r}{d\theta^2}\right] = 0,$$
+  <p>with \(V_\theta = dV_r/d\theta\). It is integrated inward from the shock (where the oblique-shock relations give the starting values) until \(V_\theta = 0\), which defines the cone surface. This site solves it with a fourth-order Runge–Kutta scheme and finds the shock angle for a given cone angle by bisection. The results reproduce the NACA 1135 cone charts: for instance, a 10° cone at Mach 2 has β = 31.2°.</p>
+  <p>The Newtonian estimate for the cone surface is simply \(C_p = C_{p,\max}\sin^2\delta\). Interactive 3 shows that it is poor at low supersonic Mach numbers but approaches the exact result in the hypersonic limit, and is better for cones than for wedges because the three-dimensional relief keeps the shock closer to the surface.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Cone surface pressure: Taylor–Maccoll, Newtonian, tangent-wedge</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="kM">Freestream Mach M∞ <output for="kM"></output></label>
+      <input type="range" id="kM" min="1.5" max="25" step="0.1" value="6" data-dec="1"></div>
+    <div class="ctl"><label for="kd">Cone half-angle δ <output for="kd"></output></label>
+      <input type="range" id="kd" min="2" max="45" step="0.5" value="7" data-dec="1" data-unit="°"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"kM":2,"kd":10}'>NACA 1135: M 2, 10°</button>
+      <button data-preset='{"kM":6,"kd":7}'>BAM6QT 7° cone</button>
+      <button data-preset='{"kM":20,"kd":15}'>M 20, 15°</button>
+    </div>
+    <div id="status3" class="status"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag3"></div><figcaption>Conical shock and the curved streamlines between shock and cone, from the Taylor–Maccoll solution.</figcaption></figure>
+    <figure><div id="plot3"></div><figcaption>Surface Cp against cone half-angle at the current Mach number: exact Taylor–Maccoll (solid), modified Newtonian (dashed), and the wedge of the same angle (dotted). The wedge overpredicts the cone pressure: the cone's flow relieves sideways.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="local"><span class="sec">Section 10.5</span>Local surface-inclination methods</h2>
+  <p>Newtonian theory is the simplest of a family of methods that assign each surface panel a pressure from its local inclination alone. Others are:</p>
+  <ul>
+    <li><b>Tangent-wedge:</b> each panel gets the pressure behind an oblique shock at its local inclination. Good for two-dimensional compression surfaces such as inlet ramps and flaps.</li>
+    <li><b>Tangent-cone:</b> the Taylor–Maccoll surface pressure at the local inclination. Good for slender axisymmetric bodies.</li>
+    <li><b>Shock-expansion:</b> the leading-edge pressure from an oblique shock, then Prandtl–Meyer expansion along the surface (Lesson 6). Exact for sharp two-dimensional bodies until reflected waves arrive.</li>
+    <li><b>Prandtl–Meyer or "Newtonian plus Prandtl–Meyer"</b> for leeward, expanding surfaces where Newtonian theory gives zero.</li>
+  </ul>
+  <p>Panel codes built on these (the Hypersonic Arbitrary-Body Program, HABP, and its successors) remain in use for quick configuration studies, trajectory databases and design optimization, where thousands of cases must be run in minutes. Navier–Stokes CFD with real-gas models is reserved for the cases that matter most.</p>
+
+  <h2 id="bodies"><span class="sec">Section 10.6</span>Blunt bodies and capsules at incidence</h2>
+  <p>For a general body, Newtonian theory integrates \(C_p\) over every windward panel. With \(\hat{\mathbf n}\) the outward unit normal and \(\hat{\mathbf V}\) the freestream direction, a panel is windward if \(\hat{\mathbf V}\cdot\hat{\mathbf n} &lt; 0\), and then</p>
+  $$C_p = C_{p,\max}(\hat{\mathbf V}\cdot\hat{\mathbf n})^2, \qquad \mathbf C_F = -\frac{1}{A_\text{ref}}\oint C_p\,\hat{\mathbf n}\,dA.$$
+  <p>This site does this on a body of revolution, panelled in 96 azimuthal strips. It reproduces the classic closed forms: \(C_D = 1\) for a sphere (\(C_p = 2\) basis), and \(C_D = 2\sin^2\delta\) for a sharp cone of half-angle δ.</p>
+  <p>A re-entry capsule like Apollo, Soyuz or Orion has a shallow spherical-cap heat shield (radius \(R_s\) about 1.2 times the diameter for Apollo) and a conical afterbody that sits in the shadow. Something unexpected happens when it is pitched. The force on a nearly flat face acts almost normal to the face, that is, along the capsule's axis. Tilt the face up by α and the axial force tilts with it, so the resultant leans to the side opposite to that of a wing at the same α. The lift of a blunt capsule therefore points <em>opposite</em> to that of a wing at the same angle of attack. Capsules fly with their heat shield tilted (Apollo at α ≈ −20° to −25°) and obtain L/D ≈ 0.3. That small lift was enough to steer Apollo to its splashdown point and to cut the peak deceleration of lunar return to about 7 g, against roughly 15 g for a ballistic entry at the same flight-path angle (try both in Lesson 13).</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Body at incidence: forces, moment and trim</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl inline"><span>Body</span>
+      <div class="seg" id="nShape" data-value="capsule"><button data-value="capsule" aria-pressed="true">capsule</button><button data-value="spherecone" aria-pressed="false">blunt cone</button><button data-value="sphere" aria-pressed="false">sphere</button></div></div>
+    <div class="ctl"><label for="nA">Angle of attack α <output for="nA"></output></label>
+      <input type="range" id="nA" min="-40" max="40" step="0.5" value="-20" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="nRs">Capsule heat-shield radius R<sub>s</sub>/D <output for="nRs"></output></label>
+      <input type="range" id="nRs" min="0.6" max="2.5" step="0.01" value="1.2" data-dec="2"></div>
+    <div class="ctl"><label for="nX">Center of gravity x<sub>cg</sub>/D (from the nose) <output for="nX"></output></label>
+      <input type="range" id="nX" min="0" max="1" step="0.005" value="0.26" data-dec="3"></div>
+    <div class="ctl"><label for="nZ">Center-of-gravity offset z<sub>cg</sub>/D <output for="nZ"></output></label>
+      <input type="range" id="nZ" min="-0.1" max="0.1" step="0.001" value="0.035" data-dec="3"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"nShape":"capsule","nRs":1.2,"nX":0.26,"nZ":0.035,"nA":-20}'>Apollo-like</button>
+      <button data-preset='{"nShape":"capsule","nRs":1.2,"nX":0.26,"nZ":0,"nA":0}'>Ballistic (no offset)</button>
+      <button data-preset='{"nShape":"spherecone","nRs":1.2,"nX":0.4,"nZ":0,"nA":5}'>70° blunt cone (Mars probe)</button>
+    </div>
+    <div id="status4" class="status"></div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag4"></div><figcaption>The body, the freestream direction, the windward Cp (colored, red = high) and the resultant aerodynamic force through the center of pressure. Shadowed surfaces are gray.</figcaption></figure>
+    <figure><div id="plot4"></div><figcaption>Modified-Newtonian C<sub>L</sub>, C<sub>D</sub>, L/D and C<sub>m,cg</sub> (×10) against α. Trim is where C<sub>m,cg</sub> = 0; it is statically stable if C<sub>m</sub> falls as α rises.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="trim"><span class="sec">Section 10.7</span>Trim and static stability</h2>
+  <p>A capsule has no control surfaces: it is trimmed by where its center of gravity sits. Taking moments about the CG,</p>
+  $$C_{m,cg}(\alpha) = C_{m,\text{nose}}(\alpha) + C_N(\alpha)\frac{x_{cg}}{D} - C_A(\alpha)\frac{z_{cg}}{D}$$
+  <p>(nose-up moments positive, x measured back from the nose along the axis, z up), and the vehicle flies at the
+  <p><b class="term">trim angle</b> where \(C_{m,cg} = 0\). It is <b class="term">statically stable</b> in pitch if a disturbance that raises α produces a restoring, nose-down moment, \(\partial C_{m,cg}/\partial\alpha &lt; 0\). A capsule with its CG on the axis trims at α = 0 and flies ballistically (no lift). Moving the CG off the axis by a few percent of the diameter (the Apollo offset was of order 0.03–0.04 D) makes it trim at α ≈ 20° and generate lift, which the crew or the guidance system pointed by rolling the capsule (bank-angle modulation, Lesson 13).</p>
+  <p>Static stability also requires the CG to be well forward. For the spherical-cap shield, the pressure resultant on the windward face passes close to the center of the sphere, a distance \(R_s\) behind the nose. A CG between the nose and that point is stable. Many capsule shapes, Apollo's among them, also have a second, unwanted trim point with the apex forward. Afterbody shaping and CG placement must rule it out, since a capsule that flips would enter backward and burn through. Dynamic stability (pitch damping) of capsules is often poor at low supersonic speeds, where an unsteady base flow can drive oscillations. Drogue parachutes are deployed before that regime is reached.</p>
+
+  <h2 id="blunt"><span class="sec">Section 10.8</span>Bluntness and drag</h2>
+  <p>A sharp cone has the least wave drag for its volume, but the heat flux at its tip is unbounded. Blunting the nose of radius \(R_n\) cuts the heating (as \(1/\sqrt{R_n}\), Lesson 12) at a drag cost that Interactive 5 quantifies. For a slender cone, even a modest bluntness raises \(C_D\) noticeably. For a wide-angle cone such as the 70° aeroshells used on Viking, Pathfinder and Mars Science Laboratory, the cone face itself dominates and bluntness hardly matters. Those vehicles want high drag to decelerate in thin atmospheres, so a wide cone is ideal.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">The drag cost of blunting a cone</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="bd">Cone half-angle δ <output for="bd"></output></label>
+      <input type="range" id="bd" min="5" max="70" step="0.5" value="10" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="bR">Bluntness R<sub>n</sub>/R<sub>b</sub> <output for="bR"></output></label>
+      <input type="range" id="bR" min="0" max="1" step="0.01" value="0.2" data-dec="2"></div>
+    <div class="ctl"><label for="bM">Mach number (sets C<sub>p,max</sub>) <output for="bM"></output></label>
+      <input type="range" id="bM" min="3" max="30" step="0.1" value="15" data-dec="1"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"bd":7,"bR":0.05}'>Slender RV</button><button data-preset='{"bd":70,"bR":0.5}'>70° Mars aeroshell</button><button data-preset='{"bd":45,"bR":0.25}'>45° probe</button>
+    </div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="diag5"></div><figcaption>Sphere-cone profile (to scale).</figcaption></figure>
+    <figure><div id="plot5"></div><figcaption>Modified-Newtonian C<sub>D</sub> (base area) against bluntness for four half-angles; dot = current body.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 10.9</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 10.1 · C<sub>p,max</sub></button><button>Ex 10.2 · Flat plate</button><button>Ex 10.3 · Cone</button><button>Ex 10.4 · Capsule drag and β</button></div>
+  <div class="panel" id="ex1">
+    <p>A blunt body flies at Mach \(M_\infty\) at an altitude where \(p_\infty\) is given. Find the stagnation pressure on the body and \(C_{p,\max}\), and the pressure on a panel inclined at θ by modified Newtonian theory.</p>
+    <div class="given"><label>M∞<input type="number" id="e1M" value="12" step="any"></label><label>p∞ (Pa)<input type="number" id="e1p" value="300" step="any"></label><label>θ (deg)<input type="number" id="e1t" value="30" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>A flat plate is at α = 15° in Mach 10 flow. Compute \(C_L\), \(C_D\) and L/D by modified Newtonian theory, and compare with the exact shock-expansion result.</p>
+    <div class="given"><label>M∞<input type="number" id="e2M" value="10" step="any"></label><label>α (deg)<input type="number" id="e2a" value="15" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A sharp cone of half-angle δ is at zero incidence at Mach \(M_\infty\). Find the shock angle and the surface pressure coefficient exactly (Taylor–Maccoll) and by modified Newtonian theory. What is the drag coefficient (pressure drag on base area, no base pressure)?</p>
+    <div class="given"><label>M∞<input type="number" id="e3M" value="8" step="any"></label><label>δ (deg)<input type="number" id="e3d" value="10" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>An Apollo-like capsule (diameter D, mass m) trims at angle α. Find \(C_D\), \(C_L\), L/D and the ballistic coefficient \(\beta = m/(C_DA)\), which sets how high in the atmosphere it decelerates (Lesson 13).</p>
+    <div class="given"><label>D (m)<input type="number" id="e4D" value="3.91" step="any"></label><label>m (kg)<input type="number" id="e4m" value="5500" step="any"></label><label>α (deg)<input type="number" id="e4a" value="-20" step="any"></label><label>M∞<input type="number" id="e4M" value="25" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 10.10</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Newtonian and modified Newtonian</h4>
+    $$C_p = 2\sin^2\theta,\qquad C_p = C_{p,\max}\sin^2\theta$$
+    $$C_{p,\max} = \frac{2}{\gamma M_\infty^2}\left(\frac{p_{0,2}}{p_\infty} - 1\right) \to 1.839\ (\gamma = 1.4)$$</div>
+  <div><h4>Flat plate</h4>
+    $$C_L = C_{p,\max}\sin^2\alpha\cos\alpha,\quad C_D = C_{p,\max}\sin^3\alpha$$
+    $$L/D = \cot\alpha,\qquad C_{L,\max}\text{ at }\alpha = 54.7°$$</div>
+  <div><h4>Bodies</h4>
+    $$\mathbf C_F = -\frac{1}{A_\text{ref}}\oint_\text{windward} C_{p,\max}(\hat{\mathbf V}\cdot\hat{\mathbf n})^2\,\hat{\mathbf n}\,dA$$
+    $$\text{sphere: } C_D = C_{p,\max}/2,\qquad \text{cone: } C_D = C_{p,\max}\sin^2\delta$$</div>
+  <div><h4>Trim and ballistic coefficient</h4>
+    $$C_{m,cg}(\alpha_\text{trim}) = 0,\qquad \frac{\partial C_{m,cg}}{\partial\alpha} &lt; 0\ \text{(stable)}$$
+    $$\beta = \frac{m}{C_DA}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { obliqueShock, normalShock, DEG, bisect } = GD;
+  const { CpMax, CpMaxLimit, newtonianBody, shapes, cone, tmIntegrate } = HY;
+
+  // ---------- 1. sphere / cylinder ----------
+  UI.wire("#lab1", () => {
+    const g = UI.gamma(), M = UI.val("cM"), cpm = CpMax(M, g);
+    const ph = UI.linspace(0, 120, 241);
+    const f = c => ph.map(p => p <= 90 ? c * Math.cos(p * DEG) ** 2 : 0);
+    UI.plot("#plot1a", { xlabel: "Angle from stagnation point φ (deg)", ylabel: "Cp", xlim: [0, 120], ylim: [0, 2.1],
+      series: [{ x: ph, y: f(2), label: "Newtonian", c: 6, dash: true }, { x: ph, y: f(cpm), label: "modified Newtonian", c: 1 }],
+      bands: [{ x0: 90, x1: 120, label: "shadow" }], legend: "tr", legendWidth: 150 });
+    const Ms = UI.logspace(1.05, 40, 200);
+    UI.plot("#plot1b", { xlabel: "M∞", ylabel: "Cp,max", logx: true, xlim: [1.05, 40], ylim: [1.2, 2.05],
+      series: [{ x: Ms, y: Ms.map(m => CpMax(m, g)), c: 1 }, { x: [1.05, 40], y: [CpMaxLimit(g), CpMaxLimit(g)], c: 3, dash: true }], points: [{ x: M, y: cpm, c: 4 }], legend: false });
+    UI.readout("#ro1", [["Cp,max", cpm], ["Cp,max (M → ∞)", CpMaxLimit(g)], ["p₀₂/p∞", normalShock(M, g).p02_p1], ["Sphere CD (modified)", cpm / 2], ["Cylinder CD per unit span (on diameter)", (2 / 3) * cpm]]);
+    UI.live("#lab1", `γ = ${g}`);
+  });
+
+  // ---------- 2. flat plate ----------
+  UI.wire("#lab2", () => {
+    const g = UI.gamma(), M = UI.val("pM"), a = UI.val("pA") * DEG, Cf = UI.val("pCf"), cpm = CpMax(M, g);
+    const as = UI.linspace(0.5, 60, 120);
+    const ex = as.map(x => GD.diamondAirfoil(M, x * DEG, 0, g)), nw = as.map(x => HY.flatPlateNewtonian(x * DEG, cpm));
+    UI.plot("#plot2a", { xlabel: "α (deg)", ylabel: "CL, CD", xlim: [0, 60], ylim: [0, 1.6],
+      series: [{ x: as, y: ex.map(r => r ? r.CL : NaN), c: 1, label: "CL exact" }, { x: as, y: nw.map(r => r.CL), c: 1, dash: true, label: "CL Newtonian" },
+        { x: as, y: ex.map(r => r ? r.CD : NaN), c: 4, label: "CD exact" }, { x: as, y: nw.map(r => r.CD), c: 4, dash: true, label: "CD Newtonian" }], vlines: [{ x: a / DEG, c: 6 }], legend: "tl", legendWidth: 120 });
+    const LDe = ex.map(r => r ? r.CL / (r.CD + Cf) : NaN), LDn = nw.map(r => r.CL / (r.CD + Cf));
+    const r = GD.diamondAirfoil(M, a, 0, g), n = HY.flatPlateNewtonian(a, cpm);
+    const iMax = LDn.indexOf(Math.max(...LDn));
+    UI.plot("#plot2b", { xlabel: "α (deg)", ylabel: "L/D", xlim: [0, 60], ylim: [0, Math.min(30, Math.max(...LDn.filter(isFinite), ...LDe.filter(isFinite)) * 1.1)],
+      series: [{ x: as, y: LDe, c: 2, label: "exact + friction" }, { x: as, y: LDn, c: 2, dash: true, label: "Newtonian + friction" }],
+      points: r ? [{ x: a / DEG, y: r.CL / (r.CD + Cf), c: 4 }] : [], legend: "tr", legendWidth: 150 });
+    UI.readout("#ro2", [["CL exact", r ? r.CL : NaN], ["CL Newtonian", n.CL], ["CD exact (pressure)", r ? r.CD : NaN], ["CD Newtonian", n.CD], ["L/D (inviscid) = cot α", 1 / Math.tan(a)],
+      ["L/D with friction, exact", r ? r.CL / (r.CD + Cf) : NaN], ["(L/D)max Newtonian", LDn[iMax]], ["at α (°)", as[iMax]]]);
+  });
+
+  // ---------- 3. cone ----------
+  let coneCache = { key: "", curve: null };
+  UI.wire("#lab3", () => {
+    const g = UI.gamma(), M = UI.val("kM"), d = UI.val("kd") * DEG, st = document.getElementById("status3");
+    const c = cone(M, d, g, true), cpm = CpMax(M, g);
+    const W = 620, H = 230, x0 = 40, y0 = 200, L = 540;
+    let svg = `<polygon points="${x0},${y0} ${x0 + L},${y0 - L * Math.tan(d)} ${x0 + L},${y0}" class="body"/><line x1="0" x2="${W}" y1="${y0}" y2="${y0}" class="stream"/>`;
+    if (c) {
+      svg += `<line x1="${x0}" y1="${y0}" x2="${x0 + L}" y2="${y0 - L * Math.tan(c.beta)}" class="shock"/>`;
+      // streamlines: integrate dr/dθ = r V_r / V_θ through the conical field (path from the shock to near the body)
+      const path = c.path, Vfield = th => { // interpolate (Vr, Vθ) at polar angle th
+        for (let i = 1; i < path.length; i++) if (path[i][0] <= th) { const [t1, a1, b1] = path[i - 1], [t2, a2, b2] = path[i], s = (th - t1) / (t2 - t1); return [a1 + s * (a2 - a1), b1 + s * (b2 - b1)]; }
+        return [path[path.length - 1][1], 0];
+      };
+      for (let k = 1; k <= 5; k++) {
+        const h = k * 32, xs = h / Math.tan(c.beta);         // crossing point (pixels from apex)
+        let r = Math.hypot(xs, h), th = c.beta, pts = [[x0 + xs, y0 - h]];
+        let dd = `M0 ${y0 - h} L${x0 + xs} ${y0 - h}`;
+        for (let i = 0; i < 400 && x0 + r * Math.cos(th) < W; i++) {
+          const [vr, vt] = Vfield(th), ds = 3;
+          const vtt = Math.min(vt, -1e-4 * vr);              // keep moving toward the body
+          const dr = ds * vr / Math.hypot(vr, vtt), dth = ds * vtt / Math.hypot(vr, vtt) / r;
+          r += dr; th = Math.max(d + 0.002, th + dth);
+          dd += ` L${(x0 + r * Math.cos(th)).toFixed(1)} ${(y0 - r * Math.sin(th)).toFixed(1)}`;
+        }
+        svg += `<path d="${dd}" class="stream"/>`;
+      }
+      svg += `<text x="${x0 + 260}" y="${y0 - 260 * Math.tan(c.beta) - 8}" class="small">β = ${(c.beta / DEG).toFixed(2)}°</text><text x="${W - 150}" y="${y0 - 6}" class="small">δ = ${(d / DEG).toFixed(1)}°</text>`;
+      st.className = "status good"; st.innerHTML = `Attached conical shock; surface Mach ${c.Mc.toFixed(3)}.`;
+    } else { st.className = "status bad"; st.innerHTML = `δ exceeds the maximum cone angle (${(HY.coneMax(M, g).thetaC / DEG).toFixed(2)}°) at this Mach number: the shock detaches.`; }
+    document.getElementById("diag3").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+    const key = M + "|" + g;
+    if (coneCache.key !== key) {
+      // sweep the shock angle: one Taylor–Maccoll integration per point
+      const mu = Math.asin(1 / M), cm = HY.coneMax(M, g), ds = [], cp = [];
+      UI.linspace(mu + 1e-4, cm.beta, 70).forEach(b => {
+        const t = tmIntegrate(M, b, g);
+        if (!t) return;
+        const Mc = HY.machFromVmax(t.Vc, g), pc = t.os.p2_p1 * GD.isen.p0_p(t.M2, g) / GD.isen.p0_p(Mc, g);
+        ds.push(t.thetaC / DEG); cp.push((pc - 1) / (0.5 * g * M * M));
+      });
+      const dw = UI.linspace(0.5, 50, 100);
+      coneCache = { key, ds, cp, dw, wedge: dw.map(x => { const o = obliqueShock(M, x * DEG, g); return o ? (o.p2_p1 - 1) / (0.5 * g * M * M) : NaN; }) };
+    }
+    const cc = coneCache;
+    UI.plot("#plot3", { xlabel: "Half-angle δ (deg)", ylabel: "Surface Cp", xlim: [0, 50], ylim: [0, 1.6],
+      series: [{ x: cc.ds, y: cc.cp, c: 1, label: "cone, Taylor–Maccoll" }, { x: cc.dw, y: cc.dw.map(x => cpm * Math.sin(x * DEG) ** 2), c: 4, dash: true, label: "modified Newtonian" },
+        { x: cc.dw, y: cc.wedge, c: 2, dash: true, width: 1.3, label: "wedge, oblique shock" }],
+      points: c ? [{ x: d / DEG, y: c.Cp, c: 1 }] : [], legend: "tl", legendWidth: 165 });
+    UI.readout("#ro3", c ? [["β (°)", c.beta / DEG], ["Surface Mach Mc", c.Mc], ["pc/p∞", c.pc_p1], ["Tc/T∞", c.Tc_T1], ["Cp exact", c.Cp], ["Cp Newtonian", cpm * Math.sin(d) ** 2],
+      ["Newtonian error (%)", 100 * (cpm * Math.sin(d) ** 2 - c.Cp) / c.Cp], ["max cone angle (°)", c.thetaMax / DEG]] : []);
+  });
+
+  // ---------- 4. body at incidence ----------
+  function makeBody(kind, par, D = 1) {
+    const Rb = D / 2;
+    if (kind === "capsule") return shapes.capsule(Rb, par * D, 0.05 * D, 33 * DEG, 0.75 * D);
+    if (kind === "spherecone") return shapes.sphereCone(0.5 * Rb, 70 * DEG, Rb);
+    return shapes.sphere(Rb);
+  }
+  UI.wire("#lab4", () => {
+    const g = 1.4, kind = UI.seg("nShape"), a = UI.val("nA") * DEG, par = UI.val("nRs"), xc = UI.val("nX"), zc = UI.val("nZ");
+    const prof = makeBody(kind, par), cpm = CpMax(25, g), opt = { Cp0: cpm, xRef: xc, zRef: zc, Lref: 1 };
+    const r = newtonianBody(prof, a, opt);
+    const as = UI.linspace(-40, 40, 81), all = as.map(x => newtonianBody(prof, x * DEG, opt));
+    // trim: sign changes of Cm
+    const trims = [];
+    for (let i = 1; i < as.length; i++) if (all[i - 1].Cm * all[i].Cm <= 0 && all[i - 1].Cm !== all[i].Cm) {
+      const at = bisect(x => newtonianBody(prof, x * DEG, opt).Cm, as[i - 1], as[i], 1e-4);
+      const rr = newtonianBody(prof, at * DEG, opt), sl = (newtonianBody(prof, (at + 0.5) * DEG, opt).Cm - newtonianBody(prof, (at - 0.5) * DEG, opt).Cm) / 1;
+      trims.push({ a: at, LD: rr.LD, CD: rr.CD, stable: sl < 0 });
+    }
+    UI.plot("#plot4", { xlabel: "α (deg)", ylabel: "coefficient", xlim: [-40, 40], ylim: [-1.2, 1.8],
+      series: [{ x: as, y: all.map(q => q.CD), c: 4, label: "CD" }, { x: as, y: all.map(q => q.CL), c: 1, label: "CL" }, { x: as, y: all.map(q => q.LD), c: 2, label: "L/D" },
+        { x: as, y: all.map(q => 10 * q.Cm), c: 3, dash: true, label: "10 × Cm,cg" }],
+      points: trims.map(t => ({ x: t.a, y: 0, c: t.stable ? 5 : 6, label: t.stable ? "stable trim" : "unstable" })), vlines: [{ x: a / DEG, c: 6 }], hlines: [{ y: 0, c: 6 }], legend: "br", legendWidth: 110, h: 380 });
+    const st = document.getElementById("status4"), ts = trims.filter(t => t.stable);
+    st.className = "status " + (ts.length ? "good" : "warn");
+    st.innerHTML = ts.length ? `Stable trim at α = ${ts[0].a.toFixed(1)}°: L/D = ${ts[0].LD.toFixed(3)}, C<sub>D</sub> = ${ts[0].CD.toFixed(3)}.` : "No stable trim in −40° … 40° for this center of gravity.";
+    // diagram: profile in the pitch plane, colored by windward Cp
+    const W = 620, H = 300, sc = 200, ox = 300, oy = 150;
+    const P = (x, z) => [ox + sc * (x * Math.cos(a) + z * Math.sin(a) - 0.3), oy - sc * (-x * Math.sin(a) + z * Math.cos(a))];
+    const V = [Math.cos(a), Math.sin(a)];
+    let svg = "";
+    const sides = [1, -1];
+    sides.forEach(sg => {
+      for (let k = 0; k + 1 < prof.length; k++) {
+        const [x1, r1] = prof[k], [x2, r2] = prof[k + 1], ds = Math.hypot(x2 - x1, r2 - r1);
+        if (ds < 1e-9) continue;
+        const nx = -(r2 - r1) / ds, nz = sg * (x2 - x1) / ds, vn = V[0] * nx + V[1] * nz;
+        const cp = vn < 0 ? cpm * vn * vn : 0;
+        const A = P(x1, sg * r1), B = P(x2, sg * r2);
+        const col = cp > 0 ? `color-mix(in srgb, var(--hot) ${Math.round(100 * cp / cpm)}%, var(--cool))` : "var(--muted)";
+        svg += `<line x1="${A[0].toFixed(1)}" y1="${A[1].toFixed(1)}" x2="${B[0].toFixed(1)}" y2="${B[1].toFixed(1)}" stroke="${col}" stroke-width="${cp > 0 ? 4 : 1.5}" stroke-linecap="round"/>`;
+      }
+    });
+    // freestream arrows (horizontal in this frame: the body is rotated by α instead)
+    for (let k = -2; k <= 2; k++) svg += `<line x1="20" x2="110" y1="${oy + 45 * k}" y2="${oy + 45 * k}" class="stream" marker-end="url(#arN)"/>`;
+    const cg = P(xc, zc);
+    svg += `<circle cx="${cg[0]}" cy="${cg[1]}" r="6" fill="var(--surface)" stroke="var(--text)"/><path d="M${cg[0]} ${cg[1] - 6} A6 6 0 0 1 ${cg[0] + 6} ${cg[1]} L${cg[0]} ${cg[1]} Z M${cg[0]} ${cg[1] + 6} A6 6 0 0 1 ${cg[0] - 6} ${cg[1]} L${cg[0]} ${cg[1]} Z" fill="var(--text)"/>`;
+    // resultant force in wind axes: drag along +x (downstream), lift along +z (up)
+    const Fs = 70 / Math.max(0.3, Math.hypot(r.CD, r.CL));
+    svg += `<line x1="${cg[0]}" y1="${cg[1]}" x2="${cg[0] + Fs * r.CD}" y2="${cg[1] - Fs * r.CL}" stroke="var(--accent-2)" stroke-width="2.5" marker-end="url(#arF)"/>`;
+    svg += `<text x="20" y="22" class="label">α = ${(a / DEG).toFixed(1)}°</text><text x="${cg[0] + Fs * r.CD + 6}" y="${cg[1] - Fs * r.CL}" class="small">resultant</text>`;
+    document.getElementById("diag4").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}"><defs><marker id="arN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker><marker id="arF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent-2)"/></marker></defs>${svg}</svg>`;
+    UI.readout("#ro4", [["CD", r.CD], ["CL", r.CL], ["L/D", r.LD], ["CA", r.CA], ["CN", r.CN], ["Cm about CG", r.Cm], ["Cp,max used (M 25)", cpm]]);
+    UI.live("#lab4", kind === "capsule" ? `R_s/D = ${par.toFixed(2)}` : kind === "spherecone" ? "70° sphere-cone, R_n = 0.5R_b" : "sphere");
+  });
+
+  // ---------- 5. bluntness ----------
+  UI.wire("#lab5", () => {
+    const d = UI.val("bd") * DEG, Rn = UI.val("bR"), cpm = CpMax(UI.val("bM"), 1.4);
+    const CD = (dd, rn) => newtonianBody(rn > 0.001 ? shapes.sphereCone(rn, dd, 1, 80) : shapes.cone(dd, 1 / Math.tan(dd), 40), 0, { Cp0: cpm, nphi: 8 }).CD;
+    const rs = UI.linspace(0, 1, 26), series = [10, 20, 45, 70].map((dd, k) => ({ x: rs, y: rs.map(r => CD(dd * DEG, r)), label: `δ = ${dd}°`, c: k + 1 }));
+    const cd = CD(d, Rn);
+    UI.plot("#plot5", { xlabel: "Rn / Rb", ylabel: "CD (base area)", xlim: [0, 1], ylim: [0, 2], series, points: [{ x: Rn, y: cd, c: 6 }], legend: "br", legendWidth: 90 });
+    const prof = Rn > 0.001 ? shapes.sphereCone(Rn, d, 1, 80) : shapes.cone(d, 1 / Math.tan(d), 40);
+    const xmax = Math.max(...prof.map(p => p[0])), sc = 130 / Math.max(1, xmax);
+    const pts = prof.map(p => `${20 + p[0] * sc},${150 - p[1] * sc}`).concat(prof.slice().reverse().map(p => `${20 + p[0] * sc},${150 + p[1] * sc}`));
+    document.getElementById("diag5").innerHTML = `<svg class="diagram" viewBox="0 0 300 300"><polygon points="${pts.join(" ")}" class="body"/><line x1="0" x2="300" y1="150" y2="150" class="stream"/></svg>`;
+    UI.readout("#ro5", [["CD", cd], ["CD sharp cone", cpm * Math.sin(d) ** 2], ["Drag increase (%)", 100 * (cd / (cpm * Math.sin(d) ** 2) - 1)], ["Length / base radius", xmax]]);
+  });
+
+  // ---------- worked examples ----------
+  const g = 1.4;
+  UI.wire("#ex1", () => {
+    const M = UI.val("e1M"), p = UI.val("e1p"), t = UI.val("e1t") * DEG, ns = normalShock(M, g), cpm = CpMax(M, g), q = 0.5 * g * p * M * M;
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["q∞ (Pa)", "γp∞M²/2", q], ["p₀₂/p∞", "Rayleigh–Pitot", ns.p02_p1], ["p₀₂ (Pa)", "", ns.p02_p1 * p], ["Cp,max", "(p₀₂/p∞ − 1)/(γM²/2)", cpm],
+      ["Cp on panel", "Cp,max sin²θ", cpm * Math.sin(t) ** 2], ["p on panel (Pa)", "p∞ + Cp q∞", p + cpm * Math.sin(t) ** 2 * q], ["Cp, pure Newtonian", "2 sin²θ", 2 * Math.sin(t) ** 2]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const M = UI.val("e2M"), a = UI.val("e2a") * DEG, cpm = CpMax(M, g), n = HY.flatPlateNewtonian(a, cpm), r = GD.diamondAirfoil(M, a, 0, g);
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["Cp,max", "modified Newtonian", cpm], ["CN", "Cp,max sin²α", n.CN], ["CL", "CN cos α", n.CL], ["CD", "CN sin α", n.CD], ["L/D", "cot α", n.LD],
+      { sub: "Exact (oblique shock below, Prandtl–Meyer above)" }, ["CL", "shock-expansion", r ? r.CL : "detached"], ["CD", "", r ? r.CD : "—"],
+      ["Newtonian CL error (%)", "", r ? (100 * (n.CL - r.CL) / r.CL).toFixed(1) + " %" : "—"]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const M = UI.val("e3M"), d = UI.val("e3d") * DEG, c = cone(M, d, g), cpm = CpMax(M, g);
+    if (!c) { document.getElementById("e3out").innerHTML = "<p class='status bad'>Shock detached: reduce δ or raise M.</p>"; return; }
+    UI.table("#e3out", ["Quantity", "Relation used", "Result"], [
+      ["β (deg)", "Taylor–Maccoll", c.beta / DEG], ["Mc", "Taylor–Maccoll", c.Mc], ["pc/p∞", "shock + isentropic compression", c.pc_p1], ["Cp exact", "", c.Cp],
+      ["Cp,max", "modified Newtonian", cpm], ["Cp Newtonian", "Cp,max sin²δ", cpm * Math.sin(d) ** 2], ["CD exact", "Cp (surface force on base area)", c.Cp], ["CD Newtonian", "Cp,max sin²δ", cpm * Math.sin(d) ** 2]], "ex");
+  });
+  UI.wire("#ex4", () => {
+    const D = UI.val("e4D"), m = UI.val("e4m"), a = UI.val("e4a") * DEG, cpm = CpMax(UI.val("e4M"), g);
+    const prof = shapes.capsule(D / 2, 1.2 * D, 0.05 * D, 33 * DEG, 0.75 * D), r = newtonianBody(prof, a, { Cp0: cpm }), A = Math.PI * D * D / 4;
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [
+      ["Cp,max", "modified Newtonian", cpm], ["Reference area A (m²)", "πD²/4", A], ["CD", "panel integration", r.CD], ["CL", "", r.CL], ["L/D", "", r.LD],
+      ["Ballistic coefficient β (kg/m²)", "m/(CD A)", m / (r.CD * A)], ["Lift parameter m/(CL A) (kg/m²)", "", m / (Math.abs(r.CL) * A)]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "Newton's sine-squared law gives Cp on a surface inclined at θ as…", opts: ["2 sin θ", "2 sin²θ", "sin²θ", "4θ/√(M²−1)"], a: 1, why: "The normal momentum flux ρV²sin²θ is destroyed at the surface; dividing by ½ρV² gives Cp = 2 sin²θ." },
+    { q: "Newtonian flow is the limit of…", opts: ["M → 0", "M → ∞ and γ → 1", "M → 1", "γ → ∞"], a: 1, why: "In that double limit the shock lies on the surface and Cp behind it becomes 2 sin²θ." },
+    { q: "C_p,max for modified Newtonian theory at Mach 20 in air is about…", opts: ["1.0", "1.84", "2.0", "2.5"], a: 1, why: "C_p,max is the stagnation-point Cp behind a normal shock: 1.839 in the limit for γ = 1.4." },
+    { q: "In Newtonian theory, a flat plate's lift at small α is proportional to…", opts: ["α", "α²", "α³", "1/α"], a: 1, why: "C_L = C_p,max sin²α cos α ≈ C_p,max α². Hypersonic lift is nonlinear in α." },
+    { q: "Ignoring friction, the Newtonian flat plate has L/D equal to…", opts: ["tan α", "cot α", "1", "2"], a: 1, why: "The force is normal to the plate, so its components give L/D = cos α / sin α." },
+    { q: "Compared with a wedge of the same half-angle, a cone at the same Mach number has…", opts: ["a stronger shock and higher surface pressure", "a weaker shock and lower surface pressure", "the same pressure", "no shock"], a: 1, why: "The flow over a cone can relieve sideways (three-dimensional relief), so the shock is weaker and the surface pressure lower." },
+    { q: "A capsule pitched to α = +20° (heat shield turned up into the flow) generates lift…", opts: ["upward, like a wing", "downward, opposite to a wing", "zero", "only if it has fins"], a: 1, why: "The force on the nearly flat heat shield acts along its axis, which tilts backward-down, so the lift points opposite to a wing's." },
+    { q: "A capsule with its center of gravity exactly on its axis…", opts: ["trims at α = 0 and flies ballistically", "cannot be stable", "trims at 20°", "always tumbles"], a: 0, why: "With no offset, symmetry makes C_m = 0 at α = 0; with the CG far enough forward this trim is stable but produces no lift." },
+    { q: "Static pitch stability requires…", opts: ["∂C_m/∂α > 0", "∂C_m/∂α < 0", "C_L = 0", "C_D = 0"], a: 1, why: "A disturbance that raises α must produce a nose-down (negative) moment that restores the trim angle." },
+    { q: "Why do Mars entry aeroshells use 70° sphere-cones?", opts: ["For high L/D", "For high drag (low ballistic coefficient) in a thin atmosphere", "To reduce drag", "To avoid heating entirely"], a: 1, why: "A wide cone has C_D ≈ 1.5–1.7, so the vehicle decelerates high in the thin Martian atmosphere, leaving time to deploy parachutes." },
+  ]);
+})();
+</script>
+</body>
+</html>
