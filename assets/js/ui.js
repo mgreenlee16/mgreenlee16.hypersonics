@@ -122,7 +122,7 @@
       <div class="topbar-inner">
         <a class="brand" href="${ROOT}index.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12 L15 9.2 L22.5 12 L15 14.8 Z" fill="var(--accent)"/><path d="M1 3.5 Q9 6 13.5 9.4 M1 20.5 Q9 18 13.5 14.6" stroke="var(--hot)" fill="none" stroke-width="1.7"/></svg>
-          Hypersonics Lab
+          Learn Hypersonics
         </a>
         <nav>
           <a href="${ROOT}index.html#lessons" ${here === "lessons" ? 'aria-current="page"' : ""}>Lessons</a>
@@ -171,7 +171,7 @@
   function buildFooter() {
     const f = document.createElement("footer");
     f.innerHTML = `<div class="inner">
-      <b style="color:var(--chrome-text)">Hypersonics Lab</b> by Michael Greenlee — interactive notes on compressible aerodynamics, hypersonic flight and high-speed testing.
+      <b style="color:var(--chrome-text)">Learn Hypersonics</b> by Michael Greenlee — interactive notes on compressible aerodynamics, hypersonic flight and high-speed testing.
       Values come from closed-form relations for a calorically perfect gas unless a page says otherwise; they are for learning, not design.
       Main references: J. D. Anderson, <i>Fundamentals of Aerodynamics</i> and <i>Modern Compressible Flow</i>; Liepmann &amp; Roshko, <i>Elements of Gasdynamics</i>;
       Pope &amp; Goin, <i>High-Speed Wind Tunnel Testing</i>; NACA Report 1135; Anderson, <i>Hypersonic and High-Temperature Gas Dynamics</i>;

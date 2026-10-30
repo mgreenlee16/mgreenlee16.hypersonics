@@ -1,4 +1,4 @@
-# Hypersonics Lab
+# Learn Hypersonics
 
 Interactive lessons and calculators for compressible aerodynamics and hypersonics, by Michael Greenlee. Every figure is computed live in the browser from the exact relations for a calorically perfect gas. Change the Mach number, geometry or back pressure and the wave pattern, pressure distribution and forces update at once.
 
