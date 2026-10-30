@@ -400,10 +400,10 @@
   // Hot-wall correction (1 − h_w/h_0), with h ≈ c_p T for the wall and h_0 = c_p T∞ + V²/2
   const hotWall = (V, Tinf, Tw, cp = 1004.5) => Math.max(0, 1 - (cp * Tw) / (cp * Tinf + 0.5 * V * V));
   // Radiation-adiabatic wall temperature: the wall radiates away exactly what convection brings in.
-  //   ε σ Tw⁴ = q_cw(1 − h_w/h_0) / (1 − h_cold/h_0)   (Hirschel & Weiland's "radiation-adiabatic temperature")
-  function radiationAdiabatic(qcw, eps, V, Tinf, Tcold = 300, cp = 1004.5) {
-    const ref = hotWall(V, Tinf, Tcold, cp);
-    return bisect(Tw => eps * SIGMA * Tw ** 4 - qcw * hotWall(V, Tinf, Tw, cp) / ref, 1, 2e4);
+  //   ε σ Tw⁴ = q_cw (1 − h_w/h_0)   (Hirschel & Weiland's "radiation-adiabatic temperature")
+  function radiationAdiabatic(qcw, eps, V, Tinf, cp = 1004.5) {
+    if (!(qcw > 0)) return NaN;
+    return bisect(Tw => eps * SIGMA * Tw ** 4 - qcw * hotWall(V, Tinf, Tw, cp), 1, 2e4);
   }
   // Blasius solution f''' + ½ f f'' = 0 (η = y √(U/νx)); tabulated once.
   const BLASIUS = (() => {

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hypersonic Boundary Layers &amp; Aeroheating · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="aeroheating">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 12 · Part V</div>
+  <h1>Hypersonic Boundary Layers &amp; Aeroheating</h1>
+  <p class="lead">At hypersonic speed the hardest design problem is usually not lift or drag but heat. Drag grows like \(V^2\); convective heating at the nose grows like \(V^3\). This lesson computes boundary-layer heating with the reference-temperature method, the stagnation-point heat flux of a blunt nose, and the radiation-adiabatic wall temperature that a hot structure reaches. It then turns to laminar–turbulent transition, including the second-mode instability measured in quiet tunnels, and to how thermal protection systems cope.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#why">The thermal state of the surface</a></li>
+    <li><a href="#bl">Compressible boundary layers and the Reynolds analogy</a></li>
+    <li><a href="#ref">The reference-temperature method</a></li>
+    <li><a href="#stag">Stagnation-point heating</a></li>
+    <li><a href="#rad">The radiation-adiabatic wall</a></li>
+    <li><a href="#transition">Laminar–turbulent transition</a></li>
+    <li><a href="#mack">Second-mode waves on a cone</a></li>
+    <li><a href="#tps">Thermal protection systems</a></li>
+    <li><a href="#skin">Wall temperature during an entry</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="why"><span class="sec">Section 12.1</span>The thermal state of the surface</h2>
+  <p>Hirschel and Weiland build their treatment of hypersonic design around the <b class="term">thermal state of the surface</b>: the wall temperature \(T_w\), the heat flux into the wall \(q_w\), and their gradients. It matters in two ways. The first is <em>thermal loads</em>: the structure and the thermal protection system (TPS) must survive \(T_w\) and absorb or reject \(q_w\) and the time-integrated heat load \(Q\). The second is <em>viscous thermal surface effects</em>: \(T_w\) feeds back on the flow. A hot wall thickens the boundary layer, delays or promotes transition, enlarges separation at flaps and inlet ramps, and changes skin friction. Wind tunnels with cold models get these effects wrong unless they are corrected for.</p>
+  <p>Most hypersonic vehicles that fly for more than a few seconds are <b>radiation cooled</b>. The surface heats up until it radiates away almost all the heat that convection brings in. Its temperature is then the radiation-adiabatic temperature of Section 12.5, which may be 1,000–2,000 K.</p>
+
+  <h2 id="bl"><span class="sec">Section 12.2</span>Compressible boundary layers and the Reynolds analogy</h2>
+  <p>Inside a hypersonic boundary layer, the kinetic energy of the edge flow is dissipated into heat. An insulated wall reaches the <b class="term">adiabatic wall (recovery) temperature</b></p>
+  $$T_{aw} = T_e\left(1 + r\frac{\gamma-1}{2}M_e^2\right),\qquad r \approx \sqrt{Pr}\ \text{(laminar)},\quad r \approx Pr^{1/3}\ \text{(turbulent)},$$
+  <p>a little below the total temperature. A wall cooler than \(T_{aw}\) receives heat at a rate set by the Stanton number, and the <b class="term">Reynolds analogy</b> links heat transfer to skin friction:</p>
+  $$q_w = \rho_eu_ec_p(T_{aw} - T_w)\,St, \qquad St \approx \frac{C_f}{2}Pr^{-2/3}.$$
+  <p>Heat transfer and skin friction rise and fall together. That is why turbulent boundary layers, with three to five times the skin friction of laminar ones at the same station, also heat three to five times as much.</p>
+
+  <h2 id="ref"><span class="sec">Section 12.3</span>The reference-temperature method</h2>
+  <p>The density and viscosity vary strongly through a hypersonic boundary layer. Eckert's <b class="term">reference-temperature method</b> evaluates the incompressible skin-friction formulas at a single representative temperature:</p>
+  $$\frac{T^*}{T_e} = 1 + 0.032M_e^2 + 0.58\left(\frac{T_w}{T_e} - 1\right),\qquad \rho^* = \frac{p_e}{RT^*},\quad \mu^* = \mu(T^*),\quad Re_x^* = \frac{\rho^*u_ex}{\mu^*},$$
+  $$C_f^* = \frac{0.664}{\sqrt{Re_x^*}}\ \text{(laminar)},\qquad C_f^* = \frac{0.0592}{(Re_x^*)^{0.2}}\ \text{(turbulent)},\qquad q_w = \rho^*u_ec_p(T_{aw} - T_w)\frac{C_f^*}{2}Pr^{-2/3}.$$
+  <p>On a cone, the boundary layer is thinner because the surface area grows downstream, spreading the boundary-layer fluid. The <b>Mangler transformation</b> relates the two: a laminar cone has \(\sqrt3\) times the skin friction and heating of a flat plate at the same local Reynolds number. The turbulent factor is about 1.15. The method is accurate to roughly 10–20% for attached flow, and it is what Interactive 1 uses. The boundary-layer edge state comes from an oblique shock (windward plate at incidence) or from the Taylor–Maccoll solution (cone).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Heating along a plate or cone</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl inline"><span>Surface</span>
+      <div class="seg" id="hS" data-value="plate"><button data-value="plate" aria-pressed="true">plate at α</button><button data-value="cone" aria-pressed="false">cone</button></div></div>
+    <div class="ctl"><label for="hM">Flight Mach M∞ <output for="hM"></output></label>
+      <input type="range" id="hM" min="3" max="25" step="0.1" value="10" data-dec="1"></div>
+    <div class="ctl"><label for="hz">Altitude (km) <output for="hz"></output></label>
+      <input type="range" id="hz" min="10" max="80" step="0.5" value="40" data-dec="1"></div>
+    <div class="ctl"><label for="ha">Plate incidence α, or cone half-angle δ <output for="ha"></output></label>
+      <input type="range" id="ha" min="0" max="40" step="0.5" value="10" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="hTw">Wall temperature T<sub>w</sub> (K) <output for="hTw"></output></label>
+      <input type="range" id="hTw" min="250" max="2000" step="10" value="1000" data-dec="0"></div>
+    <div class="ctl"><label for="hx">Transition location x<sub>tr</sub> (m) <output for="hx"></output></label>
+      <input type="range" id="hx" min="0.05" max="10" step="0.05" value="3" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"hS":"plate","hM":20,"hz":65,"ha":40,"hTw":1300,"hx":10}'>Orbiter windward, α 40°</button>
+      <button data-preset='{"hS":"cone","hM":6,"hz":28,"ha":7,"hTw":500,"hx":1.5}'>Mach 6 cone in flight</button>
+      <button data-preset='{"hS":"plate","hM":8,"hz":30,"ha":5,"hTw":900,"hx":2}'>CAV forebody</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot1"></div><figcaption>Wall heat flux along the surface: laminar (teal), turbulent (orange), and the vehicle with transition at x<sub>tr</sub> (thick). Laminar heating falls as x<sup>−1/2</sup>, turbulent as x<sup>−1/5</sup>; transition produces a jump.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="stag"><span class="sec">Section 12.4</span>Stagnation-point heating</h2>
+  <p>The highest convective heat flux on a blunt body is at its stagnation point. Fay and Riddell (1958) solved the boundary layer there for dissociated air in equilibrium:</p>
+  $$q_w = 0.763\,Pr^{-0.6}(\rho_e\mu_e)^{0.4}(\rho_w\mu_w)^{0.1}\sqrt{\left(\frac{du_e}{dx}\right)_s}\,(h_{0e} - h_w)\left[1 + (Le^{0.52} - 1)\frac{h_D}{h_{0e}}\right],$$
+  <p>where \(h_D\) is the dissociation energy carried by the edge gas and Le the Lewis number. Newtonian theory gives the velocity gradient, \((du_e/dx)_s = \frac{1}{R_n}\sqrt{2(p_e - p_\infty)/\rho_e}\), and so \(q_w \propto 1/\sqrt{R_n}\). Correlating many such solutions for cold walls gives the simple and widely used <b class="term">Sutton–Graves</b> formula:</p>
+  $$q_s = k\sqrt{\frac{\rho_\infty}{R_n}}\,V_\infty^3,\qquad k = 1.7415\times10^{-4}\ \text{kg}^{1/2}/\text{m}\ \text{for Earth's air (SI, W/m}^2).$$
+  <p>Three conclusions follow. Heating grows with the cube of speed. It grows only with the square root of density, so it peaks earlier and higher in an entry than the deceleration does (Lesson 13). And it falls with nose radius, which is why re-entry vehicles have large, blunt noses: Allen and Eggers' 1950s insight that ended the search for slender, pointed re-entry warheads. For a hot wall, multiply by \((1 - h_w/h_0)\).</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Stagnation-point heat flux</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sV">Velocity V (km/s) <output for="sV"></output></label>
+      <input type="range" id="sV" min="1" max="12" step="0.1" value="7" data-dec="1"></div>
+    <div class="ctl"><label for="sz">Altitude (km) <output for="sz"></output></label>
+      <input type="range" id="sz" min="20" max="100" step="0.5" value="70" data-dec="1"></div>
+    <div class="ctl"><label for="sR">Nose radius R<sub>n</sub> (m) <output for="sR"></output></label>
+      <input type="range" id="sR" min="0.005" max="5" step="0.005" value="1" data-dec="3"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"sV":7,"sz":70,"sR":1}'>Orbital entry</button>
+      <button data-preset='{"sV":6,"sz":30,"sR":0.02}'>Sharp RV nose</button>
+      <button data-preset='{"sV":10,"sz":60,"sR":4.7}'>Apollo-size shield</button>
+      <button data-preset='{"sV":2,"sz":30,"sR":0.01}'>Mach 6 cruise leading edge</button>
+    </div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot2"></div><figcaption>Cold-wall stagnation heating (Sutton–Graves) against nose radius at the chosen velocity and altitude; the dot is the current nose. Dashed: heating at half and double the velocity.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="rad"><span class="sec">Section 12.5</span>The radiation-adiabatic wall</h2>
+  <p>A radiation-cooled surface reaches a steady temperature when the heat convected in equals the heat radiated out (conduction into the structure is small for a good insulator):</p>
+  $$q_w(T_w) = \varepsilon\sigma T_w^4.$$
+  <p>Hirschel calls the solution the <b class="term">radiation-adiabatic temperature</b> \(T_{ra}\). With emissivity ε ≈ 0.8–0.9 (the black coatings of Shuttle tiles and carbon–carbon), it is far below the recovery temperature. The flow could heat the wall to 6,000 K, but radiation holds it near 1,500 K. Because \(q_w\) itself falls as \(T_w\) rises (through \(h_0 - h_w\)), the solution is found by iteration. Interactive 3 solves it for a stagnation point and for a plate, and compares it with approximate reusable-material limits.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Radiation-adiabatic temperature</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="rz">Altitude (km) <output for="rz"></output></label>
+      <input type="range" id="rz" min="20" max="90" step="0.5" value="60" data-dec="1"></div>
+    <div class="ctl"><label for="rR">Nose radius R<sub>n</sub> (m) <output for="rR"></output></label>
+      <input type="range" id="rR" min="0.01" max="3" step="0.01" value="0.6" data-dec="2"></div>
+    <div class="ctl"><label for="re">Emissivity ε <output for="re"></output></label>
+      <input type="range" id="re" min="0.3" max="1" step="0.01" value="0.85" data-dec="2"></div>
+    <div class="ctl"><label for="rV">Velocity for readout (km/s) <output for="rV"></output></label>
+      <input type="range" id="rV" min="1" max="8" step="0.1" value="6" data-dec="1"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Radiation-adiabatic stagnation temperature against velocity at the chosen altitude (solid) and the recovery temperature it would reach with no radiation (dashed). Bands: approximate maximum reuse temperatures of common materials.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="transition"><span class="sec">Section 12.6</span>Laminar–turbulent transition</h2>
+  <p>Whether the boundary layer is laminar or turbulent changes heating by a factor of three to five, so transition is a first-order design driver. It is also one of the least predictable phenomena in hypersonics. A vehicle designed for turbulent heating carries a heavier TPS than one that can count on laminar flow. Transition starts when small disturbances (freestream noise, roughness, vibration) enter the boundary layer through <em>receptivity</em> and grow as instability waves. The main paths are:</p>
+  <ul>
+    <li><b>First mode:</b> a compressible version of the Tollmien–Schlichting wave. It is most unstable as oblique waves and is weakened by wall cooling.</li>
+    <li><b>Second mode (Mack mode):</b> acoustic waves trapped between the wall and the relative-sonic line inside the boundary layer. It dominates above about Mach 4 on sharp cones and flat plates. Its wavelength is about twice the boundary-layer thickness, so its frequency is high (often 100–500 kHz in tunnels). Wall cooling <em>destabilizes</em> it.</li>
+    <li><b>Crossflow</b> on swept leading edges and on cones at angle of attack, and the <b>Görtler</b> instability on concave surfaces such as flares and inlet ramps.</li>
+    <li><b>Roughness</b> and <b>bypass</b> paths: tile gaps, steps and protruding gap fillers can trip the flow directly. Shuttle flight experience used correlations in the parameter \(Re_\theta/M_e\) to predict roughness-induced transition.</li>
+    <li><b>Entropy-layer effects</b> on blunted cones: nose bluntness moves transition downstream at first, then, at large bluntness, transition reverses and moves forward again.</li>
+  </ul>
+  <p>Conventional wind tunnels radiate acoustic noise from their turbulent nozzle-wall boundary layers, at levels of about 1% of the static pressure. That forces transition much earlier than in flight. <b>Quiet tunnels</b> keep the nozzle-wall boundary layer laminar, using suction at the throat, polished nozzles and very clean air, and reach noise levels below about 0.05%, comparable to flight. The Boeing/AFOSR Mach-6 Quiet Tunnel (BAM6QT) at Purdue is the best known. Measurements there of second-mode waves on cones, with fast pressure sensors on the model, have been central to understanding hypersonic transition (Lesson 15 covers the facility).</p>
+
+  <h2 id="mack"><span class="sec">Section 12.7</span>Second-mode waves on a cone</h2>
+  <p>Interactive 4 uses a simple but useful estimate: the second mode's wavelength is about twice the boundary-layer thickness, \(\lambda \approx 2\delta\), and it travels at nearly the edge velocity, so \(f \approx u_e/(2\delta)\). The boundary-layer thickness comes from the Blasius solution in Howarth–Dorodnitsyn variables, with a Crocco–Busemann temperature profile and the Chapman–Rubesin factor at Eckert's reference temperature, divided by √3 for the cone. For the BAM6QT case the estimate gives roughly 300 kHz near x = 0.35 m. That is close to the frequencies measured on 7° cones in that tunnel, and it explains why the instrumentation needs megahertz-bandwidth pressure sensors. Two trends follow from \(\delta \propto \sqrt{x/Re}\): the frequency falls along the cone as \(x^{-1/2}\), and it rises with unit Reynolds number as \(\sqrt{Re}\). Use the estimate for orientation only. Linear stability theory (for example, the PSE-Chem code in the STABL suite) is needed for growth rates and N-factors.</p>
+
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Second-mode frequency on a sharp cone</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="mM">Freestream Mach M∞ <output for="mM"></output></label>
+      <input type="range" id="mM" min="4" max="12" step="0.1" value="6" data-dec="1"></div>
+    <div class="ctl"><label for="md">Cone half-angle δ <output for="md"></output></label>
+      <input type="range" id="md" min="2" max="15" step="0.5" value="7" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="mRe">Unit Reynolds number Re∞ (10⁶/m) <output for="mRe"></output></label>
+      <input type="range" id="mRe" min="1" max="20" step="0.1" value="11" data-dec="1"></div>
+    <div class="ctl"><label for="mT0">Stagnation temperature T₀ (K) <output for="mT0"></output></label>
+      <input type="range" id="mT0" min="350" max="2500" step="5" value="430" data-dec="0"></div>
+    <div class="ctl"><label for="mTw">Wall temperature T<sub>w</sub> (K) <output for="mTw"></output></label>
+      <input type="range" id="mTw" min="100" max="1500" step="5" value="300" data-dec="0"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"mM":6,"md":7,"mRe":11,"mT0":430,"mTw":300}'>BAM6QT, 7° cone</button>
+      <button data-preset='{"mM":6,"md":7,"mRe":3,"mT0":430,"mTw":300}'>BAM6QT, low Re</button>
+      <button data-preset='{"mM":6,"md":7,"mRe":3,"mT0":1650,"mTw":400}'>Mach 6 flight, ≈ 28 km</button>
+    </div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot4"></div><figcaption>Laminar boundary-layer thickness δ (Blasius–Crocco profile with the Mangler factor) and the second-mode frequency estimate f ≈ u<sub>e</sub>/(2δ) along the cone. Edge conditions from Taylor–Maccoll.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="tps"><span class="sec">Section 12.8</span>Thermal protection systems</h2>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Approach</th><th>How it works</th><th>Examples</th></tr></thead><tbody>
+  <tr><td>Heat sink</td><td>A thick metal skin absorbs the heat load in its heat capacity</td><td>Early ICBM nose cones (copper), Mercury test flights (beryllium)</td></tr>
+  <tr><td>Ablation</td><td>A charring material pyrolyzes, blowing gas that blocks convective heating, and is carried away; one use</td><td>Apollo (Avcoat), Orion, Stardust and Dragon (PICA-family), RV nose tips (carbon phenolic)</td></tr>
+  <tr><td>Radiative, insulating</td><td>A low-conductivity surface reaches T<sub>ra</sub> and re-radiates; insulation protects the structure</td><td>Shuttle silica tiles (HRSI, LRSI) and blankets</td></tr>
+  <tr><td>Hot structure</td><td>Load-carrying structure of high-temperature material operating at T<sub>ra</sub></td><td>Shuttle nose cap and wing leading edges (reinforced carbon–carbon), X-37B; CMC flaps (X-38)</td></tr>
+  <tr><td>Active cooling</td><td>Coolant (often the fuel) flows through the structure, or is transpired through it</td><td>Scramjet combustor walls cooled by hydrogen or hydrocarbon fuel (X-51A)</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <p>Two other phenomena drive TPS design. <b>Surface catalysis</b>: atoms produced by dissociation recombine at a catalytic wall and release their dissociation energy into it. A non-catalytic coating (such as the Shuttle tiles' borosilicate glass) can reduce stagnation heating noticeably compared with a fully catalytic metal. <b>Shock interactions</b> can be worse still. When a bow shock from one component meets another component's shock, an impinging supersonic jet can strike the surface (Edney's type IV interaction) and multiply the local heating several times over. In 1967 an X-15A-2 flight to Mach 6.7 carried a dummy ramjet on a pylon, and shock impingement burned through the pylon.</p>
+
+  <h2 id="skin"><span class="sec">Section 12.9</span>Wall temperature during an entry</h2>
+  <p>Heating changes along a trajectory. A thin metal skin of thickness d, density ρ and specific heat c, insulated on its back face, follows</p>
+  $$\rho c\,d\,\frac{dT_w}{dt} = q_{cw}(t)\left(1 - \frac{h_w}{h_0}\right) - \varepsilon\sigma T_w^4.$$
+  <p>A thick skin (heat sink) heats slowly and never reaches the radiation-adiabatic temperature: it soaks up the heat load. A thin skin follows \(T_{ra}(t)\) closely. Interactive 5 integrates this equation along a trajectory computed by the entry simulator of Lesson 13.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Heat-sink versus radiation-cooled wall</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl inline"><span>Trajectory</span>
+      <div class="seg" id="kT" data-value="orb"><button data-value="orb" aria-pressed="true">orbiter</button><button data-value="cap" aria-pressed="false">capsule</button><button data-value="rv" aria-pressed="false">ballistic RV</button></div></div>
+    <div class="ctl"><label for="kMat">Material</label>
+      <select id="kMat"><option value="cu">Copper</option><option value="be">Beryllium</option><option value="ti">Titanium alloy</option><option value="in" selected>Inconel 718</option><option value="ss">Stainless steel</option></select></div>
+    <div class="ctl"><label for="kd">Skin thickness d (mm) <output for="kd"></output></label>
+      <input type="range" id="kd" min="0.2" max="40" step="0.1" value="2" data-dec="1"></div>
+    <div class="ctl"><label for="kR">Nose radius R<sub>n</sub> (m) <output for="kR"></output></label>
+      <input type="range" id="kR" min="0.05" max="3" step="0.05" value="1" data-dec="2"></div>
+    <div class="ctl"><label for="ke">Emissivity ε <output for="ke"></output></label>
+      <input type="range" id="ke" min="0.2" max="1" step="0.01" value="0.85" data-dec="2"></div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot5"></div><figcaption>Stagnation-point wall temperature against time for a thin skin (solid), the radiation-adiabatic temperature (dashed), and the shape of the cold-wall heat flux (thin gray, scaled so that its peak reads 2000). The trajectories are the illustrative presets of Lesson 13, not flight data.</figcaption></figure></div>
+</section>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 12.10</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 12.1 · Stagnation heating</button><button>Ex 12.2 · Laminar plate</button><button>Ex 12.3 · Turbulent heating</button><button>Ex 12.4 · Mack mode in the BAM6QT</button></div>
+  <div class="panel" id="ex1">
+    <p>An orbiter-like vehicle with nose radius \(R_n\) flies at V at altitude z. Find the cold-wall stagnation heat flux (Sutton–Graves) and the radiation-adiabatic nose temperature for emissivity ε.</p>
+    <div class="given"><label>V (km/s)<input type="number" id="e1V" value="6.7" step="any"></label><label>z (km)<input type="number" id="e1z" value="70" step="any"></label><label>R_n (m)<input type="number" id="e1R" value="0.6" step="any"></label><label>ε<input type="number" id="e1e" value="0.85" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>A flat plate at zero incidence flies at Mach \(M_\infty\) at altitude z with wall temperature \(T_w\). Find the laminar heat flux at distance x by the reference-temperature method.</p>
+    <div class="given"><label>M∞<input type="number" id="e2M" value="8" step="any"></label><label>z (km)<input type="number" id="e2z" value="30" step="any"></label><label>T_w (K)<input type="number" id="e2T" value="800" step="any"></label><label>x (m)<input type="number" id="e2x" value="1" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>Repeat Example 12.2 for a turbulent boundary layer at the same station and compare the two. Then find the radiation-adiabatic temperature of the plate in both cases for ε = 0.85.</p>
+    <div class="given"><label>M∞<input type="number" id="e3M" value="8" step="any"></label><label>z (km)<input type="number" id="e3z" value="30" step="any"></label><label>x (m)<input type="number" id="e3x" value="1" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>A 7° half-angle sharp cone is tested in the BAM6QT at Mach 6 with \(T_0\) = 430 K, unit Reynolds number \(Re_\infty\), and a room-temperature wall. Find the cone-surface edge conditions, the boundary-layer thickness and the expected second-mode frequency at x.</p>
+    <div class="given"><label>Re∞ (10⁶/m)<input type="number" id="e4Re" value="11" step="any"></label><label>x (m)<input type="number" id="e4x" value="0.35" step="any"></label><label>T_w (K)<input type="number" id="e4T" value="300" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 12.11</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Recovery and Reynolds analogy</h4>
+    $$T_{aw} = T_e\left(1 + r\tfrac{\gamma-1}{2}M_e^2\right),\quad St = \tfrac{C_f}{2}Pr^{-2/3}$$
+    $$q_w = \rho_eu_ec_p(T_{aw} - T_w)St$$</div>
+  <div><h4>Reference temperature (Eckert)</h4>
+    $$\frac{T^*}{T_e} = 1 + 0.032M_e^2 + 0.58\left(\frac{T_w}{T_e}-1\right)$$
+    $$C_f^* = \frac{0.664}{\sqrt{Re^*_x}}\ \text{lam.},\quad \frac{0.0592}{(Re^*_x)^{0.2}}\ \text{turb.}$$</div>
+  <div><h4>Stagnation point</h4>
+    $$q_s = 1.7415\times10^{-4}\sqrt{\rho_\infty/R_n}\,V_\infty^3\ \ \text{W/m}^2$$
+    $$\varepsilon\sigma T_{ra}^4 = q_w(T_{ra})$$</div>
+  <div><h4>Second mode</h4>
+    $$f \approx \frac{u_e}{2\delta},\qquad \delta_\text{cone} = \frac{\delta_\text{plate}}{\sqrt3}$$
+    $$\rho cd\,\dot T_w = q_{cw}(1 - h_w/h_0) - \varepsilon\sigma T_w^4$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { obliqueShock, isen, DEG, bisect, SIGMA } = GD;
+  const { atmosphere, refTemp, suttonGraves, hotWall, radiationAdiabatic, cone, entry } = HY;
+  const R = 287.05, cp = 1004.5;
+
+  // edge state for a windward plate at incidence or a cone
+  function edge(kind, M, a, z) {
+    const atm = atmosphere(z);
+    if (kind === "cone") {
+      const c = a > 0 ? cone(M, a, 1.4) : null;
+      if (a > 0 && !c) return null;
+      return c ? { Me: c.Mc, Te: atm.T * c.Tc_T1, pe: atm.p * c.pc_p1, atm, cone: true } : { Me: M, Te: atm.T, pe: atm.p, atm, cone: true };
+    }
+    if (a <= 0) return { Me: M, Te: atm.T, pe: atm.p, atm, cone: false };
+    const o = obliqueShock(M, a, 1.4);
+    return o ? { Me: o.M2, Te: atm.T * o.T2_T1, pe: atm.p * o.p2_p1, atm, cone: false } : null;
+  }
+
+  // ---------- 1 ----------
+  UI.wire("#lab1", () => {
+    const kind = UI.seg("hS"), M = UI.val("hM"), z = UI.val("hz") * 1000, a = UI.val("ha") * DEG, Tw = UI.val("hTw"), xtr = UI.val("hx");
+    const e = edge(kind, M, a, z);
+    if (!e) { UI.readout("#ro1", [["Status", "shock detached"]]); document.getElementById("plot1").innerHTML = ""; return; }
+    const xs = UI.linspace(0.02, 10, 200);
+    const lam = xs.map(x => refTemp({ ...e, Tw, x, regime: "laminar" }).q / 1e4), tur = xs.map(x => refTemp({ ...e, Tw, x, regime: "turbulent" }).q / 1e4);
+    const veh = xs.map((x, i) => x < xtr ? lam[i] : tur[i]);
+    const top = Math.max(...veh.slice(5), ...tur.slice(5)) * 1.15;
+    UI.plot("#plot1", { xlabel: "x (m)", ylabel: "q_w (W/cm²)", xlim: [0, 10], ylim: [0, top || 1],
+      series: [{ x: xs, y: lam, c: 1, dash: true, label: "laminar" }, { x: xs, y: tur, c: 3, dash: true, label: "turbulent" }, { x: xs, y: veh, c: 4, width: 3.2, label: "with transition" }],
+      vlines: [{ x: xtr, label: "x_tr", c: 6 }], legend: "tr", legendWidth: 130 });
+    const rl = refTemp({ ...e, Tw, x: 1, regime: "laminar" }), rt = refTemp({ ...e, Tw, x: 1, regime: "turbulent" });
+    UI.readout("#ro1", [["Edge Mach Me", e.Me], ["Edge T_e (K)", e.Te], ["Edge p_e (kPa)", e.pe / 1000], ["T_aw laminar (K)", rl.Taw], ["T* at 1 m (K)", rl.Ts], ["Re_x at 1 m", rl.Rex],
+      ["q lam. at 1 m (W/cm²)", rl.q / 1e4], ["q turb. at 1 m (W/cm²)", rt.q / 1e4], ["turbulent/laminar", rt.q / rl.q]]);
+    UI.live("#lab1", kind === "cone" ? "cone (Mangler)" : "plate");
+  });
+
+  // ---------- 2 ----------
+  UI.wire("#lab2", () => {
+    const V = UI.val("sV") * 1000, z = UI.val("sz") * 1000, Rn = UI.val("sR"), atm = atmosphere(z);
+    const Rs = UI.logspace(0.002, 10, 120), q = f => Rs.map(r => suttonGraves(atm.rho, V * f, r) / 1e4);
+    const qq = suttonGraves(atm.rho, V, Rn) / 1e4;
+    UI.plot("#plot2", { xlabel: "Nose radius R_n (m)", ylabel: "q_s (W/cm²)", logx: true, logy: true, xlim: [0.002, 10], ylim: [Math.max(1e-3, Math.min(...q(0.5)) * 0.8), Math.max(...q(2)) * 1.2],
+      series: [{ x: Rs, y: q(1), c: 4, label: `V = ${(V / 1000).toFixed(1)} km/s` }, { x: Rs, y: q(0.5), c: 1, dash: true, label: "V/2" }, { x: Rs, y: q(2), c: 2, dash: true, label: "2V" }],
+      points: [{ x: Rn, y: qq, c: 4, label: `${qq.toPrecision(3)} W/cm²` }], legend: "tr", legendWidth: 120 });
+    const T = radiationAdiabatic(qq * 1e4, 0.85, V, atm.T);
+    UI.readout("#ro2", [["ρ∞ (kg/m³)", atm.rho], ["Mach", V / atm.a], ["q_s cold wall (W/cm²)", qq], ["q_s (MW/m²)", qq / 100], ["Stagnation enthalpy h₀ (MJ/kg)", (cp * atm.T + 0.5 * V * V) / 1e6], ["T_ra for ε = 0.85 (K)", T]]);
+  });
+
+  // ---------- 3 ----------
+  const materials = [{ name: "titanium alloys", T: 800 }, { name: "nickel superalloys", T: 1250 }, { name: "silica tiles (HRSI)", T: 1530 }, { name: "carbon–carbon (RCC)", T: 1900 }];
+  UI.wire("#lab3", () => {
+    const z = UI.val("rz") * 1000, Rn = UI.val("rR"), eps = UI.val("re"), V0 = UI.val("rV") * 1000, atm = atmosphere(z);
+    const Vs = UI.linspace(500, 8000, 120);
+    const Tra = Vs.map(V => radiationAdiabatic(suttonGraves(atm.rho, V, Rn), eps, V, atm.T));
+    const Tr = Vs.map(V => atm.T + 0.5 * V * V / cp);
+    UI.plot("#plot3", { xlabel: "Velocity (km/s)", ylabel: "Wall temperature (K)", xlim: [0.5, 8], ylim: [0, 3000],
+      series: [{ x: Vs.map(v => v / 1000), y: Tra, c: 4, label: "radiation-adiabatic T_ra" }, { x: Vs.map(v => v / 1000), y: Tr.map(t => Math.min(t, 1e5)), c: 6, dash: true, label: "no radiation (≈ T₀)" }],
+      hlines: materials.map(m => ({ y: m.T, label: m.name, c: 3 })), legend: "tl", legendWidth: 180 });
+    const q = suttonGraves(atm.rho, V0, Rn), T = radiationAdiabatic(q, eps, V0, atm.T);
+    UI.readout("#ro3", [["q_cw (W/cm²)", q / 1e4], ["T_ra (K)", T], ["q at T_ra (W/cm²)", eps * SIGMA * T ** 4 / 1e4], ["Recovery T₀ (K)", atm.T + 0.5 * V0 * V0 / cp], ["Mach", V0 / atm.a]]);
+  });
+
+  // ---------- 4: second mode ----------
+  function mack(M, d, Re, T0, Tw, x) {
+    const g = 1.4, T1 = T0 / isen.T0_T(M, g), a1 = Math.sqrt(g * R * T1), V = M * a1, mu = GD.sutherland(T1), rho1 = Re * mu / V, p1 = rho1 * R * T1;
+    const c = cone(M, d, g);
+    if (!c) return null;
+    const Te = T1 * c.Tc_T1, pe = p1 * c.pc_p1;
+    return { c, T1, p1, p0: p1 * isen.p0_p(M, g), Te, pe, r: refTemp({ Me: c.Mc, Te, pe, Tw, x, cone: true }) };
+  }
+  UI.wire("#lab4", () => {
+    const M = UI.val("mM"), d = UI.val("md") * DEG, Re = UI.val("mRe") * 1e6, T0 = UI.val("mT0"), Tw = UI.val("mTw");
+    const xs = UI.linspace(0.05, 1, 60), m0 = mack(M, d, Re, T0, Tw, 0.35);
+    if (!m0) return;
+    const rs = xs.map(x => refTemp({ Me: m0.c.Mc, Te: m0.Te, pe: m0.pe, Tw, x, cone: true }));
+    UI.plot("#plot4", { xlabel: "Distance from cone tip x (m)", ylabel: "f (kHz)  and  δ (mm) × 100", xlim: [0, 1], ylim: [0, Math.max(...rs.map(r => r.fMack / 1000)) * 1.1],
+      series: [{ x: xs, y: rs.map(r => r.fMack / 1000), c: 4, label: "second-mode f ≈ u_e/2δ (kHz)" }, { x: xs, y: rs.map(r => r.delta * 1e5), c: 1, dash: true, label: "δ (mm) × 100" }],
+      vlines: [{ x: 0.35, c: 6, label: "x = 0.35 m" }], legend: "tr", legendWidth: 210 });
+    const r = m0.r;
+    UI.readout("#ro4", [["Cone edge Mach", m0.c.Mc], ["Edge T_e (K)", m0.Te], ["Edge p_e (Pa)", m0.pe], ["p₀ (kPa)", m0.p0 / 1000], ["T_aw (K)", r.Taw], ["δ at 0.35 m (mm)", r.delta * 1000],
+      ["f at 0.35 m (kHz)", r.fMack / 1000], ["Re_x,edge at 0.35 m", r.Rex], ["T_w/T_aw", Tw / r.Taw]]);
+    UI.live("#lab4", `p₀ = ${(m0.p0 / 1e3).toFixed(0)} kPa`);
+  });
+
+  // ---------- 5: skin temperature ----------
+  const MAT = { cu: [8960, 385], be: [1850, 1825], ti: [4430, 526], in: [8190, 435], ss: [8000, 500] };
+  const TRAJ = {
+    orb: { h0: 121920, V0: 7600, gamma0Deg: -1.2, beta: 400, LD: 1.0, bankDeg: 70 },
+    cap: { h0: 121920, V0: 7600, gamma0Deg: -1.5, beta: 350, LD: 0.3, bankDeg: 50 },
+    rv: { h0: 121920, V0: 7000, gamma0Deg: -25, beta: 10000, LD: 0 },
+  };
+  const trajCache = {};
+  UI.wire("#lab5", () => {
+    const tk = UI.seg("kT"), mat = MAT[document.getElementById("kMat").value], d = UI.val("kd") / 1000, Rn = UI.val("kR"), eps = UI.val("ke");
+    const tr = trajCache[tk] || (trajCache[tk] = entry({ ...TRAJ[tk], Rn: 1, hEnd: 15000 }));
+    const C = mat[0] * mat[1] * d;
+    let T = 300;
+    const ts = [], Tw = [], Tra = [], qn = [];
+    const scale = 1 / Math.sqrt(Rn);                      // Sutton–Graves ∝ 1/√Rn (trajectory computed with Rn = 1 m)
+    const qm = Math.max(...tr.hist.map(p => p.q)) * scale;
+    for (let i = 1; i < tr.hist.length; i++) {
+      const p0 = tr.hist[i - 1], p1 = tr.hist[i], dt = p1.t - p0.t, atm = { T: atmosphere(p1.h).T };
+      const sub = Math.max(1, Math.ceil(dt / 0.05));
+      for (let k = 0; k < sub; k++) {
+        const qc = (p0.q + (p1.q - p0.q) * (k + 0.5) / sub) * scale, V = p0.V + (p1.V - p0.V) * (k + 0.5) / sub;
+        T += (dt / sub) * (qc * hotWall(V, atm.T, T) - eps * SIGMA * T ** 4) / C;
+      }
+      ts.push(p1.t); Tw.push(T); qn.push(2000 * p1.q * scale / qm);
+      Tra.push(p1.q > 1 ? radiationAdiabatic(p1.q * scale, eps, p1.V, atm.T) : NaN);
+    }
+    const tmax = ts[ts.length - 1];
+    UI.plot("#plot5", { xlabel: "Time from entry interface (s)", ylabel: "Temperature (K)", xlim: [0, tmax], ylim: [0, Math.max(2200, Math.max(...Tw) * 1.1)],
+      series: [{ x: ts, y: Tw, c: 4, label: "thin-skin wall" }, { x: ts, y: Tra, c: 1, dash: true, label: "radiation-adiabatic" }, { x: ts, y: qn, c: 6, width: 1, label: "q_cw (scaled)" }], legend: "tr", legendWidth: 150 });
+    const iMax = Tw.indexOf(Math.max(...Tw));
+    UI.readout("#ro5", [["Peak q_cw (W/cm²)", qm / 1e4], ["Heat load Q (MJ/m²)", tr.Q * scale / 1e6], ["Peak T_w (K)", Tw[iMax]], ["Peak T_ra (K)", Math.max(...Tra.filter(isFinite))], ["Areal heat capacity ρcd (kJ/m²K)", C / 1000], ["Time of peak T_w (s)", ts[iMax]]]);
+  });
+
+  // ---------- worked examples ----------
+  UI.wire("#ex1", () => {
+    const V = UI.val("e1V") * 1000, z = UI.val("e1z") * 1000, Rn = UI.val("e1R"), eps = UI.val("e1e"), atm = atmosphere(z);
+    const q = suttonGraves(atm.rho, V, Rn), T = radiationAdiabatic(q, eps, V, atm.T);
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["ρ∞ (kg/m³)", "1976 atmosphere", atm.rho], ["q_cw (W/cm²)", "1.7415×10⁻⁴ √(ρ/R_n) V³", q / 1e4], ["h₀ (MJ/kg)", "c_pT∞ + V²/2", (cp * atm.T + 0.5 * V * V) / 1e6],
+      ["T_ra (K)", "εσT⁴ = q_cw(1 − h_w/h₀)", T], ["Radiated flux at T_ra (W/cm²)", "εσT_ra⁴", eps * SIGMA * T ** 4 / 1e4]], "ex");
+  });
+  const plateCase = (M, z, Tw, x, regime) => { const atm = atmosphere(z); return refTemp({ Me: M, Te: atm.T, pe: atm.p, Tw, x, regime }); };
+  UI.wire("#ex2", () => {
+    const M = UI.val("e2M"), z = UI.val("e2z") * 1000, Tw = UI.val("e2T"), x = UI.val("e2x"), atm = atmosphere(z), r = plateCase(M, z, Tw, x, "laminar");
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["T_e (K), p_e (Pa)", "freestream", `${atm.T.toFixed(1)}, ${atm.p.toPrecision(4)}`], ["u_e (m/s)", "M a", r.ue], ["T_aw (K)", "T_e(1 + √Pr (γ−1)M²/2)", r.Taw], ["T* (K)", "Eckert", r.Ts],
+      ["Re*_x", "ρ*u_ex/μ*", r.Rexs], ["C_f*", "0.664/√Re*_x", r.Cf_star], ["St (edge-based)", "", r.St_edge], ["q_w (W/cm²)", "ρ*u_ec_p(T_aw − T_w)C_f*/2 Pr^(−2/3)", r.q / 1e4], ["δ (mm)", "Blasius–Crocco", r.delta * 1000]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const M = UI.val("e3M"), z = UI.val("e3z") * 1000, x = UI.val("e3x"), atm = atmosphere(z);
+    const fl = Tw => plateCase(M, z, Tw, x, "laminar").q, ft = Tw => plateCase(M, z, Tw, x, "turbulent").q;
+    const Tl = bisect(T => fl(T) - 0.85 * SIGMA * T ** 4, 100, 3000), Tt = bisect(T => ft(T) - 0.85 * SIGMA * T ** 4, 100, 3000);
+    const l = plateCase(M, z, 800, x, "laminar"), t = plateCase(M, z, 800, x, "turbulent");
+    UI.table("#e3out", ["Quantity", "Laminar", "Turbulent"], [
+      ["C_f* (T_w = 800 K)", l.Cf_star, t.Cf_star], ["Recovery factor r", Math.sqrt(0.71), Math.cbrt(0.71)], ["q_w at T_w = 800 K (W/cm²)", l.q / 1e4, t.q / 1e4],
+      ["Ratio turbulent/laminar", "", t.q / l.q], ["T_ra, ε = 0.85 (K)", Tl, Tt]]);
+  });
+  UI.wire("#ex4", () => {
+    const Re = UI.val("e4Re") * 1e6, x = UI.val("e4x"), Tw = UI.val("e4T"), m = mack(6, 7 * DEG, Re, 430, Tw, x);
+    if (!m) return;
+    const r = m.r;
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], [
+      ["T∞ (K), p∞ (Pa)", "isentropic, T₀ = 430 K", `${m.T1.toFixed(2)}, ${m.p1.toFixed(1)}`], ["p₀ (kPa)", "p∞ (p₀/p)", m.p0 / 1000], ["β (deg)", "Taylor–Maccoll", m.c.beta / DEG],
+      ["M_e", "Taylor–Maccoll", m.c.Mc], ["T_e (K), p_e (Pa)", "", `${m.Te.toFixed(2)}, ${m.pe.toFixed(1)}`], ["u_e (m/s)", "M_e a_e", r.ue], ["Re_x (edge)", "ρ_eu_ex/μ_e", r.Rex],
+      ["δ (mm)", "Blasius–Crocco, C*, /√3", r.delta * 1000], ["f (kHz)", "u_e/(2δ)", r.fMack / 1000], ["Wavelength (mm)", "≈ 2δ", 2 * r.delta * 1000]], "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "Stagnation-point convective heating scales with velocity as…", opts: ["V", "V²", "V³", "V⁴"], a: 2, why: "Sutton–Graves: q ∝ √(ρ/R_n) V³. Drag scales as V², heating as V³." },
+    { q: "Doubling the nose radius changes stagnation heating by a factor of…", opts: ["2", "1/2", "1/√2", "√2"], a: 2, why: "q ∝ 1/√R_n, because the velocity gradient at the stagnation point falls as 1/R_n." },
+    { q: "The radiation-adiabatic temperature is reached when…", opts: ["the wall is insulated and does not radiate", "convective heat in equals radiated heat out", "the wall reaches T₀", "the boundary layer separates"], a: 1, why: "q_w(T_w) = εσT_w⁴; conduction into the structure is neglected." },
+    { q: "Raising the emissivity of a radiation-cooled surface…", opts: ["raises its temperature", "lowers its temperature", "has no effect", "increases convective heating"], a: 1, why: "A better radiator rejects the same heat at a lower temperature (T_ra ∝ ε^−1/4 roughly)." },
+    { q: "In the Reynolds analogy, heat transfer is linked to…", opts: ["pressure drag", "skin friction", "lift", "base pressure"], a: 1, why: "St ≈ (C_f/2) Pr^−2/3: momentum and heat are carried across the boundary layer by the same mechanisms." },
+    { q: "Turbulent heating is typically how many times laminar heating at the same station?", opts: ["about the same", "3–5", "100", "less than half"], a: 1, why: "Turbulent skin friction, and so heating, is several times the laminar value at the Reynolds numbers of interest." },
+    { q: "The second-mode (Mack) instability is…", opts: ["a vortical wave stabilized by cooling", "an acoustic wave trapped in the boundary layer, destabilized by wall cooling", "caused only by roughness", "important only at Mach 1"], a: 1, why: "Mack's second mode is acoustic, with wavelength ≈ 2δ; cooling the wall makes it more unstable, unlike the first mode." },
+    { q: "Why are quiet tunnels needed for transition research?", opts: ["Conventional tunnels are too slow", "Noise radiated from the nozzle-wall boundary layer triggers transition far earlier than in flight", "Quiet tunnels are hotter", "They have larger test sections"], a: 1, why: "Conventional tunnels have pressure fluctuations of order 1%; quiet tunnels keep the nozzle walls laminar and reach flight-like noise levels." },
+    { q: "Raising the unit Reynolds number in a tunnel makes the second-mode frequency…", opts: ["fall", "rise, roughly as √Re", "stay the same", "vanish"], a: 1, why: "δ ∝ √(x/Re), so f ≈ u_e/2δ ∝ √Re." },
+    { q: "The Shuttle's black tile coating helped the TPS mainly by…", opts: ["absorbing radiation from the sun", "having high emissivity and low catalytic efficiency", "conducting heat to the structure", "ablating"], a: 1, why: "High emissivity lowers T_ra; low catalysis reduces the extra heating from atom recombination." },
+  ]);
+})();
+</script>
+</body>
+</html>
