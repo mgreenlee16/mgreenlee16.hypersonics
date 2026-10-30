@@ -461,11 +461,11 @@
   buildTopbar();
   initTabs();
   // Lesson pages get the problem generator (assets/js/practice.js), loaded after the page's own scripts have run.
+  // extras.js (more interactives) loads first so that the generator can sit after them.
   function loadPractice() {
     if (!document.body.dataset.lesson) return;
-    const s = document.createElement("script");
-    s.src = ROOT + "assets/js/practice.js";
-    document.body.append(s);
+    const add = (src, then) => { const s = document.createElement("script"); s.src = ROOT + src; if (then) s.onload = s.onerror = then; document.body.append(s); };
+    add("assets/js/extras.js", () => add("assets/js/practice.js"));
   }
   document.addEventListener("DOMContentLoaded", () => { loadPractice(); buildPager(); buildFooter(); loadMath(); });
 })();
