@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equilibrium Air Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · High temperature</div>
+  <h1>Equilibrium Air &amp; Real-Gas Shock</h1>
+  <p class="lead">Eleven-species air (N₂, O₂, NO, N, O, N₂⁺, O₂⁺, NO⁺, N⁺, O⁺, e⁻) in chemical equilibrium, from NASA Glenn thermodynamic data, valid from 200 to 20,000 K. The first panel gives composition and properties at any temperature and pressure. The second solves the normal shock in equilibrium air at any flight speed and altitude, with the perfect-gas result beside it.</p>
+</div>
+<section class="calc">
+  <h3>State: temperature and pressure</h3>
+  <div class="inputs">
+    <label>Temperature T (K)<input type="number" id="T" value="6000" step="any"></label>
+    <label>Pressure p (atm)<input type="number" id="p" value="1" step="any"></label>
+  </div>
+  <div class="err" id="err1"></div>
+  <div class="calc-grid results"><div id="a1"></div><div id="a2"></div></div>
+</section>
+<section class="calc">
+  <h3>Normal shock in equilibrium air</h3>
+  <div class="inputs">
+    <label>Velocity u₁ (m/s)<input type="number" id="u" value="7500" step="any"></label>
+    <label>Altitude (km; blank to enter p₁, T₁)<input type="number" id="z" value="65" step="any"></label>
+    <label>p₁ (Pa)<input type="number" id="p1" value="" step="any"></label>
+    <label>T₁ (K)<input type="number" id="T1" value="" step="any"></label>
+  </div>
+  <div class="err" id="err2"></div>
+  <div class="results" id="b1"></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>Equilibrium follows the law of mass action for every species formed from N and O atoms and electrons, with charge neutrality and a fixed N:O ratio (79% N₂, 21% O₂ by volume), solved by Newton's method in logarithmic variables. Thermodynamic functions: McBride, Zehe &amp; Gordon, NASA TP-2002-211556 (standard state 1 bar). The solver reproduces Cantera's equilibrium to a few parts per million. The shock uses \(p_2 = p_1 + \rho_1u_1^2(1-\varepsilon)\), \(h_2 = h_1 + \tfrac12u_1^2(1-\varepsilon^2)\), iterated on \(\varepsilon = \rho_1/\rho_2\). The stagnation state behind it is reached isentropically in equilibrium. The effective γ̃ = h/e uses enthalpy measured from cold air at 0 K. See <a href="../lessons/high-temperature.html">Lesson 11</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const ATM = 101325, label = { N2: "N₂", O2: "O₂", NO: "NO", N: "N", O: "O", "N2+": "N₂⁺", "O2+": "O₂⁺", "NO+": "NO⁺", "N+": "N⁺", "O+": "O⁺", "e-": "e⁻" };
+  function state() {
+    const T = UI.val("T"), p = UI.val("p") * ATM, err = document.getElementById("err1");
+    if (!(T >= 200 && T <= 20000 && p > 0)) { err.textContent = "Need 200 K ≤ T ≤ 20,000 K and p > 0."; return; }
+    err.textContent = "";
+    const s = HY.equilibrium(T, p), ae = HY.eqSoundSpeed(s), af = Math.sqrt(s.gammaFrozen * s.R * T);
+    UI.table("#a1", ["Species", "Mole fraction", "Mass fraction"], HY.SP.map((sp, i) => [label[sp.name], s.xa[i], s.xa[i] * sp.M / s.M]));
+    UI.table("#a2", ["Property", "Value"], [["Molar mass M̄ (g/mol)", s.M * 1000], ["Gas constant R (J/kg·K)", s.R], ["Compressibility Z", s.Z], ["Density ρ (kg/m³)", s.rho],
+      ["Enthalpy h (MJ/kg, NASA reference)", s.h / 1e6], ["Enthalpy from 0 K cold air (MJ/kg)", s.h0K / 1e6], ["Entropy s (kJ/kg·K)", s.s / 1000], ["Effective γ̃ = h/e", s.gammaEff],
+      ["Frozen c_p (kJ/kg·K)", s.cpFrozen / 1000], ["Frozen γ", s.gammaFrozen], ["Frozen sound speed (m/s)", af], ["Equilibrium sound speed (m/s)", ae]]);
+  }
+  function shock() {
+    const u = UI.val("u"), zIn = document.getElementById("z").value, err = document.getElementById("err2");
+    let p1, T1;
+    if (zIn !== "") { const a = HY.atmosphere(parseFloat(zIn) * 1000); p1 = a.p; T1 = a.T; } else { p1 = UI.val("p1"); T1 = UI.val("T1"); }
+    if (!(u > 0 && p1 > 0 && T1 > 150)) { err.textContent = "Enter a velocity and either an altitude or p₁ and T₁ (T₁ above 150 K)."; return; }
+    const pf = HY.perfectNormalShock(u, p1, T1);
+    if (!(pf.M1 > 1)) { err.textContent = "The flow must be supersonic."; return; }
+    err.textContent = "";
+    const s = HY.eqNormalShock(u, p1, T1), x = s.state2.x;
+    UI.table("#b1", ["Quantity", "Equilibrium air", "Perfect gas, γ = 1.4"], [
+      ["Upstream p₁ (Pa), T₁ (K)", `${p1.toPrecision(4)}, ${T1.toFixed(2)}`, ""], ["Mach number M₁", s.M1, pf.M1], ["T₂ (K)", s.T2, pf.T2], ["p₂ (kPa)", s.p2 / 1000, pf.p2 / 1000],
+      ["ρ₂/ρ₁", 1 / s.eps, 1 / pf.eps], ["u₂ (m/s)", s.u2, pf.u2], ["h₂ − h₁ (MJ/kg)", (s.state2.h - s.h1) / 1e6, ""], ["Stagnation T₀₂ (K)", s.T02, pf.T02], ["Pitot pressure p₀₂ (kPa)", s.p02 / 1000, pf.p02 / 1000],
+      ["Z behind shock", s.state2.Z, 1], ["γ̃ behind shock", s.state2.gammaEff, 1.4],
+      ["x(N₂), x(O₂), x(NO)", `${x.N2.toFixed(4)}, ${x.O2.toExponential(2)}, ${x.NO.toFixed(4)}`, "0.79, 0.21, 0"], ["x(N), x(O), x(e⁻)", `${x.N.toFixed(4)}, ${x.O.toFixed(4)}, ${x["e-"].toExponential(2)}`, "0, 0, 0"]]);
+  }
+  ["T", "p"].forEach(i => document.getElementById(i).addEventListener("input", state));
+  ["u", "z", "p1", "T1"].forEach(i => document.getElementById(i).addEventListener("input", shock));
+  state(); shock();
+})();
+</script>
+</body>
+</html>

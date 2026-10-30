@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conical Flow Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Hypersonic</div>
+  <h1>Conical Flow (Taylor–Maccoll)</h1>
+  <p class="lead">Exact inviscid flow over a sharp cone at zero incidence: shock angle, surface Mach number, pressure, temperature and density, with modified-Newtonian and wedge values for comparison. The γ in the top bar applies.</p>
+</div>
+<section class="calc" id="cc">
+  <div class="inputs">
+    <label>Freestream Mach M∞<input type="number" id="M" value="6" step="any"></label>
+    <label>Cone half-angle δ (deg)<input type="number" id="d" value="7" step="any"></label>
+    <label>Freestream p∞ (Pa, optional)<input type="number" id="p" value="580" step="any"></label>
+    <label>Freestream T∞ (K, optional)<input type="number" id="T" value="52" step="any"></label>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="calc-grid results"><div id="o1"></div><div id="o2"></div></div>
+  <details><summary>Generate a table over cone angle</summary>
+    <div class="inputs" style="margin-top:.5rem">
+      <label>From δ (deg)<input type="number" id="t0" value="2" step="any"></label>
+      <label>To δ (deg)<input type="number" id="t1" value="30" step="any"></label>
+      <label>Step (deg)<input type="number" id="ts" value="2" step="any"></label>
+      <button id="csv">Download CSV</button>
+    </div><div class="tablewrap" id="tab"></div></details>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>The Taylor–Maccoll equation is integrated with fourth-order Runge–Kutta from the shock, where the oblique-shock relations give the starting state, to the surface where \(V_\theta = 0\). The shock angle for a given cone angle is found by bisection on the weak branch, below the maximum cone angle. Surface conditions follow from the isentropic compression between shock and cone. Modified Newtonian: \(C_p = C_{p,\max}\sin^2\delta\). See <a href="../lessons/newtonian.html">Lesson 10</a>; results match the NACA 1135 cone charts (for example, M = 2, δ = 10° gives β = 31.2°).</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { DEG, obliqueShock, isen } = GD, ids = ["M", "d", "p", "T"];
+  const rows = () => {
+    const g = UI.gamma(), M = UI.val("M"), a = UI.val("t0"), b = UI.val("t1"), s = UI.val("ts"), out = [];
+    if (!(s > 0 && b >= a && M > 1)) return out;
+    for (let d = a; d <= b + 1e-9 && out.length < 200; d += s) { const c = HY.cone(M, d * DEG, g); out.push(c ? [+d.toFixed(6), c.beta / DEG, c.Mc, c.pc_p1, c.Tc_T1, c.rhoc_rho1, c.Cp] : [+d.toFixed(6), "detached", "", "", "", "", ""]); }
+    return out;
+  };
+  const head = ["δ (deg)", "β (deg)", "Mc", "pc/p∞", "Tc/T∞", "ρc/ρ∞", "Cp"];
+  function run() {
+    const g = UI.gamma(), M = UI.val("M"), d = UI.val("d") * DEG, p = UI.val("p"), T = UI.val("T"), err = document.getElementById("err");
+    if (!(M > 1 && d > 0)) { err.textContent = "Need M∞ > 1 and δ > 0."; return; }
+    const c = HY.cone(M, d, g), cm = HY.coneMax(M, g);
+    if (!c) { err.textContent = `Shock detached: the maximum cone angle at M = ${M} is ${(cm.thetaC / DEG).toFixed(3)}°.`; document.getElementById("o1").innerHTML = ""; document.getElementById("o2").innerHTML = ""; return; }
+    err.textContent = "";
+    const cpm = HY.CpMax(M, g), o = obliqueShock(M, d, g);
+    UI.table("#o1", ["Cone (Taylor–Maccoll)", "Value"], [["Shock angle β (deg)", c.beta / DEG], ["Mach angle μ (deg)", Math.asin(1 / M) / DEG], ["Surface Mach Mc", c.Mc], ["pc/p∞", c.pc_p1], ["Tc/T∞", c.Tc_T1], ["ρc/ρ∞", c.rhoc_rho1],
+      ["Surface Cp", c.Cp], ["p₀ just behind shock / p₀∞", c.p02_p01], ["Maximum cone angle (deg)", cm.thetaC / DEG]]);
+    const dim = p > 0 && T > 0 ? [{ sub: "Dimensional surface state" }, ["pc (Pa)", p * c.pc_p1], ["Tc (K)", T * c.Tc_T1], ["uc (m/s)", c.Mc * Math.sqrt(g * GD.R_AIR * T * c.Tc_T1)]] : [];
+    UI.table("#o2", ["Comparison", "Value"], [["Cp, modified Newtonian", cpm * Math.sin(d) ** 2], ["Cp, Newtonian (2 sin²δ)", 2 * Math.sin(d) ** 2], ["Cp, wedge of same angle", o ? (o.p2_p1 - 1) / (0.5 * g * M * M) : "detached"],
+      ["β, wedge of same angle (deg)", o ? o.beta / DEG : "detached"], ["CD (base area, no base pressure)", c.Cp]].concat(dim));
+    UI.table("#tab", head, rows());
+  }
+  ids.concat(["t0", "t1", "ts"]).forEach(i => document.getElementById(i).addEventListener("input", run));
+  document.getElementById("csv").addEventListener("click", () => {
+    const csv = [head.join(",")].concat(rows().map(r => r.map(v => typeof v === "number" ? v.toPrecision(6) : v).join(","))).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `cone_M${UI.val("M")}_gamma${UI.gamma()}.csv`; a.click();
+  });
+  UI.onGamma(run); run();
+})();
+</script>
+</body>
+</html>

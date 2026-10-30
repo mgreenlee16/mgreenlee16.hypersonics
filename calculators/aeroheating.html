@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aeroheating Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Aeroheating</div>
+  <h1>Aeroheating</h1>
+  <p class="lead">Stagnation-point heating of a blunt nose (Sutton–Graves) and its radiation-adiabatic wall temperature, and laminar and turbulent heating along a flat plate at incidence or a sharp cone by Eckert's reference-temperature method, at any flight condition.</p>
+</div>
+<section class="calc">
+  <h3>Stagnation point</h3>
+  <div class="inputs">
+    <label>Velocity V (m/s)<input type="number" id="sV" value="7000" step="any"></label>
+    <label>Altitude (km)<input type="number" id="sz" value="70" step="any"></label>
+    <label>Nose radius R_n (m)<input type="number" id="sR" value="1" step="any"></label>
+    <label>Emissivity ε<input type="number" id="se" value="0.85" step="any"></label>
+    <label>Wall temperature T_w (K, blank = radiation-adiabatic)<input type="number" id="sT" step="any"></label>
+  </div>
+  <div class="err" id="err1"></div>
+  <div class="results" id="o1"></div>
+</section>
+<section class="calc">
+  <h3>Plate or cone</h3>
+  <div class="inputs">
+    <label>Surface<select id="kind"><option value="plate">Flat plate at incidence α</option><option value="cone">Sharp cone, half-angle δ</option></select></label>
+    <label>Flight Mach<input type="number" id="M" value="10" step="any"></label>
+    <label>Altitude (km)<input type="number" id="z" value="40" step="any"></label>
+    <label>α or δ (deg)<input type="number" id="a" value="10" step="any"></label>
+    <label>Wall temperature T_w (K)<input type="number" id="Tw" value="1000" step="any"></label>
+    <label>Distance x (m)<input type="number" id="x" value="1" step="any"></label>
+  </div>
+  <div class="err" id="err2"></div>
+  <div class="calc-grid results"><div id="o2"></div><div id="o3"></div></div>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>Stagnation: \(q_{cw} = 1.7415\times10^{-4}\sqrt{\rho_\infty/R_n}\,V^3\) W/m², hot-wall factor \(1 - h_w/h_0\), radiation-adiabatic \(\varepsilon\sigma T_w^4 = q_{cw}(1 - h_w/h_0)\). Plate and cone: edge state from the oblique-shock or Taylor–Maccoll solution; \(T^*/T_e = 1 + 0.032M_e^2 + 0.58(T_w/T_e - 1)\); \(C_f^* = 0.664/\sqrt{Re^*_x}\) (laminar) or \(0.0592/(Re^*_x)^{0.2}\) (turbulent); Mangler factor √3 (laminar) or 1.15 (turbulent) for cones; \(St = \tfrac12C_f^*Pr^{-2/3}\), Pr = 0.71. The laminar thickness comes from the Blasius–Crocco profile in Dorodnitsyn variables, and the second-mode frequency estimate is \(u_e/2\delta\). See <a href="../lessons/aeroheating.html">Lesson 12</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { DEG, SIGMA, obliqueShock } = GD, cp = 1004.5;
+  function stag() {
+    const V = UI.val("sV"), z = UI.val("sz") * 1000, Rn = UI.val("sR"), eps = UI.val("se"), Tin = parseFloat(document.getElementById("sT").value), err = document.getElementById("err1");
+    if (!(V > 0 && Rn > 0 && eps > 0 && eps <= 1)) { err.textContent = "Need V > 0, R_n > 0 and 0 < ε ≤ 1."; return; }
+    err.textContent = "";
+    const a = HY.atmosphere(z), q = HY.suttonGraves(a.rho, V, Rn), Tra = HY.radiationAdiabatic(q, eps, V, a.T), Tw = isFinite(Tin) ? Tin : Tra;
+    const qw = q * HY.hotWall(V, a.T, Tw);
+    UI.table("#o1", ["Quantity", "Value"], [["ρ∞ (kg/m³)", a.rho], ["T∞ (K)", a.T], ["Mach", V / a.a], ["Stagnation enthalpy h₀ (MJ/kg)", (cp * a.T + 0.5 * V * V) / 1e6], ["Cold-wall q (W/cm²)", q / 1e4],
+      ["Wall temperature used (K)", Tw], ["Hot-wall q at T_w (W/cm²)", qw / 1e4], ["Radiated εσT_w⁴ (W/cm²)", eps * SIGMA * Tw ** 4 / 1e4], ["Radiation-adiabatic T_ra (K)", Tra], ["Net into structure at T_w (W/cm²)", (qw - eps * SIGMA * Tw ** 4) / 1e4]]);
+  }
+  function surf() {
+    const kind = document.getElementById("kind").value, M = UI.val("M"), z = UI.val("z") * 1000, a = UI.val("a") * DEG, Tw = UI.val("Tw"), x = UI.val("x"), err = document.getElementById("err2");
+    if (!(M > 1 && x > 0 && Tw > 0)) { err.textContent = "Need M > 1, x > 0 and T_w > 0."; return; }
+    const atm = HY.atmosphere(z);
+    let e;
+    if (kind === "cone") { const c = a > 0 ? HY.cone(M, a, 1.4) : null; e = a > 0 ? (c ? { Me: c.Mc, Te: atm.T * c.Tc_T1, pe: atm.p * c.pc_p1, cone: true } : null) : { Me: M, Te: atm.T, pe: atm.p, cone: true }; }
+    else { const o = a > 0 ? obliqueShock(M, a, 1.4) : null; e = a > 0 ? (o ? { Me: o.M2, Te: atm.T * o.T2_T1, pe: atm.p * o.p2_p1 } : null) : { Me: M, Te: atm.T, pe: atm.p }; }
+    if (!e) { err.textContent = "The shock is detached at this angle and Mach number."; return; }
+    err.textContent = "";
+    const l = HY.refTemp({ ...e, Tw, x, regime: "laminar" }), t = HY.refTemp({ ...e, Tw, x, regime: "turbulent" });
+    UI.table("#o2", ["Edge state", "Value"], [["Edge Mach M_e", e.Me], ["T_e (K)", e.Te], ["p_e (Pa)", e.pe], ["u_e (m/s)", l.ue], ["Re_x (edge)", l.Rex], ["Viscous interaction χ̄", l.chiBar],
+      ["Laminar δ (mm)", l.delta * 1000], ["Second-mode estimate u_e/2δ (kHz)", l.fMack / 1000]]);
+    UI.table("#o3", ["Quantity", "Laminar", "Turbulent"], [["T_aw (K)", l.Taw, t.Taw], ["T* (K)", l.Ts, t.Ts], ["C_f (edge-based)", l.Cf_edge, t.Cf_edge], ["Wall shear τ_w (Pa)", l.tau, t.tau],
+      ["Stanton number (edge)", l.St_edge, t.St_edge], ["q_w (W/cm²)", l.q / 1e4, t.q / 1e4], ["T_ra for ε = 0.85 (K)", GD.bisect(T => 0.85 * SIGMA * T ** 4 - HY.refTemp({ ...e, Tw: T, x, regime: "laminar" }).q, 50, 4000), GD.bisect(T => 0.85 * SIGMA * T ** 4 - HY.refTemp({ ...e, Tw: T, x, regime: "turbulent" }).q, 50, 5000)]]);
+  }
+  ["sV", "sz", "sR", "se", "sT"].forEach(i => document.getElementById(i).addEventListener("input", stag));
+  ["kind", "M", "z", "a", "Tw", "x"].forEach(i => { const e = document.getElementById(i); e.addEventListener("input", surf); e.addEventListener("change", surf); });
+  stag(); surf();
+})();
+</script>
+</body>
+</html>

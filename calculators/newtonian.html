@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newtonian Aerodynamics Calculator · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="calculators">
+<main>
+<div class="prose">
+  <div class="eyebrow">Calculator · Hypersonic</div>
+  <h1>Newtonian Aerodynamics</h1>
+  <p class="lead">Modified-Newtonian force and moment coefficients for capsules, blunted cones, sharp cones, spheres and flat plates at any angle of attack, with trim and static stability about a chosen center of gravity. Reference area: base area πD²/4; reference length: diameter D.</p>
+</div>
+<section class="calc" id="nc">
+  <div class="inputs">
+    <label>Body<select id="shape"><option value="capsule">Capsule (spherical-cap heat shield)</option><option value="spherecone">Sphere-cone</option><option value="cone">Sharp cone</option><option value="sphere">Sphere</option></select></label>
+    <label>Diameter D (m)<input type="number" id="D" value="3.91" step="any"></label>
+    <label>Heat-shield radius R_s/D (capsule)<input type="number" id="Rs" value="1.2" step="any"></label>
+    <label>Cone half-angle δ (deg)<input type="number" id="del" value="33" step="any"></label>
+    <label>Nose radius R_n/R_b (sphere-cone)<input type="number" id="Rn" value="0.5" step="any"></label>
+  </div>
+  <div class="inputs" style="margin-top:.6rem">
+    <label>Mach (sets Cp,max)<input type="number" id="M" value="25" step="any"></label>
+    <label>Angle of attack α (deg)<input type="number" id="a" value="-20" step="any"></label>
+    <label>CG x_cg/D from nose<input type="number" id="xc" value="0.26" step="any"></label>
+    <label>CG offset z_cg/D<input type="number" id="zc" value="0.035" step="any"></label>
+    <label>Mass m (kg, for β)<input type="number" id="m" value="5500" step="any"></label>
+  </div>
+  <p class="note" style="font-family:var(--sans);font-size:.85rem"><b>Shapes</b>For a capsule, δ is the afterbody half-angle (closing toward the apex, shadowed at moderate α). For a sphere-cone or sharp cone, δ is the forebody half-angle. The γ in the top bar sets C<sub>p,max</sub>.</p>
+  <div class="err" id="err"></div>
+  <div class="calc-grid results"><div id="o1"></div><div id="o2"></div></div>
+  <div id="plot" style="margin-top:1rem"></div>
+  <details><summary>Generate a table over angle of attack</summary>
+    <div class="inputs" style="margin-top:.5rem">
+      <label>From α (deg)<input type="number" id="t0" value="-40" step="any"></label>
+      <label>To α (deg)<input type="number" id="t1" value="40" step="any"></label>
+      <label>Step (deg)<input type="number" id="ts" value="5" step="any"></label>
+      <button id="csv">Download CSV</button>
+    </div><div class="tablewrap" id="tab"></div></details>
+</section>
+<div class="prose">
+  <h2>Relations used</h2>
+  <p>Each windward panel (\(\hat{\mathbf V}\cdot\hat{\mathbf n} &lt; 0\)) of the body of revolution, divided into 96 azimuthal strips, carries \(C_p = C_{p,\max}(\hat{\mathbf V}\cdot\hat{\mathbf n})^2\), with \(C_{p,\max}\) from the Rayleigh–Pitot relation; shadowed panels carry \(C_p = 0\). Forces and the pitching moment about the CG (nose-up positive) are summed over panels. Trim is where \(C_{m,cg} = 0\); stable if \(\partial C_m/\partial\alpha &lt; 0\). Positive α puts the lower surface windward. See <a href="../lessons/newtonian.html">Lesson 10</a>.</p>
+  <p><a href="../index.html#calculators">← All calculators</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { DEG, bisect } = GD, { shapes, newtonianBody, CpMax } = HY;
+  const ids = ["shape", "D", "Rs", "del", "Rn", "M", "a", "xc", "zc", "m", "t0", "t1", "ts"];
+  function body() {
+    const D = UI.val("D"), Rb = D / 2, k = document.getElementById("shape").value, del = UI.val("del") * DEG;
+    if (k === "capsule") return shapes.capsule(Rb, UI.val("Rs") * D, 0.05 * D, del, 0.75 * D);
+    if (k === "spherecone") return shapes.sphereCone(UI.val("Rn") * Rb, del, Rb);
+    if (k === "cone") return shapes.cone(del, Rb / Math.tan(del));
+    return shapes.sphere(Rb);
+  }
+  const head = ["α (deg)", "CA", "CN", "CL", "CD", "L/D", "Cm,cg"];
+  let sweep = [];
+  function run() {
+    const err = document.getElementById("err"), D = UI.val("D");
+    if (!(D > 0 && UI.val("M") > 1)) { err.textContent = "Need D > 0 and M > 1."; return; }
+    if (document.getElementById("shape").value === "capsule" && !(UI.val("Rs") > 0.5)) { err.textContent = "The heat-shield radius must exceed D/2."; return; }
+    err.textContent = "";
+    const prof = body(), opt = { Cp0: CpMax(UI.val("M"), UI.gamma()), xRef: UI.val("xc") * D, zRef: UI.val("zc") * D, Lref: D };
+    const r = newtonianBody(prof, UI.val("a") * DEG, opt), A = Math.PI * D * D / 4;
+    const as = UI.linspace(-60, 60, 121), all = as.map(x => newtonianBody(prof, x * DEG, { ...opt, nphi: 48 }));
+    const trims = [];
+    for (let i = 1; i < as.length; i++) if (all[i - 1].Cm * all[i].Cm < 0) {
+      const t = bisect(x => newtonianBody(prof, x * DEG, opt).Cm, as[i - 1], as[i], 1e-4), rr = newtonianBody(prof, t * DEG, opt);
+      trims.push([t, rr, all[i].Cm < all[i - 1].Cm]);
+    }
+    if (Math.abs(all[60].Cm) < 1e-10) trims.push([0, all[60], all[61].Cm < all[59].Cm]);
+    UI.table("#o1", ["At the chosen α", "Value"], [["Cp,max", opt.Cp0], ["CA (axial)", r.CA], ["CN (normal)", r.CN], ["CL", r.CL], ["CD", r.CD], ["L/D", r.LD], ["Cm about CG", r.Cm],
+      ["Ballistic coefficient m/(CD A) (kg/m²)", UI.val("m") / (r.CD * A)], ["Wetted area (m²)", r.Swet]]);
+    UI.table("#o2", ["Trim points in −60° … 60°", "α (deg)", "L/D, stability"], trims.length ? trims.map((t, i) => [`Trim ${i + 1}`, t[0], `${t[1].LD.toFixed(3)}, ${t[2] ? "stable" : "unstable"}`]) : [["none", "—", "—"]]);
+    UI.plot("#plot", { xlabel: "α (deg)", ylabel: "coefficient", xlim: [-60, 60], h: 320,
+      series: [{ x: as, y: all.map(q => q.CD), c: 4, label: "CD" }, { x: as, y: all.map(q => q.CL), c: 1, label: "CL" }, { x: as, y: all.map(q => q.LD), c: 2, label: "L/D" }, { x: as, y: all.map(q => 10 * q.Cm), c: 3, dash: true, label: "10 Cm,cg" }],
+      hlines: [{ y: 0, c: 6 }], vlines: [{ x: UI.val("a"), c: 6 }], legend: "br", legendWidth: 100 });
+    const a0 = UI.val("t0"), a1 = UI.val("t1"), s = UI.val("ts");
+    sweep = [];
+    if (s > 0 && a1 >= a0) for (let x = a0; x <= a1 + 1e-9 && sweep.length < 400; x += s) { const q = newtonianBody(prof, x * DEG, opt); sweep.push([+x.toFixed(6), q.CA, q.CN, q.CL, q.CD, q.LD, q.Cm]); }
+    UI.table("#tab", head, sweep);
+  }
+  ids.forEach(i => { const e = document.getElementById(i); e.addEventListener("input", run); e.addEventListener("change", run); });
+  document.getElementById("csv").addEventListener("click", () => {
+    const csv = [head.join(",")].concat(sweep.map(r => r.map(v => v.toPrecision(6)).join(","))).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "newtonian_sweep.csv"; a.click();
+  });
+  UI.onGamma(run); run();
+})();
+</script>
+</body>
+</html>
