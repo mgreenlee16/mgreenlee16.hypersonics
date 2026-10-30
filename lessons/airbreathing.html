@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hypersonic Air-Breathing Propulsion · Hypersonics Lab</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="lessons" data-lesson="airbreathing">
+<main>
+<div class="prose">
+  <div class="eyebrow">Lesson 14 · Part VI</div>
+  <h1>Hypersonic Air-Breathing Propulsion</h1>
+  <p class="lead">A rocket carries its oxidizer; an air-breathing engine takes it from the atmosphere. In principle that is a large advantage: a hydrogen scramjet can have a specific impulse several times that of the best rocket. But above Mach 5 the air arrives so hot and fast that the classic ramjet stops working, and combustion must happen in a supersonic stream that passes through the engine in about a millisecond. This lesson analyzes ramjets and scramjets as Brayton cycles with component efficiencies (after Heiser and Pratt), compares engines across the Mach range, and looks at inlets, the flight corridor and commercial applications.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#why">Why breathe air?</a></li>
+    <li><a href="#perf">Thrust, specific impulse and efficiency</a></li>
+    <li><a href="#ramjet">Ramjets and why they give way to scramjets</a></li>
+    <li><a href="#cycle">The scramjet as a Brayton cycle</a></li>
+    <li><a href="#isp">Engines across the Mach range</a></li>
+    <li><a href="#corridor">The flight corridor</a></li>
+    <li><a href="#inlet">Inlets and forebody compression</a></li>
+    <li><a href="#commercial">Commercial and access-to-space applications</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Self-check</a></li>
+    <li><a href="#summary">Key equations</a></li>
+  </ol></nav>
+
+  <h2 id="why"><span class="sec">Section 14.1</span>Why breathe air?</h2>
+  <p>Specific impulse \(I_{sp}\) is thrust per unit weight flow of propellant <em>carried</em>. A hydrogen–oxygen rocket reaches about 450 s in vacuum (the RS-25 is 452 s), a kerosene–oxygen rocket about 350 s. An air-breathing engine carries only fuel, and the fuel is a small fraction of the mass flow through the engine (about 3% by mass for stoichiometric hydrogen–air). Its \(I_{sp}\) can be in the thousands of seconds. The price is that the engine only works inside the atmosphere, within a narrow band of dynamic pressure, and its thrust falls as the vehicle approaches orbital speed. That makes air-breathing propulsion attractive for long-range hypersonic cruise (Hirschel and Weiland's CAV class), and as the lower stages of reusable launch systems.</p>
+
+  <h2 id="perf"><span class="sec">Section 14.2</span>Thrust, specific impulse and efficiency</h2>
+  <p>For an engine with air mass flow \(\dot m_0\), fuel-to-air ratio f, flight speed \(V_0\) and exhaust speed \(V_{10}\) expanded to ambient pressure,</p>
+  $$F = \dot m_0\left[(1+f)V_{10} - V_0\right],\qquad I_{sp} = \frac{F}{\dot m_f g_0} = \frac{F/\dot m_0}{fg_0},\qquad \eta_o = \frac{FV_0}{\dot m_fh_{PR}},$$
+  <p>where \(h_{PR}\) is the fuel's heating value (120 MJ/kg for hydrogen, about 43–44 MJ/kg for hydrocarbons) and \(\eta_o\) the overall efficiency, the fraction of fuel energy turned into propulsive work. For cruise, the Breguet range equation combines propulsion and aerodynamics:</p>
+  $$R = \eta_o\frac{h_{PR}}{g_0}\frac{L}{D}\ln\frac{m_i}{m_f}.$$
+  <p>A hypersonic cruiser needs high \(\eta_o\) and high L/D at the same time, which is hard. L/D falls as Mach number rises (Lesson 10), and the engine's \(\eta_o\) rises with Mach number up to a point. The product \(\eta_o L/D\) is the figure of merit.</p>
+
+  <h2 id="ramjet"><span class="sec">Section 14.3</span>Ramjets and why they give way to scramjets</h2>
+  <p>A ramjet has no compressor. Its inlet slows the air, through oblique shocks and a terminal normal shock, to a low subsonic Mach number. That raises the static temperature and pressure toward their stagnation values. Fuel then burns at low speed, and the hot gas expands through a nozzle. Ramjets work well from about Mach 2 to 5. Above that, three problems grow quickly.</p>
+  <ul>
+    <li><b>Temperature.</b> Slowing the air to M ≈ 0.3 recovers nearly the total temperature, \(T_t = T_0(1 + 0.2M_0^2)\): about 3,000 K at Mach 8. Air at that temperature is already partly dissociated, so burning fuel in it mostly breaks molecules apart instead of raising the temperature. The energy comes back only if the gas recombines in the nozzle, which it does not fully do.</li>
+    <li><b>Pressure.</b> The static pressure in a subsonic combustor approaches the total pressure, which at Mach 8 is hundreds of times ambient, stressing the structure.</li>
+    <li><b>Losses.</b> The terminal normal shock at a high Mach number destroys total pressure.</li>
+  </ul>
+  <p>The answer is to slow the air only partly, keep it supersonic through the combustor (typically \(M_3\) ≈ 2–4), and burn fuel in the supersonic stream: the <b class="term">supersonic-combustion ramjet</b>, or scramjet. Interactive 1 shows the burner-entry state of both engines, including the equilibrium dissociation of the air before any fuel is added.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Burner-entry conditions: ramjet versus scramjet</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="bM">Flight Mach M₀ <output for="bM"></output></label>
+      <input type="range" id="bM" min="2" max="16" step="0.1" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="bq">Dynamic pressure q₀ (kPa) <output for="bq"></output></label>
+      <input type="range" id="bq" min="20" max="100" step="1" value="48" data-dec="0"></div>
+    <div class="ctl"><label for="bM3">Scramjet burner-entry Mach M₃ <output for="bM3"></output></label>
+      <input type="range" id="bM3" min="1.2" max="5" step="0.05" value="2.5" data-dec="2"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="plot1a"></div><figcaption>Static temperature at burner entry against flight Mach: ramjet (M₃ = 0.3) and scramjet (chosen M₃). Above about 2,000 K, oxygen starts to dissociate.</figcaption></figure>
+    <figure><div id="plot1b"></div><figcaption>Equilibrium oxygen-atom mole fraction of the air entering the burner (before fuel injection), at the burner-entry static state of each engine.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="cycle"><span class="sec">Section 14.4</span>The scramjet as a Brayton cycle</h2>
+  <p>Heiser and Pratt analyze the scramjet as a thermodynamic Brayton cycle with four stations: freestream (0), burner entry (3), burner exit (4) and nozzle exit (10). The inlet is described by its <b class="term">cycle static temperature ratio</b> \(\psi = T_3/T_0\) and a compression efficiency \(\eta_c\). The burner adds heat at constant pressure with efficiency \(\eta_b\), and the nozzle expands to ambient pressure with efficiency \(\eta_e\):</p>
+  $$V_3^2 = V_0^2 - 2c_{p}(T_3 - T_0),\qquad \frac{p_3}{p_0} = \left[\frac{\psi}{\psi(1-\eta_c) + \eta_c}\right]^{c_p/R},$$
+  $$(1+f)\left(c_{pb}T_4 + \tfrac12V_4^2\right) = c_pT_3 + \tfrac12V_3^2 + \eta_bfh_{PR},\qquad V_4 = \frac{V_3}{1+f},$$
+  $$T_{10} = T_4\left\{1 - \eta_e\left[1 - \left(\frac{p_0}{p_3}\right)^{R/c_{pb}}\right]\right\},\qquad V_{10}^2 = V_4^2 + 2c_{pb}(T_4 - T_{10}).$$
+  <p>Here fuel is injected with no axial momentum, and \(c_p\) is taken for air (γ = 1.4) in the inlet and for hot products (γ = 1.3) in the burner and nozzle. The model is a ramjet if ψ is large enough to make \(M_3 &lt; 1\), and a scramjet otherwise. The same equations cover both. Constant specific heats overestimate \(T_4\), because real combustion products dissociate, so the cycle values are optimistic above about 2,500 K.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Brayton-cycle analysis of a scramjet</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cM">Flight Mach M₀ <output for="cM"></output></label>
+      <input type="range" id="cM" min="3" max="16" step="0.1" value="10" data-dec="1"></div>
+    <div class="ctl"><label for="cpsi">Cycle temperature ratio ψ = T₃/T₀ <output for="cpsi"></output></label>
+      <input type="range" id="cpsi" min="2" max="12" step="0.1" value="7" data-dec="1"></div>
+    <div class="ctl"><label for="cetac">Compression efficiency η<sub>c</sub> <output for="cetac"></output></label>
+      <input type="range" id="cetac" min="0.7" max="1" step="0.01" value="0.9" data-dec="2"></div>
+    <div class="ctl"><label for="cetab">Burner efficiency η<sub>b</sub> <output for="cetab"></output></label>
+      <input type="range" id="cetab" min="0.5" max="1" step="0.01" value="0.9" data-dec="2"></div>
+    <div class="ctl"><label for="cetae">Expansion efficiency η<sub>e</sub> <output for="cetae"></output></label>
+      <input type="range" id="cetae" min="0.7" max="1" step="0.01" value="0.9" data-dec="2"></div>
+    <div class="ctl"><label for="cphi">Equivalence ratio φ <output for="cphi"></output></label>
+      <input type="range" id="cphi" min="0.2" max="1.5" step="0.05" value="1" data-dec="2"></div>
+    <div class="ctl inline"><span>Fuel</span>
+      <div class="seg" id="cF" data-value="H2"><button data-value="H2" aria-pressed="true">hydrogen</button><button data-value="HC" aria-pressed="false">hydrocarbon</button></div></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"cM":10,"cpsi":7,"cetac":0.9,"cetab":0.9,"cetae":0.9,"cphi":1,"cF":"H2"}'>Heiser &amp; Pratt reference, M 10</button>
+      <button data-preset='{"cM":6,"cpsi":5,"cetac":0.9,"cetab":0.9,"cetae":0.9,"cphi":1,"cF":"HC"}'>Hydrocarbon, M 6</button>
+      <button data-preset='{"cM":5,"cpsi":7.5,"cetac":0.9,"cetab":0.9,"cetae":0.9,"cphi":1,"cF":"H2"}'>ψ too high: ramjet mode</button>
+    </div>
+    <div id="status2" class="status"></div>
+  </div>
+  <div class="views">
+    <figure><div id="plot2"></div><figcaption>Temperature–entropy diagram of the cycle: compression 0 → 3, constant-pressure heat addition 3 → 4, expansion 4 → 10, and (closing the cycle) heat rejection to the atmosphere at p₀.</figcaption></figure>
+    <div id="tab2"></div>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="isp"><span class="sec">Section 14.5</span>Engines across the Mach range</h2>
+  <p>Interactive 3 sweeps the flight Mach number on a constant-q trajectory and runs three cycle models: an ideal turbojet (compressor pressure ratio \(\pi_c\), turbine-inlet temperature limit \(T_{t4}\)), a ramjet (\(M_3\) = 0.3), and a scramjet (ψ chosen to keep the burner-entry temperature at a set value). It plots their specific impulse together with typical rocket values. The familiar picture emerges. Turbojets lead to about Mach 3, ramjets to about Mach 5–6, and scramjets beyond. All air-breathers decline at high Mach number, approaching the rocket near Mach 15–20, as the kinetic energy of the air captured becomes large compared with the heat that combustion can add.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Specific impulse from Mach 0.5 to 16</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl inline"><span>Fuel</span>
+      <div class="seg" id="iF" data-value="H2"><button data-value="H2" aria-pressed="true">hydrogen</button><button data-value="HC" aria-pressed="false">hydrocarbon</button></div></div>
+    <div class="ctl"><label for="iT3">Scramjet burner-entry temperature T₃ (K) <output for="iT3"></output></label>
+      <input type="range" id="iT3" min="900" max="2000" step="10" value="1400" data-dec="0"></div>
+    <div class="ctl"><label for="iEta">Component efficiencies η<sub>c</sub> = η<sub>b</sub> = η<sub>e</sub> <output for="iEta"></output></label>
+      <input type="range" id="iEta" min="0.75" max="1" step="0.01" value="0.9" data-dec="2"></div>
+    <div class="ctl"><label for="iTt4">Turbojet T<sub>t4</sub> limit (K) <output for="iTt4"></output></label>
+      <input type="range" id="iTt4" min="1200" max="2200" step="10" value="1700" data-dec="0"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot3"></div><figcaption>Fuel specific impulse against flight Mach number on a q = 48 kPa trajectory. Dashed horizontal lines: vacuum I<sub>sp</sub> of LOX/LH₂ (≈ 450 s) and LOX/RP-1 (≈ 350 s) rockets for comparison. Each air-breathing curve stops where its cycle no longer produces thrust or exceeds its limits.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="corridor"><span class="sec">Section 14.6</span>The flight corridor</h2>
+  <p>An air-breathing vehicle flies where the air is dense enough for its engine but thin enough for its structure. Heiser and Pratt bound the corridor by dynamic pressure, typically 24–96 kPa (500–2,000 lbf/ft²). The lower bound is set by combustion: burner pressure must stay above roughly half an atmosphere for reliable ignition and reaction rates. The upper bound comes from structural loads and heating. On a constant-q trajectory, altitude rises with Mach number, and the total temperature, which drives heating, rises steeply. Interactive 4 shows the corridor with a few reference flights.</p>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">The air-breathing corridor</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="fq1">Lower bound q (kPa) <output for="fq1"></output></label>
+      <input type="range" id="fq1" min="10" max="60" step="1" value="24" data-dec="0"></div>
+    <div class="ctl"><label for="fq2">Upper bound q (kPa) <output for="fq2"></output></label>
+      <input type="range" id="fq2" min="60" max="200" step="1" value="96" data-dec="0"></div>
+    <div class="ctl"><label for="fM">Mach for readout <output for="fM"></output></label>
+      <input type="range" id="fM" min="1" max="16" step="0.1" value="8" data-dec="1"></div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="plot4"></div><figcaption>Altitude against flight Mach number. The corridor lies between the two dynamic-pressure bounds (thin curves); thick curve: their geometric mean. Thin dashed lines: total temperature T₀ = 1000, 2000, 3000 and 4000 K. Points: SR-71 cruise (≈ M 3.2, 24 km) and the two powered X-43A scramjet flights (M 6.8 at 29 km, M 9.7 at 33.5 km, 2004).</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="inlet"><span class="sec">Section 14.7</span>Inlets and forebody compression</h2>
+  <p>A scramjet inlet compresses the air through a series of oblique shocks, usually starting on the vehicle's own forebody, so that the airframe is part of the engine. Its quality is measured by the total-pressure recovery \(p_{0,3}/p_{0,0}\), or better by the <b class="term">kinetic-energy efficiency</b>: the fraction of the freestream kinetic energy the compressed flow would recover if expanded isentropically back to \(p_0\),</p>
+  $$\eta_{KE} = \frac{V_x^2}{V_0^2},\qquad V_x^2 = V_3^2 + 2c_pT_3\left[1 - \left(\frac{p_0}{p_3}\right)^{R/c_p}\right].$$
+  <p>Values of 0.95–0.98 are typical of good hypersonic inlets. Because shock losses grow with shock strength, the same compression is cheaper in several weak shocks than in one strong one (Lesson 5). Hirschel and Weiland stress the viscous side of forebody design: the boundary layer that grows along a long forebody enters the inlet. It must not separate in the inlet's adverse pressure gradient, which is why vehicles such as the X-43A tripped their forebody boundary layers to make them turbulent before the inlet. Its thickness also reduces the effective capture area.</p>
+</div>
+
+<section class="lab" id="lab5">
+  <div class="lab-head"><span class="num">Interactive 5</span><span class="title">Multi-ramp inlet compression</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="nM">Flight Mach M₀ <output for="nM"></output></label>
+      <input type="range" id="nM" min="4" max="16" step="0.1" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="nT">Total flow turning (deg) <output for="nT"></output></label>
+      <input type="range" id="nT" min="4" max="30" step="0.5" value="16" data-dec="1"></div>
+    <div class="ctl"><label for="nN">Number of ramp shocks n <output for="nN"></output></label>
+      <input type="range" id="nN" min="1" max="6" step="1" value="3" data-dec="0"></div>
+    <div id="status5" class="status"></div>
+    <div id="ro5" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="diag5"></div><figcaption>Ramps of equal deflection, each generating an oblique shock. In a real inlet the cowl turns the flow back to axial with one more shock.</figcaption></figure>
+    <figure><div id="plot5"></div><figcaption>Kinetic-energy efficiency (solid) and total-pressure recovery (dashed) against the number of shocks for the same total turning. ψ = T₃/T₀ is in the readout.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="commercial"><span class="sec">Section 14.8</span>Commercial and access-to-space applications</h2>
+  <p>Hypersonic air-breathing propulsion has flown only in short experiments: the X-43A (about 10 s of scramjet operation per flight) and the X-51A (about 4–6 minutes of hydrocarbon scramjet operation, 2010–2013), along with programs in Australia (HyShot, HIFiRE), Russia and China. Turning it into commercial capability means solving several coupled problems:</p>
+  <ul>
+    <li><b>Point-to-point transport.</b> Breguet's equation favors high \(\eta_oL/D\). At Mach 5–6 with hydrocarbon fuel, studies show transoceanic ranges are possible, but at Mach 8+ hydrogen is needed. Its low density (≈ 71 kg/m³ as a liquid) forces large fuel volumes, which hurt L/D. Heating, sonic boom, airport compatibility and cost per seat remain open questions.</li>
+    <li><b>Access to space.</b> Air-breathing first stages could reduce oxidizer mass, but a scramjet cannot start below about Mach 4 and loses thrust near Mach 12–15. Practical systems combine cycles. <b>TBCC</b> (turbine-based combined cycle) pairs a turbojet with a ramjet/scramjet. <b>RBCC</b> (rocket-based) embeds a rocket in the scramjet duct. <b>Precooled</b> engines (such as Reaction Engines' SABRE concept) chill the incoming air so that a compressor can work to about Mach 5. Mode transition between cycles, and the drag of carrying several engines, are central difficulties.</li>
+    <li><b>Thermal management.</b> Combustor walls see heat fluxes of megawatts per square meter. The fuel itself, hydrogen or endothermic hydrocarbons that absorb heat by cracking, is the main heat sink.</li>
+    <li><b>Ground testing.</b> No facility reproduces the full flight enthalpy, pressure, size and test time at once (Lesson 15), so engine development relies on combinations of tunnels, CFD and flight experiments.</li>
+  </ul>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 14.9</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span>
+    <button>Ex 14.1 · Ramjet burner entry</button><button>Ex 14.2 · Scramjet cycle</button><button>Ex 14.3 · Breguet range</button><button>Ex 14.4 · Three-shock inlet</button></div>
+  <div class="panel" id="ex1">
+    <p>A ramjet flies at Mach \(M_0\) on a q = 48 kPa trajectory and decelerates the air to \(M_3\) = 0.3. Find the static temperature and pressure at burner entry (ideal inlet) and the equilibrium composition of the air there.</p>
+    <div class="given"><label>M₀<input type="number" id="e1M" value="8" step="any"></label></div>
+    <div id="e1out"></div>
+  </div>
+  <div class="panel" id="ex2">
+    <p>Run the Heiser–Pratt cycle for a hydrogen scramjet at Mach 10, q = 48 kPa, with ψ = 7 and \(\eta_c = \eta_b = \eta_e\) = 0.9, stoichiometric. Report the station values, specific thrust, \(I_{sp}\) and overall efficiency.</p>
+    <div class="given"><label>M₀<input type="number" id="e2M" value="10" step="any"></label><label>ψ<input type="number" id="e2p" value="7" step="any"></label><label>η (all)<input type="number" id="e2e" value="0.9" step="any"></label></div>
+    <div id="e2out"></div>
+  </div>
+  <div class="panel" id="ex3">
+    <p>A hypersonic cruiser has overall efficiency \(\eta_o\), cruise L/D, and a fuel fraction \(m_f/m_i\) of its take-off mass. Find its Breguet range for hydrogen and for hydrocarbon fuel.</p>
+    <div class="given"><label>η_o<input type="number" id="e3e" value="0.4" step="any"></label><label>L/D<input type="number" id="e3L" value="4.5" step="any"></label><label>fuel fraction<input type="number" id="e3f" value="0.4" step="any"></label></div>
+    <div id="e3out"></div>
+  </div>
+  <div class="panel" id="ex4">
+    <p>An inlet at Mach \(M_0\) turns the flow through three equal ramp shocks with total turning θ. Find the burner-entry Mach number, ψ, pressure ratio, total-pressure recovery and kinetic-energy efficiency (no cowl shock, no viscous losses).</p>
+    <div class="given"><label>M₀<input type="number" id="e4M" value="8" step="any"></label><label>θ total (deg)<input type="number" id="e4t" value="18" step="any"></label></div>
+    <div id="e4out"></div>
+  </div>
+</div>
+
+<div class="prose"><h2 id="check"><span class="sec">Section 14.10</span>Self-check</h2></div>
+<div id="quiz"></div>
+
+<div class="prose"><h2 id="summary"><span class="sec">Summary</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Performance</h4>
+    $$F = \dot m_0[(1+f)V_{10} - V_0],\quad I_{sp} = \frac{F}{\dot m_fg_0}$$
+    $$\eta_o = \frac{FV_0}{\dot m_fh_{PR}},\quad R = \eta_o\frac{h_{PR}}{g_0}\frac{L}{D}\ln\frac{m_i}{m_f}$$</div>
+  <div><h4>Compression (Heiser–Pratt)</h4>
+    $$\psi = \frac{T_3}{T_0},\quad \frac{p_3}{p_0} = \left[\frac{\psi}{\psi(1-\eta_c)+\eta_c}\right]^{c_p/R}$$
+    $$V_3^2 = V_0^2 - 2c_p(T_3 - T_0)$$</div>
+  <div><h4>Combustion and expansion</h4>
+    $$(1+f)(c_{pb}T_4 + \tfrac12V_4^2) = c_pT_3 + \tfrac12V_3^2 + \eta_bfh_{PR}$$
+    $$T_{10} = T_4\{1 - \eta_e[1 - (p_0/p_3)^{R/c_{pb}}]\}$$</div>
+  <div><h4>Inlet quality and corridor</h4>
+    $$\eta_{KE} = \frac{V_x^2}{V_0^2},\qquad q_0 = \tfrac12\gamma p_0M_0^2 \approx 24\text{–}96\ \text{kPa}$$</div>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/hyper.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const { isen, obliqueShock, DEG, bisect, G0 } = GD;
+  const { atmosphere, altitudeForQ, brayton, turbojetIdeal, equilibrium, FUELS } = HY;
+  const R = 287.05, gc = 1.4, cpc = gc * R / (gc - 1);
+  const flight = (M, q) => { const z = altitudeForQ(M, q); return { z, atm: atmosphere(z) }; };
+  // static state at burner entry for an ideal (isentropic) inlet decelerating to M3
+  const burner = (M0, q, M3) => { const f = flight(M0, q), Tt = f.atm.T * isen.T0_T(M0, gc), pt = f.atm.p * isen.p0_p(M0, gc);
+    return { ...f, T3: Tt / isen.T0_T(M3, gc), p3: pt / isen.p0_p(M3, gc), Tt, pt }; };
+
+  // ---------- 1 ----------
+  UI.wire("#lab1", () => {
+    const M = UI.val("bM"), q = UI.val("bq") * 1000, M3 = UI.val("bM3");
+    const Ms = UI.linspace(2, 16, 57);
+    const ram = Ms.map(m => burner(m, q, 0.3)), scr = Ms.map(m => m > M3 + 0.3 ? burner(m, q, M3) : null);
+    UI.plot("#plot1a", { xlabel: "Flight Mach M₀", ylabel: "Burner-entry T₃ (K)", xlim: [2, 16], ylim: [0, 6000],
+      series: [{ x: Ms, y: ram.map(b => b.T3), c: 4, label: "ramjet, M₃ = 0.3" }, { x: Ms, y: scr.map(b => b ? b.T3 : NaN), c: 1, label: `scramjet, M₃ = ${M3.toFixed(2)}` }],
+      hlines: [{ y: 2000, label: "O₂ dissociation begins", c: 6 }], vlines: [{ x: M, c: 6 }], legend: "tl", legendWidth: 160 });
+    UI.plot("#plot1b", { xlabel: "Flight Mach M₀", ylabel: "x(O) at burner entry", logy: true, xlim: [2, 16], ylim: [1e-6, 1],
+      series: [{ x: Ms, y: ram.map(b => equilibrium(Math.min(b.T3, 19000), b.p3).x.O), c: 4, label: "ramjet" }, { x: Ms, y: scr.map(b => b ? equilibrium(b.T3, b.p3).x.O : NaN), c: 1, label: "scramjet" }],
+      vlines: [{ x: M, c: 6 }], legend: "tl", legendWidth: 100 });
+    const r = burner(M, q, 0.3), s = M > M3 ? burner(M, q, M3) : null;
+    UI.readout("#ro1", [["Altitude (km)", r.z / 1000], ["Total temperature (K)", r.Tt], ["Ramjet T₃ (K)", r.T3], ["Ramjet p₃ (atm)", r.p3 / 101325], ["Ramjet x(O)", equilibrium(Math.min(r.T3, 19000), r.p3).x.O],
+      ["Scramjet T₃ (K)", s ? s.T3 : NaN], ["Scramjet p₃ (atm)", s ? s.p3 / 101325 : NaN], ["Scramjet x(O)", s ? equilibrium(s.T3, s.p3).x.O : NaN]]);
+  });
+
+  // ---------- 2 ----------
+  UI.wire("#lab2", () => {
+    const M0 = UI.val("cM"), f = flight(M0, 47880), fuel = UI.seg("cF");
+    const c = brayton({ M0, T0: f.atm.T, psi: UI.val("cpsi"), etac: UI.val("cetac"), etab: UI.val("cetab"), etae: UI.val("cetae"), phi: UI.val("cphi"), fuel });
+    const st = document.getElementById("status2");
+    if (c.error) { st.className = "status bad"; st.textContent = c.error; document.getElementById("plot2").innerHTML = ""; document.getElementById("tab2").innerHTML = ""; return; }
+    st.className = "status " + (c.Fm > 0 ? (c.M3 < 1 ? "warn" : "good") : "bad");
+    st.innerHTML = `${c.mode}; M₃ = ${c.M3.toFixed(2)}, I<sub>sp</sub> = ${c.Isp.toFixed(0)} s${c.T4 > 2800 ? "; T₄ is high enough that real-gas dissociation would reduce performance" : ""}.`;
+    const gb = 1.3, cpb = gb * R / (gb - 1), T0 = f.atm.T;
+    const s3 = cpc * Math.log(c.T3 / T0) - R * Math.log(c.p3_p0), s4 = s3 + cpb * Math.log(c.T4 / c.T3), s10 = s4 + cpb * Math.log(c.T10 / c.T4) - R * Math.log(1 / c.p3_p0);
+    const seg = (sa, Ta, sb, Tb, n = 30) => ({ x: UI.linspace(sa, sb, n), y: UI.linspace(Ta, Tb, n) });
+    const isobar = (sa, Ta, sb, cp) => { const xs = UI.linspace(sa, sb, 40); return { x: xs, y: xs.map(s => Ta * Math.exp((s - sa) / cp)) }; };
+    const series = [{ ...seg(0, T0, s3, c.T3), c: 1, label: "compression 0→3" }, { ...isobar(s3, c.T3, s4, cpb), c: 4, label: "combustion 3→4" },
+      { ...seg(s4, c.T4, s10, c.T10), c: 2, label: "expansion 4→10" }, { ...isobar(0, T0, s10, cpc), c: 6, dash: true, label: "rejection at p₀" }];
+    UI.plot("#plot2", { xlabel: "Entropy s − s₀ (J/kg·K)", ylabel: "Static temperature (K)", series, legend: "tl", legendWidth: 150, h: 360,
+      points: [{ x: 0, y: T0, c: 6, label: "0" }, { x: s3, y: c.T3, c: 1, label: "3" }, { x: s4, y: c.T4, c: 4, label: "4" }, { x: s10, y: c.T10, c: 2, label: "10" }] });
+    UI.table("#tab2", ["Quantity", "Value"], [
+      ["Altitude (km), q₀ = 48 kPa", f.z / 1000], ["T₀ (K)", T0], ["V₀ (m/s)", c.V0], ["T₃ = ψT₀ (K)", c.T3], ["M₃", c.M3], ["p₃/p₀", c.p3_p0], ["V₃ (m/s)", c.V3], ["f", c.f],
+      ["T₄ (K)", c.T4], ["M₄", c.M4], ["T₁₀ (K)", c.T10], ["V₁₀ (m/s)", c.V10], ["Specific thrust F/ṁ₀ (N·s/kg)", c.Fm], ["I_sp (s)", c.Isp], ["Overall efficiency η_o", c.etaO]]);
+  });
+
+  // ---------- 3 ----------
+  UI.wire("#lab3", () => {
+    const fuel = UI.seg("iF"), T3t = UI.val("iT3"), eta = UI.val("iEta"), Tt4 = UI.val("iTt4");
+    const Ms = UI.linspace(0.5, 16, 156);
+    const tj = Ms.map(M => { const f = flight(M, 47880), r = turbojetIdeal(M, f.atm.T, 12, Tt4, FUELS[fuel].hPR); return r ? r.Isp : NaN; });
+    const rj = Ms.map(M => { if (M < 1.5) return NaN; const f = flight(M, 47880), r = brayton({ M0: M, T0: f.atm.T, M3: 0.3, etac: eta, etab: eta, etae: eta, phi: 1, fuel }); return !r.error && r.Fm > 0 ? r.Isp : NaN; });
+    const sj = Ms.map(M => { const f = flight(M, 47880), psi = T3t / f.atm.T, r = brayton({ M0: M, T0: f.atm.T, psi, etac: eta, etab: eta, etae: eta, phi: 1, fuel });
+      return !r.error && r.M3 > 1 && r.Fm > 0 ? r.Isp : NaN; });
+    UI.plot("#plot3", { xlabel: "Flight Mach M₀", ylabel: "Fuel specific impulse I_sp (s)", xlim: [0, 16], ylim: [0, Math.min(15000, Math.max(...tj.concat(rj, sj).filter(isFinite)) * 1.08)],
+      series: [{ x: Ms, y: tj, c: 2, label: "turbojet (ideal, π_c = 12)" }, { x: Ms, y: rj, c: 4, label: "ramjet (M₃ = 0.3)" }, { x: Ms, y: sj, c: 1, label: `scramjet (T₃ = ${T3t} K)` },
+        { x: [0, 16], y: [450, 450], c: 6, dash: true, label: "LOX/LH₂ rocket" }, { x: [0, 16], y: [350, 350], c: 3, dash: true, label: "LOX/RP-1 rocket" }],
+      legend: "tr", legendWidth: 200, h: 400 });
+    const at = M => sj[Ms.findIndex(m => m >= M)];
+    UI.readout("#ro3", [["Scramjet I_sp at M 6 (s)", at(6)], ["at M 10", at(10)], ["at M 14", at(14)], ["Ramjet I_sp at M 4", rj[Ms.findIndex(m => m >= 4)]], ["Turbojet I_sp at M 2", tj[Ms.findIndex(m => m >= 2)]]]);
+    UI.live("#lab3", FUELS[fuel].name);
+  });
+
+  // ---------- 4 ----------
+  UI.wire("#lab4", () => {
+    const q1 = UI.val("fq1") * 1000, q2 = UI.val("fq2") * 1000, M = UI.val("fM");
+    const Ms = UI.linspace(1, 16, 76);
+    const z = q => Ms.map(m => altitudeForQ(m, q) / 1000);
+    // lines of constant total temperature: at each altitude, the Mach number with T(z)(1 + 0.2M²) = T₀
+    const zz = UI.linspace(0, 50000, 101);
+    const t0line = T0 => ({ x: zz.map(z => Math.sqrt(Math.max(0, T0 / atmosphere(z).T - 1) / 0.2)), y: zz.map(z => z / 1000) });
+    const series = [{ x: Ms, y: z(q1), c: 1, width: 1.5, label: `q = ${(q1 / 1000).toFixed(0)} kPa` }, { x: Ms, y: z(q2), c: 4, width: 1.5, label: `q = ${(q2 / 1000).toFixed(0)} kPa` },
+      { x: Ms, y: z(Math.sqrt(q1 * q2)), c: 5, width: 4, label: "geometric mean" }];
+    [1000, 2000, 3000, 4000].forEach(T => series.push({ ...t0line(T), c: 6, dash: true, width: 1 }));
+    UI.plot("#plot4", { xlabel: "Flight Mach M₀", ylabel: "Altitude (km)", xlim: [1, 16], ylim: [0, 50], series, legend: "br", legendWidth: 140, h: 400,
+      points: [{ x: 3.2, y: 24, c: 2, label: "SR-71" }, { x: 6.8, y: 29, c: 3, label: "X-43A (2004)" }, { x: 9.68, y: 33.5, c: 3, label: "X-43A (2004)" }],
+      notes: [1000, 2000, 3000, 4000].map(T => ({ x: Math.sqrt((T / atmosphere(48000).T - 1) / 0.2) + 0.15, y: 48.5, text: `T₀ ${T} K` })) });
+    const za = altitudeForQ(M, q1), zb = altitudeForQ(M, q2);
+    UI.readout("#ro4", [["Upper altitude (km)", za / 1000], ["Lower altitude (km)", zb / 1000], ["T₀ at mid-corridor (K)", atmosphere(0.5 * (za + zb)).T * (1 + 0.2 * M * M)], ["Velocity (km/s)", M * atmosphere(0.5 * (za + zb)).a / 1000]]);
+  });
+
+  // ---------- 5: inlet ----------
+  function inlet(M0, thTot, n) {
+    let M = M0, pr = 1, Tr = 1, p0r = 1;
+    const shocks = [];
+    for (let i = 0; i < n; i++) { const o = obliqueShock(M, thTot / n, gc); if (!o) return null; shocks.push(o); pr *= o.p2_p1; Tr *= o.T2_T1; p0r *= o.p02_p01; M = o.M2; }
+    const T0 = 220, V0 = M0 * Math.sqrt(gc * R * T0), T3 = Tr * T0, V3 = M * Math.sqrt(gc * R * T3);
+    const Vx2 = V3 * V3 + 2 * cpc * T3 * (1 - Math.pow(1 / pr, R / cpc));
+    return { M3: M, psi: Tr, p3p0: pr, recov: p0r, etaKE: Vx2 / (V0 * V0), shocks };
+  }
+  UI.wire("#lab5", () => {
+    const M0 = UI.val("nM"), th = UI.val("nT") * DEG, n = UI.val("nN"), r = inlet(M0, th, n), st = document.getElementById("status5");
+    const ns = [1, 2, 3, 4, 5, 6], rr = ns.map(k => inlet(M0, th, k));
+    UI.plot("#plot5", { xlabel: "Number of ramp shocks", ylabel: "efficiency", xlim: [1, 6], ylim: [0.3, 1], xticks: ns,
+      series: [{ x: ns, y: rr.map(o => o ? o.etaKE : NaN), c: 1, label: "η_KE" }, { x: ns, y: rr.map(o => o ? o.recov : NaN), c: 4, dash: true, label: "p₀₃/p₀₀" }],
+      points: r ? [{ x: n, y: r.etaKE, c: 1 }, { x: n, y: r.recov, c: 4 }] : [], legend: "br", legendWidth: 110 });
+    const W = 620, H = 220, x0 = 30, yb = 190, L = 520;
+    let svg = "", x = x0, y = yb, ang = 0;
+    const segL = L / n;
+    let pts = `M0 ${yb} L${x0} ${yb}`;
+    if (r) r.shocks.forEach((o, i) => {
+      const len = 200;
+      svg += `<line x1="${x}" y1="${y}" x2="${x + len * Math.cos(o.beta + ang)}" y2="${y - len * Math.sin(o.beta + ang)}" class="shock" style="stroke-width:${1.4 + 0.3 * i}"/>`;
+      ang += th / n; x += segL * Math.cos(ang); y -= segL * Math.sin(ang); pts += ` L${x} ${y}`;
+    });
+    svg = `<path d="${pts} L${x} ${yb} Z" class="body"/>` + svg;
+    document.getElementById("diag5").innerHTML = `<svg class="diagram" viewBox="0 0 ${W} ${H}">${svg}<text x="16" y="22" class="label">M₀ = ${M0.toFixed(1)}</text>${r ? `<text x="${W - 150}" y="22" class="label">M₃ = ${r.M3.toFixed(2)}</text>` : ""}</svg>`;
+    st.className = "status " + (r ? (r.M3 > 1 ? "good" : "bad") : "bad");
+    st.innerHTML = r ? (r.M3 > 1 ? `Supersonic exit, M₃ = ${r.M3.toFixed(2)}: suitable for a scramjet burner.` : "Flow is subsonic after the ramps.") : "A ramp shock detaches: reduce the turning or add shocks.";
+    UI.readout("#ro5", r ? [["M₃", r.M3], ["ψ = T₃/T₀", r.psi], ["p₃/p₀", r.p3p0], ["p₀ recovery", r.recov], ["η_KE", r.etaKE], ["Deflection per ramp (°)", th / n / DEG]] : []);
+  });
+
+  // ---------- examples ----------
+  UI.wire("#ex1", () => {
+    const M = UI.val("e1M"), b = burner(M, 47880, 0.3), eq = equilibrium(Math.min(b.T3, 19000), b.p3);
+    UI.table("#e1out", ["Quantity", "Relation used", "Result"], [
+      ["Altitude (km)", "q₀ = ½γp₀M₀² = 48 kPa", b.z / 1000], ["T₀ (K), p₀ (Pa)", "1976 atmosphere", `${b.atm.T.toFixed(1)}, ${b.atm.p.toFixed(0)}`], ["T_t (K)", "T₀(1 + 0.2M₀²)", b.Tt],
+      ["T₃ (K)", "T_t/(1 + 0.2·0.3²)", b.T3], ["p₃ (atm)", "isentropic", b.p3 / 101325], ["x(O₂), x(O), x(NO)", "equilibrium", `${eq.x.O2.toFixed(4)}, ${eq.x.O.toExponential(2)}, ${eq.x.NO.toFixed(4)}`]], "ex");
+  });
+  UI.wire("#ex2", () => {
+    const M0 = UI.val("e2M"), psi = UI.val("e2p"), e = UI.val("e2e"), f = flight(M0, 47880), c = brayton({ M0, T0: f.atm.T, psi, etac: e, etab: e, etae: e, phi: 1, fuel: "H2" });
+    if (c.error) { document.getElementById("e2out").innerHTML = `<p class='status bad'>${c.error}</p>`; return; }
+    UI.table("#e2out", ["Quantity", "Relation used", "Result"], [
+      ["T₀ (K)", "altitude for q = 48 kPa", f.atm.T], ["V₀ (m/s)", "M₀a₀", c.V0], ["T₃ (K)", "ψT₀", c.T3], ["V₃ (m/s)", "√(V₀² − 2c_p(T₃ − T₀))", c.V3], ["M₃", "V₃/a₃", c.M3],
+      ["p₃/p₀", "[ψ/(ψ(1−η_c)+η_c)]^(c_p/R)", c.p3_p0], ["f", "φ f_st, f_st = 0.0292", c.f], ["T₄ (K)", "burner energy balance", c.T4], ["T₁₀ (K)", "nozzle, η_e", c.T10],
+      ["V₁₀ (m/s)", "√(V₄² + 2c_pb(T₄ − T₁₀))", c.V10], ["F/ṁ₀ (N·s/kg)", "(1+f)V₁₀ − V₀", c.Fm], ["I_sp (s)", "(F/ṁ₀)/(f g₀)", c.Isp], ["η_o", "F V₀/(ṁ_f h_PR)", c.etaO]], "ex");
+  });
+  UI.wire("#ex3", () => {
+    const e = UI.val("e3e"), L = UI.val("e3L"), ff = UI.val("e3f"), lnr = Math.log(1 / (1 - ff));
+    UI.table("#e3out", ["Quantity", "Relation used", "Result"], [
+      ["ln(m_i/m_f)", "m_f = (1 − fuel fraction) m_i", lnr], ["Range, hydrogen (km)", "η_o (h_PR/g₀)(L/D) ln(m_i/m_f), h_PR = 120 MJ/kg", e * 119.95e6 / G0 * L * lnr / 1000],
+      ["Range, hydrocarbon (km)", "h_PR = 43.9 MJ/kg", e * 43.9e6 / G0 * L * lnr / 1000], ["Half Earth circumference (km)", "for scale", Math.PI * 6371]], "ex");
+  });
+  UI.wire("#ex4", () => {
+    const M0 = UI.val("e4M"), th = UI.val("e4t") * DEG, r = inlet(M0, th, 3);
+    if (!r) { document.getElementById("e4out").innerHTML = "<p class='status bad'>A ramp shock detaches.</p>"; return; }
+    UI.table("#e4out", ["Quantity", "Relation used", "Result"], r.shocks.map((o, i) => [`Shock ${i + 1}: β (deg), M after`, "oblique shock", `${(o.beta / DEG).toFixed(2)}, ${o.M2.toFixed(3)}`]).concat([
+      ["M₃", "", r.M3], ["ψ = T₃/T₀", "product of T ratios", r.psi], ["p₃/p₀", "product of p ratios", r.p3p0], ["p₀ recovery", "product of p₀ ratios", r.recov], ["η_KE", "V_x²/V₀²", r.etaKE]]), "ex");
+  });
+
+  UI.quiz("#quiz", [
+    { q: "Why can an air-breathing engine have a much higher specific impulse than a rocket?", opts: ["It burns hotter", "It carries only fuel; the oxidizer comes from the air", "Its nozzle is larger", "It uses solid fuel"], a: 1, why: "I_sp counts only propellant carried. Air is free working fluid and oxidizer, so thrust per unit fuel flow is much higher." },
+    { q: "The main reason ramjets lose effectiveness above about Mach 6 is…", opts: ["the air is too cold", "slowing the air to subsonic speed makes it so hot it dissociates, and combustion adds little temperature", "fuel freezes", "the inlet unstarts at all Mach numbers"], a: 1, why: "T₃ ≈ T_t ≈ 3,000 K at Mach 8; heat release goes into dissociation and the total-pressure loss of the terminal shock is large." },
+    { q: "In a scramjet the burner-entry flow is typically at…", opts: ["M ≈ 0.3", "M ≈ 1", "M ≈ 2–4", "M ≈ 10"], a: 2, why: "The inlet slows the air only partly; keeping M₃ ≈ 2–4 limits the static temperature and pressure." },
+    { q: "Heiser and Pratt's cycle parameter ψ is…", opts: ["the pressure ratio p₃/p₀", "the static temperature ratio T₃/T₀", "the fuel-air ratio", "the nozzle area ratio"], a: 1, why: "ψ = T₃/T₀ measures how much the inlet compresses the air; with η_c it fixes p₃/p₀." },
+    { q: "If ψ is raised so far that M₃ < 1, the model describes…", opts: ["a rocket", "a ramjet", "a turbojet", "a failed cycle"], a: 1, why: "Subsonic burner entry is ramjet operation; the same Brayton-cycle equations apply." },
+    { q: "The air-breathing flight corridor is usually bounded by…", opts: ["altitude only", "dynamic pressure, roughly 24–96 kPa", "Mach number only", "Reynolds number"], a: 1, why: "Too little q and combustion pressure is too low; too much and structural loads and heating are excessive." },
+    { q: "Several weak ramp shocks are preferred to one strong one because…", opts: ["they turn the flow more", "they lose less total pressure for the same compression", "they are easier to build", "they slow the flow less"], a: 1, why: "Entropy rise grows roughly as the cube of shock strength, so many weak shocks are nearly isentropic." },
+    { q: "Why did the X-43A trip its forebody boundary layer?", opts: ["To reduce drag", "To make it turbulent so it would not separate in the inlet", "To cool the engine", "To add lift"], a: 1, why: "A turbulent boundary layer resists separation in the inlet's adverse pressure gradient better than a laminar one." },
+    { q: "Breguet's range equation shows that range grows with…", opts: ["η_o alone", "L/D alone", "the product η_o · (L/D) and the fuel heating value", "flight Mach only"], a: 2, why: "R = η_o (h_PR/g)(L/D) ln(m_i/m_f): propulsion and aerodynamics enter as a product." },
+    { q: "A combined-cycle engine (TBCC or RBCC) is needed for access to space because…", opts: ["scramjets cannot start from rest and lose thrust near orbital speed", "turbojets work to Mach 25", "rockets cannot fly in air", "ramjets need no fuel"], a: 0, why: "Each cycle works only in part of the Mach range; combining them covers take-off to the edge of space." },
+  ]);
+})();
+</script>
+</body>
+</html>
