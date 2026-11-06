@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Longitudinal Static Stability · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="stability">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 5 · HW 7 · Exam 2</div>
+  <h1>Longitudinal Static Stability</h1>
+  <p class="lead">An airplane in steady flight must do two things in pitch: balance (trim), so the moment about its center of gravity is zero, and recover, so that a gust that pitches the nose up produces a nose-down moment. This lesson builds the moment equation of a wing–tail airplane from the finite-wing results of Lessons 1–3 and derives the neutral point, the static margin and the trim conditions.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#defs">Trim and static stability</a></li>
+    <li><a href="#plot">The C<sub>M,cg</sub>–α line</a></li>
+    <li><a href="#wing">The wing alone</a></li>
+    <li><a href="#tail">Adding a tail: downwash and tail volume</a></li>
+    <li><a href="#total">The complete moment equation</a></li>
+    <li><a href="#np">Neutral point and static margin</a></li>
+    <li><a href="#trim">Trim: finding α, C<sub>L</sub> and i<sub>t</sub></a></li>
+    <li><a href="#key">Key equations and procedure</a></li>
+    <li><a href="#examples">Worked example</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="defs"><span class="sec">Section 5.1</span>Trim and static stability</h2>
+  <p>An airplane is <b class="term">trimmed</b> (in equilibrium) when the sum of moments about its center of gravity is zero, \(C_{M,cg} = 0\). It is <b class="term">statically stable</b> if, when disturbed from equilibrium, the initial tendency is to return: a nose-up disturbance (α increases) must create a nose-down moment (C<sub>M,cg</sub> becomes negative). Static stability is about that initial tendency only; whether the motion then oscillates and dies out is dynamic stability, a later course.</p>
+
+  <h2 id="plot"><span class="sec">Section 5.2</span>The C<sub>M,cg</sub>–α line</h2>
+  <p>In the linear range the moment coefficient about the CG is a straight line in the absolute angle of attack α<sub>a</sub> (measured from the airplane's zero-lift line) or, equivalently, in C<sub>L</sub>:</p>
+  $$C_{M,cg} = C_{M,0} + C_{M\alpha}\,\alpha_a = C_{M,0} + \frac{dC_M}{dC_L}C_L,\qquad C_{M,0} \equiv C_{M,cg}\big|_{C_L = 0}.$$
+  <p>Two requirements follow, and they are the heart of the topic:</p>
+  <ul>
+    <li><b>Stability:</b> \(C_{M\alpha} = \partial C_{M,cg}/\partial\alpha_a &lt; 0\) (the line slopes down).</li>
+    <li><b>Trim at positive lift:</b> with a negative slope, the line crosses C<sub>M</sub> = 0 at a positive α<sub>a</sub> only if \(C_{M,0} &gt; 0\).</li>
+  </ul>
+  <p>The trim point is \(\alpha_{a,\text{trim}} = -C_{M,0}/C_{M\alpha}\), \(C_{L,\text{trim}} = C_{L\alpha}\alpha_{a,\text{trim}}\).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">The four kinds of C<sub>M</sub>–α line</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl inline"><span>C<sub>M,0</sub></span><div class="seg" id="sC0" data-value="pos"><button data-value="pos" aria-pressed="true">positive</button><button data-value="neg" aria-pressed="false">negative</button></div></div>
+    <div class="ctl inline"><span>C<sub>Mα</sub></span><div class="seg" id="sCa" data-value="neg"><button data-value="neg" aria-pressed="true">negative</button><button data-value="pos" aria-pressed="false">positive</button></div></div>
+    <div class="ctl"><label for="sD">Disturbance Δα from trim <output for="sD"></output></label><input type="range" id="sD" min="-4" max="4" step="0.5" value="2" data-dec="1" data-unit="°"></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="sP"></div><figcaption>C<sub>M,cg</sub> versus absolute angle of attack. The arrow shows the moment that follows a disturbance from the trim point.</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="wing"><span class="sec">Section 5.3</span>The wing alone</h2>
+  <p>Take moments about the CG of the wing's lift (acting at its aerodynamic center) and its moment about the AC. With x̄ = x/c̄ measured aft from the leading edge of the mean aerodynamic chord, and small angles,</p>
+  $$C_{M,cg} = c_{m,ac} + C_{L,w}\left(\bar x_{cg} - \bar x_{ac}\right).$$
+  <p>So \(C_{M\alpha} = a_w(\bar x_{cg} - \bar x_{ac})\), negative (stable) only if the CG is <b>ahead</b> of the aerodynamic center, and \(C_{M,0} = c_{m,ac}\). A positively cambered airfoil has \(c_{m,ac} &lt; 0\), so a conventional wing alone that is stable cannot be trimmed at positive lift. Flying wings solve this with a reflexed airfoil (\(c_{m,ac} \ge 0\)) or a swept wing with washout, whose nose-down tips are behind the CG and give a positive C<sub>M,0</sub> contribution. Everyone else adds a horizontal tail.</p>
+
+  <h2 id="tail"><span class="sec">Section 5.4</span>Adding a tail: downwash and tail volume</h2>
+  <p>Let α be the angle of the fuselage reference line (FRL), i<sub>w</sub> and i<sub>t</sub> the incidence angles of the wing and tail relative to it, and α<sub>0w</sub> the wing's zero-lift angle. The wing works at \(\alpha + i_w - \alpha_{0w}\) from its zero-lift line:</p>
+  $$C_{L,w} = a_w(\alpha + i_w - \alpha_{0w}),\qquad a_w = \frac{a_0}{1 + a_0/(\pi AR_w)}\ \ (\text{elliptic}).$$
+  <p>The wing's trailing vortices push air down at the tail. The downwash angle is proportional to the wing lift, and for an elliptic wing it is about twice the induced angle at the wing (far downstream the induced velocity of a semi-infinite vortex doubles):</p>
+  $$\varepsilon = \kappa\frac{C_{L,w}}{\pi AR_w} = \varepsilon_0 + \frac{d\varepsilon}{d\alpha}\alpha,\qquad \frac{d\varepsilon}{d\alpha} = \frac{\kappa a_w}{\pi AR_w},\quad \kappa \approx 2,\qquad \varepsilon_0 = \frac{d\varepsilon}{d\alpha}(i_w - \alpha_{0w}).$$
+  <p>The tail (symmetric airfoil, slope a<sub>t</sub>) sees \(\alpha_t = \alpha - \varepsilon + i_t\), so</p>
+  $$C_{L,t} = a_t\left[\left(1 - \frac{d\varepsilon}{d\alpha}\right)\alpha + i_t - \varepsilon_0\right].$$
+  <p>Only the fraction \(1 - d\varepsilon/d\alpha\) of each change in α reaches the tail. With the tail's lift based on its own area S<sub>t</sub> and the same dynamic pressure as the wing, the airplane lift coefficient (based on S<sub>w</sub>) is</p>
+  $$C_L = C_{L,w} + \frac{S_t}{S_w}C_{L,t},\qquad C_{L\alpha} = a_w + \frac{S_t}{S_w}a_t\left(1 - \frac{d\varepsilon}{d\alpha}\right).$$
+  <p>The tail's lift acts at a distance ℓ<sub>t</sub> behind the wing's AC. Its moment, made nondimensional, brings in the <b class="term">horizontal tail volume coefficient</b></p>
+  $$V_H = \frac{S_t\,\ell_t}{S_w\,\bar c}.$$
+  <p>V<sub>H</sub> measures how powerful the tail is in pitch: area times lever arm. Typical values are 0.3–0.6 for light aircraft and 0.5–1.0 for transports.</p>
+
+  <h2 id="total"><span class="sec">Section 5.5</span>The complete moment equation</h2>
+  <p>Sum the wing and tail moments about the CG, with ℓ<sub>t</sub> measured from the wing's AC (tail drag and the fuselage's own moment neglected):</p>
+  $$\boxed{\;C_{M,cg} = c_{m,ac} + C_L\left(\bar x_{cg} - \bar x_{ac}\right) - V_H\,C_{L,t}\;}$$
+  <p>Differentiate with respect to α:</p>
+  $$C_{M\alpha} = C_{L\alpha}\left(\bar x_{cg} - \bar x_{ac}\right) - V_H\,a_t\left(1 - \frac{d\varepsilon}{d\alpha}\right).$$
+  <p>The first term is the wing's (destabilizing if the CG is behind the AC); the second is the tail's, always stabilizing. The value at zero airplane lift is</p>
+  $$C_{M,0} = c_{m,ac} - V_H\,C_{L,t}\big|_{C_L = 0}.$$
+  <p>At zero airplane lift the tail usually carries a download (negative C<sub>L,t</sub>, from a negative i<sub>t</sub> or the wing's camber), which makes C<sub>M,0</sub> positive. Neglecting the tail's small share of the total lift, \(C_{M,0} \approx c_{m,ac} - V_Ha_t(i_t - i_w + \alpha_{0w})\): making i<sub>t</sub> more negative raises C<sub>M,0</sub>.</p>
+
+  <h2 id="np"><span class="sec">Section 5.6</span>Neutral point and static margin</h2>
+  <p>Moving the CG aft makes C<sub>Mα</sub> less negative. The <b class="term">neutral point</b> is the CG location at which \(C_{M\alpha} = 0\):</p>
+  $$\bar x_{np} = \bar x_{ac} + V_H\frac{a_t}{C_{L\alpha}}\left(1 - \frac{d\varepsilon}{d\alpha}\right).$$
+  <p>It is the aerodynamic center of the whole airplane, a property of the configuration that does not move with the CG. Substituting back,</p>
+  $$C_{M\alpha} = -C_{L\alpha}\left(\bar x_{np} - \bar x_{cg}\right),\qquad \text{SM} = \bar x_{np} - \bar x_{cg} = -\frac{C_{M\alpha}}{C_{L\alpha}} = -\frac{dC_M}{dC_L}.$$
+  <p>The <b class="term">static margin</b> must be positive for static stability (CG ahead of the neutral point); typical values are 5–15% of c̄. A large static margin is very stable but sluggish and needs large tail forces (and trim drag) to trim; a small or negative one is responsive but requires the pilot or a flight computer to stabilize the airplane (relaxed-stability fighters).</p>
+  <div class="note"><b>What changes what</b>A bigger tail, a longer tail arm, a higher tail lift slope (higher AR<sub>t</sub>) or less downwash moves the neutral point aft (more SM). Moving the CG aft reduces SM but does not move the neutral point. Changing i<sub>t</sub> or the elevator shifts C<sub>M,0</sub> and the trim point but leaves C<sub>Mα</sub> and SM unchanged.</div>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Wing–tail airplane: stability and trim</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="aX">CG location x̄<sub>cg</sub> <output for="aX"></output></label><input type="range" id="aX" min="0.05" max="0.7" step="0.01" value="0.3" data-dec="2"></div>
+    <div class="ctl"><label for="aSt">Tail area ratio S<sub>t</sub>/S<sub>w</sub> <output for="aSt"></output></label><input type="range" id="aSt" min="0" max="0.35" step="0.01" value="0.13" data-dec="2"></div>
+    <div class="ctl"><label for="aLt">Tail arm ℓ<sub>t</sub>/c̄ <output for="aLt"></output></label><input type="range" id="aLt" min="1.5" max="6" step="0.1" value="3.5" data-dec="1"></div>
+    <div class="ctl"><label for="aIt">Tail incidence i<sub>t</sub> <output for="aIt"></output></label><input type="range" id="aIt" min="-6" max="3" step="0.25" value="-2" data-dec="2" data-unit="°"></div>
+    <div class="ctl"><label for="aAR">Wing AR <output for="aAR"></output></label><input type="range" id="aAR" min="4" max="12" step="0.5" value="7" data-dec="1"></div>
+    <div class="ctl"><label for="aCm">c<sub>m,ac</sub> <output for="aCm"></output></label><input type="range" id="aCm" min="-0.12" max="0.02" step="0.005" value="-0.06" data-dec="3"></div>
+    <div class="ctl inline"><span>Plot against</span><div class="seg" id="aAx" data-value="al"><button data-value="al" aria-pressed="true">α (FRL)</button><button data-value="cl" aria-pressed="false">C<sub>L</sub></button></div></div>
+    <div class="presets"><span>Try</span><button data-preset='{"aSt":0}'>no tail</button><button data-preset='{"aX":0.45}'>CG near the NP</button><button data-preset='{"aX":0.6}'>CG behind the NP</button><button data-preset='{"aIt":0}'>i_t = 0</button></div>
+    <div id="ro2" class="readout"></div>
+    <p class="note">Fixed: a₀ = 2π for wing and tail, AR<sub>t</sub> = 4, α<sub>0w</sub> = −3°, i<sub>w</sub> = 2°, x̄<sub>ac</sub> = 0.25, κ = 2.</p>
+  </div>
+  <div class="views">
+    <figure><div id="aS"></div><figcaption>Side view to scale (lengths in c̄): aerodynamic center, CG and neutral point on the wing's mean chord.</figcaption></figure>
+    <figure><div id="aP"></div><figcaption>C<sub>M,cg</sub> line with the trim point. Dashed: wing alone (no tail).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="trim"><span class="sec">Section 5.7</span>Trim: finding α, C<sub>L</sub> and i<sub>t</sub></h2>
+  <p>In steady level flight, two conditions hold at once: lift equals weight, and the moment about the CG is zero. A typical homework/exam problem gives the weight, speed and geometry and asks for the trim condition:</p>
+  <ol>
+    <li><b>Lift coefficient</b> from L = W: \(C_L = W/(q_\infty S_w)\) (based on the wing area only).</li>
+    <li><b>Tail lift for trim</b> from C<sub>M,cg</sub> = 0: \(C_{L,t} = [c_{m,ac} + C_L(\bar x_{cg} - \bar x_{ac})]/V_H\).</li>
+    <li><b>Wing lift</b>: \(C_{L,w} = C_L - (S_t/S_w)C_{L,t}\).</li>
+    <li><b>Angle of attack</b>: \(\alpha = C_{L,w}/a_w - i_w + \alpha_{0w}\).</li>
+    <li><b>Tail incidence</b> needed: \(i_t = C_{L,t}/a_t - (1 - d\varepsilon/d\alpha)\alpha + \varepsilon_0\).</li>
+  </ol>
+  <p>Or, the other way round, given i<sub>t</sub>: solve C<sub>M,cg</sub>(α) = 0 for α<sub>trim</sub>, then C<sub>L,trim</sub> = C<sub>L</sub>(α<sub>trim</sub>) and the trim speed \(V = \sqrt{2W/(\rho S_w C_{L,\text{trim}})}\). A more negative i<sub>t</sub> raises C<sub>M,0</sub> and so raises C<sub>L,trim</sub> (slower trim speed); the static margin does not change.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Trim lift coefficient versus tail incidence and CG</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="tW">Wing loading W/S <output for="tW"></output></label><input type="range" id="tW" min="100" max="3000" step="50" value="600" data-dec="0" data-unit=" N/m²"></div>
+    <div class="ctl"><label for="tIt">Tail incidence i<sub>t</sub> <output for="tIt"></output></label><input type="range" id="tIt" min="-6" max="2" step="0.25" value="-2" data-dec="2" data-unit="°"></div>
+    <div id="ro3" class="readout"></div>
+    <p class="note">Same airplane as Interactive 2 (S<sub>t</sub>/S<sub>w</sub> = 0.13, ℓ<sub>t</sub>/c̄ = 3.5, AR 7), sea level, for three CG locations. The model is linear (no stall), so trim values above about C<sub>L</sub> = 1.4 could not actually be flown; the speed plot stops there.</p>
+  </div>
+  <div class="views two-up">
+    <figure><div id="tC"></div><figcaption>C<sub>L,trim</sub> versus i<sub>t</sub> for three CG positions. The static margin of each is printed in the legend and does not depend on i<sub>t</sub>.</figcaption></figure>
+    <figure><div id="tV"></div><figcaption>Trim speed versus i<sub>t</sub> (only C<sub>L,trim</sub> &gt; 0 shown).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose"><h2 id="key"><span class="sec">Section 5.8</span>Key equations and procedure</h2></div>
+<div class="keyeq">
+  <div><h4>Lift</h4>
+    $$C_{L,w} = a_w(\alpha + i_w - \alpha_{0w}),\quad \frac{d\varepsilon}{d\alpha} = \frac{\kappa a_w}{\pi AR_w}$$
+    $$C_{L,t} = a_t\left[\left(1 - \tfrac{d\varepsilon}{d\alpha}\right)\alpha + i_t - \varepsilon_0\right]$$
+    $$C_L = C_{L,w} + \frac{S_t}{S_w}C_{L,t},\quad C_{L\alpha} = a_w + \frac{S_t}{S_w}a_t\left(1 - \tfrac{d\varepsilon}{d\alpha}\right)$$</div>
+  <div><h4>Moment</h4>
+    $$C_{M,cg} = c_{m,ac} + C_L(\bar x_{cg} - \bar x_{ac}) - V_HC_{L,t},\quad V_H = \frac{S_t\ell_t}{S_w\bar c}$$
+    $$C_{M\alpha} = C_{L\alpha}(\bar x_{cg} - \bar x_{ac}) - V_Ha_t\left(1 - \tfrac{d\varepsilon}{d\alpha}\right)$$
+    $$\bar x_{np} = \bar x_{ac} + V_H\frac{a_t}{C_{L\alpha}}\left(1 - \tfrac{d\varepsilon}{d\alpha}\right),\quad \text{SM} = \bar x_{np} - \bar x_{cg} = -\frac{C_{M\alpha}}{C_{L\alpha}}$$
+    <p>Stable and trimmable: C<sub>M,0</sub> &gt; 0 and C<sub>Mα</sub> &lt; 0 (SM &gt; 0).</p></div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 5.9</span>Worked example</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked example</span><button>(a) C<sub>Lα</sub></button><button>(b) Static margin</button><button>(c) Stable?</button><button>(d) Trim</button><button>(e) Effect of i<sub>t</sub></button></div>
+  <div class="panel">
+    <p>A small UAV: S<sub>w</sub> = 0.85 m², c̄ = 0.34 m, AR<sub>w</sub> = 7, thin cambered airfoil (a₀ = 2π, α<sub>0w</sub> = −3°, c<sub>m,ac</sub> = −0.06), i<sub>w</sub> = 2°, x̄<sub>ac</sub> = 0.25; horizontal tail S<sub>t</sub> = 0.11 m², AR<sub>t</sub> = 4, symmetric thin airfoil, ℓ<sub>t</sub> = 1.20 m from wing AC to tail AC; x̄<sub>cg</sub> = 0.30; κ = 2. Find the airplane lift-curve slope.</p>
+    <details><summary>Solution</summary>
+    <p>a<sub>w</sub> = 2π/(1 + 2/7) = 4.887 rad⁻¹; a<sub>t</sub> = 2π/(1 + 2/4) = 4.189 rad⁻¹; dε/dα = 2(4.887)/(7π) = 0.4444; S<sub>t</sub>/S<sub>w</sub> = 0.1294.</p>
+    <p>C<sub>Lα</sub> = 4.887 + 0.1294(4.189)(1 − 0.4444) = 4.887 + 0.301 = 5.188 rad⁻¹.</p></details>
+  </div>
+  <div class="panel">
+    <p>Find the neutral point and static margin.</p>
+    <details><summary>Solution</summary>
+    <p>V<sub>H</sub> = 0.1294(1.20/0.34) = 0.4567. x̄<sub>np</sub> = 0.25 + 0.4567(4.189/5.188)(0.5556) = 0.25 + 0.2049 = 0.4549. SM = 0.4549 − 0.30 = 0.155 (15.5% of c̄).</p></details>
+  </div>
+  <div class="panel">
+    <p>Is the airplane longitudinally statically stable?</p>
+    <details><summary>Solution</summary><p>Yes. SM &gt; 0, i.e. C<sub>Mα</sub> = −C<sub>Lα</sub>·SM = −0.803 rad⁻¹ &lt; 0: a nose-up disturbance produces a nose-down restoring moment. (It is also trimmable at positive lift if C<sub>M,0</sub> &gt; 0; see (d).)</p></details>
+  </div>
+  <div class="panel">
+    <p>Find C<sub>L,trim</sub> and the trim angle of the FRL for i<sub>t</sub> = 0 and for i<sub>t</sub> = −2°.</p>
+    <details><summary>Solution</summary>
+    <p>ε₀ = 0.4444(2° + 3°) = 2.22°. Write C<sub>M,cg</sub>(α) = c<sub>m,ac</sub> + C<sub>L</sub>(α)(0.05) − V<sub>H</sub>C<sub>L,t</sub>(α), which is linear in α, and set it to zero.</p>
+    <p><b>i<sub>t</sub> = 0:</b> α<sub>trim</sub> = 2.46°, C<sub>L,trim</sub> = 0.628 (C<sub>L,w</sub> = 0.636, C<sub>L,t</sub> = −0.063: a small download).</p>
+    <p><b>i<sub>t</sub> = −2°:</b> α<sub>trim</sub> = 7.15°, C<sub>L,trim</sub> = 1.034 (C<sub>L,t</sub> = −0.018).</p>
+    <p>Check one value: at i<sub>t</sub> = 0 and α = 2.46° = 0.04291 rad, C<sub>L,w</sub> = 4.887(0.04291 + 0.08727) = 0.636; C<sub>L,t</sub> = 4.189[0.5556(0.04291) − 0.03879] = −0.0626; C<sub>M</sub> = −0.06 + 0.628(0.05) + 0.4567(0.0626) = 0.000 ✓.</p></details>
+  </div>
+  <div class="panel">
+    <p>Explain how the tail incidence affects the trim lift coefficient and the static margin.</p>
+    <details><summary>Solution</summary><p>Making i<sub>t</sub> more negative increases the tail download at a given α, which raises C<sub>M,0</sub> and moves the trim point to a higher α and C<sub>L</sub> (0.628 → 1.034), i.e. a lower trim speed. Because i<sub>t</sub> enters C<sub>M</sub> only as a constant, the slope C<sub>Mα</sub>, the neutral point and the static margin (0.155) are unchanged.</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 5.10</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>For a longitudinally stable airplane, should C<sub>M</sub> at C<sub>L</sub> = 0 be positive, negative or zero? What about C<sub>Mα</sub>?</p><details><summary>Answer</summary><p>C<sub>M,0</sub> &gt; 0 (so it can trim at positive lift) and C<sub>Mα</sub> &lt; 0 (stability).</p></details></div>
+    <div class="sc"><p>What is the tail volume coefficient and how is it related to longitudinal stability?</p><details><summary>Answer</summary><p>V<sub>H</sub> = S<sub>t</sub>ℓ<sub>t</sub>/(S<sub>w</sub>c̄), the tail's area times its moment arm, nondimensionalized. The tail's stabilizing contribution to C<sub>Mα</sub> is −V<sub>H</sub>a<sub>t</sub>(1 − dε/dα), so a larger V<sub>H</sub> moves the neutral point aft and increases the static margin.</p></details></div>
+    <div class="sc"><p>An airfoil has α<sub>L=0</sub> = −2°. What is its c<sub>l</sub> at α = 6° (thin-airfoil theory)? Is c<sub>m,ac</sub> likely positive or negative? Would a wing of this airfoil alone be stable and trimmable?</p><details><summary>Answer</summary><p>c<sub>l</sub> = 2π(8°·π/180) = 0.877. α<sub>L=0</sub> &lt; 0 means positive camber, so c<sub>m,ac</sub> is negative. Alone, with the CG ahead of the AC, it is stable but C<sub>M,0</sub> = c<sub>m,ac</sub> &lt; 0, so it cannot trim at positive lift; it needs a tail, a reflexed airfoil, or sweep with washout.</p></details></div>
+    <div class="sc"><p>Explain the minimum requirements for longitudinal static stability, and the role of the static margin.</p><details><summary>Answer</summary><p>C<sub>Mα</sub> &lt; 0, equivalently the CG ahead of the neutral point (SM &gt; 0); plus C<sub>M,0</sub> &gt; 0 to trim at positive lift. The SM measures how strongly the airplane resists pitch disturbances: SM = −dC<sub>M</sub>/dC<sub>L</sub>.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 5.11</span>Practice problem generator</h2>
+  <p>Conceptual questions, C<sub>M</sub>–C<sub>L</sub> sketches and full exam-length stability problems, all with solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const D = Math.PI / 180, fmt = UI.fmt, bis = (f, a, b) => GD.bisect(f, a, b, 1e-13);
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const c0 = UI.seg("sC0") === "pos" ? 0.08 : -0.08, ca = UI.seg("sCa") === "neg" ? -0.012 : 0.012, d = UI.val("sD");
+    const xs = UI.linspace(-10, 16, 105), at = -c0 / ca, cm = a => c0 + ca * a;
+    const pts = [];
+    if (at > -10 && at < 16) pts.push({ x: at, y: 0, c: 1, label: "trim" });
+    if (at > -10 && at < 16) pts.push({ x: at + d, y: cm(at + d), c: 4, label: cm(at + d) * d < 0 ? "restoring" : "diverging" });
+    UI.plot("#sP", { xlabel: "α_a (deg)", ylabel: "C_M,cg", h: 300, xlim: [-10, 16], ylim: [-0.25, 0.25], series: [{ x: xs, y: xs.map(cm), c: 4, width: 2.5 }], hlines: [{ y: 0, c: 6 }], vlines: [{ x: 0, label: "zero lift", c: 6 }], points: pts });
+    const stable = ca < 0, trimPos = at > 0;
+    UI.readout("#ro1", [["trim α_a", fmt(at, 3) + "°"], ["statically stable?", stable ? "yes (C_Mα < 0)" : "no (C_Mα > 0)"], ["trims at positive lift?", trimPos ? "yes" : "no (trim at negative lift)"], ["usable airplane?", stable && trimPos ? "yes" : "no"]]);
+    UI.live("#lab1", stable && trimPos ? "stable and trimmable" : "not acceptable");
+  });
+  // ---------- Interactive 2 ----------
+  const base = { a0w: 2 * Math.PI, a0lw: -3 * D, ARt: 4, a0t: 2 * Math.PI, kappa: 2, xac: 0.25, iw: 2 * D, Sw: 1 };
+  UI.wire("#lab2", () => {
+    const xcg = UI.val("aX"), r = UI.val("aSt"), lt = UI.val("aLt"), it = UI.val("aIt") * D, AR = UI.val("aAR"), cm = UI.val("aCm"), ax = UI.seg("aAx");
+    const p = AQH.airplane({ ...base, cmac: cm, St: r, ARw: AR, lt, xcg, it });
+    const w = AQH.airplane({ ...base, cmac: cm, St: 0, ARw: AR, lt, xcg, it });
+    const as = UI.linspace(-8, 16, 97), X = ax === "al" ? as : as.map(a => p.CL(a * D)), Xw = ax === "al" ? as : as.map(a => w.CL(a * D));
+    let atr = null; try { atr = bis(p.CM, -0.6, 0.8); } catch (e) { atr = null; }
+    const pts = atr != null && isFinite(atr) ? [{ x: ax === "al" ? atr / D : p.CL(atr), y: 0, c: 1, label: "trim" }] : [];
+    UI.plot("#aP", { xlabel: ax === "al" ? "α of FRL (deg)" : "C_L", ylabel: "C_M,cg", h: 300, ylim: [-0.4, 0.4], series: [{ x: Xw, y: as.map(a => w.CM(a * D)), c: 6, dash: true, label: "wing alone" }, { x: X, y: as.map(a => p.CM(a * D)), c: 4, width: 2.5, label: "wing + tail" }], hlines: [{ y: 0, c: 6 }], points: pts, legend: "tr" });
+    // side view, lengths in c̄
+    const W = 640, H = 230, s = (W - 90) / (lt + 1.3), x0 = 40, y0 = 50, tx = x0 + (0.25 + lt) * s;
+    const mark = () => "";
+    const M0 = 40, M1 = W - 40, my = 178, mx = x => M0 + Math.max(-0.1, Math.min(1.1, x)) / 1.2 * (M1 - M0) + (M1 - M0) * 0.1 / 1.2;
+    const mk = (x, lab, col, dy) => `<line x1="${mx(x)}" x2="${mx(x)}" y1="${my - 12}" y2="${my + 12}" stroke="${col}" stroke-width="2.5"/><text x="${mx(x)}" y="${my + dy}" font-size="12" text-anchor="middle" fill="${col}">${lab} ${fmt(x, 3)}${x > 1.1 || x < -0.1 ? " (off scale)" : ""}</text>`;
+    const strip = `<rect x="${mx(0)}" y="${my - 6}" width="${mx(1) - mx(0)}" height="12" rx="6" fill="var(--surface-2)" stroke="var(--text)"/><text x="${mx(0)}" y="${my - 40}" font-size="11" fill="var(--muted)">mean aerodynamic chord, magnified (x̄ = 0 at the leading edge, 1 at the trailing edge)</text>` + mk(0.25, "ac", "var(--muted)", 28) + mk(xcg, "CG", "var(--hot)", -16) + mk(p.xnp, "NP", "var(--accent)", 44);
+    const tc = Math.sqrt(Math.max(r, 0.0001) * AR / 4) ; // tail chord in c̄ (S_t/S_w with AR_t = 4)
+    document.getElementById("aS").innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="diagram" style="width:100%"><line x1="10" x2="${W - 10}" y1="${y0}" y2="${y0}" stroke="var(--muted)" stroke-dasharray="5 4"/><text x="12" y="${y0 - 6}" font-size="10" fill="var(--muted)">FRL</text>
+      <rect x="${x0}" y="${y0 - 5}" width="${s}" height="10" rx="5" fill="var(--surface-2)" stroke="var(--text)"/>${r > 0 ? `<rect x="${tx - 0.25 * tc * s}" y="${y0 - 3}" width="${tc * s}" height="6" rx="3" fill="var(--surface-2)" stroke="var(--text)"/>` : ""}
+      <line x1="${x0 + 0.25 * s}" x2="${tx}" y1="${y0 + 30}" y2="${y0 + 30}" stroke="var(--muted)"/><text x="${(x0 + 0.25 * s + tx) / 2}" y="${y0 + 26}" font-size="11" text-anchor="middle" fill="var(--muted)">ℓ_t = ${lt} c̄</text>${strip}</svg>`;
+    const a0 = bis(p.CL, -0.6, 0.6), CM0 = p.CM(a0);
+    UI.readout("#ro2", [["a_w, a_t", `${fmt(p.aw, 4)}, ${fmt(p.at, 4)}`], ["dε/dα", fmt(p.de, 4)], ["V_H", fmt(p.VH, 4)], ["C_Lα", fmt(p.CLa, 4)], ["C_Mα", fmt(p.CMa, 4)], ["x̄_np", fmt(p.xnp, 4)], ["static margin", fmt(p.SM, 3)], ["C_M,0 (at C_L = 0)", fmt(CM0, 3)], ["trim", atr != null && isFinite(atr) && p.SM > 0 && CM0 > 0 ? `α = ${fmt(atr / D, 3)}°, C_L = ${fmt(p.CL(atr), 3)}` : p.SM <= 0 ? "unstable" : "trims at C_L < 0"]]);
+    UI.live("#lab2", p.SM > 0 ? (CM0 > 0 ? "stable, trimmable" : "stable, cannot trim at C_L > 0") : "unstable");
+  });
+  // ---------- Interactive 3 ----------
+  UI.wire("#lab3", () => {
+    const WS = UI.val("tW"), itn = UI.val("tIt"), its = UI.linspace(-6, 2, 65), cgs = [0.2, 0.3, 0.4];
+    const series = [], vs = [];
+    cgs.forEach((xcg, k) => {
+      const cl = its.map(i => { const p = AQH.airplane({ ...base, cmac: -0.06, St: 0.13, ARw: 7, lt: 3.5, xcg, it: i * D }); const a = bis(p.CM, -1, 1); return p.CL(a); });
+      const SM = AQH.airplane({ ...base, cmac: -0.06, St: 0.13, ARw: 7, lt: 3.5, xcg, it: 0 }).SM;
+      series.push({ x: its, y: cl, c: [3, 4, 1][k], width: 2.2, label: `x̄_cg = ${xcg} (SM ${fmt(SM, 2)})` });
+      vs.push({ x: its.filter((_, j) => cl[j] > 0.05 && cl[j] < 1.4), y: cl.filter(c => c > 0.05 && c < 1.4).map(c => Math.sqrt(2 * WS / (1.225 * c))), c: [3, 4, 1][k], width: 2.2, label: `x̄_cg = ${xcg}` });
+    });
+    UI.plot("#tC", { xlabel: "i_t (deg)", ylabel: "C_L,trim", h: 290, ylim: [-0.5, 2], series, vlines: [{ x: itn, c: 6 }], legend: "tr" });
+    UI.plot("#tV", { xlabel: "i_t (deg)", ylabel: "V_trim (m/s)", h: 290, ylim: [0, 120], series: vs, vlines: [{ x: itn, c: 6 }], legend: "tl" });
+    const p = AQH.airplane({ ...base, cmac: -0.06, St: 0.13, ARw: 7, lt: 3.5, xcg: 0.3, it: itn * D }), a = bis(p.CM, -1, 1), CLt = p.CL(a);
+    UI.readout("#ro3", [["x̄_cg = 0.30: C_L,trim", fmt(CLt, 3)], ["α_trim (FRL)", fmt(a / D, 3) + "°"], ["tail C_L,t at trim", fmt(p.CLt(a), 3)], ["trim speed", CLt > 0 ? fmt(Math.sqrt(2 * WS / (1.225 * CLt)), 3) + " m/s" : "—"], ["static margin", fmt(p.SM, 3) + " (any i_t)"]]);
+    UI.live("#lab3", `C_L,trim = ${fmt(CLt, 3)}`);
+  });
+  AQL.practice("#gen", ["L5-concept", "L5-np", "L5-trim", "stab-concept", "sketch", "p2-stab"]);
+})();
+</script>
+</body>
+</html>
