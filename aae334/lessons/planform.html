@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taper, Twist and Aspect-Ratio Scaling · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="planform">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 3 · Lecture 15 · Exam 2</div>
+  <h1>Taper, Twist and Aspect-Ratio Scaling</h1>
+  <p class="lead">Why do we taper wings? How does taper change where a wing stalls first, and why do designers twist the tips down? This lesson applies the lifting-line solution of Lesson 2 to real planforms, introduces Schrenk's quick approximation, and shows how to rescale wind-tunnel data from one aspect ratio to another.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#elliptic">Three ways to get elliptic loading</a></li>
+    <li><a href="#taper">Taper ratio and induced drag</a></li>
+    <li><a href="#dist">c<sub>ℓ</sub>(y) versus L′(y), and tip stall</a></li>
+    <li><a href="#schrenk">Schrenk's approximation</a></li>
+    <li><a href="#twist">Twisted wings: basic and additional loading</a></li>
+    <li><a href="#scale">Rescaling data with aspect ratio</a></li>
+    <li><a href="#key">Key equations</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="elliptic"><span class="sec">Section 3.1</span>Three ways to get elliptic loading</h2>
+  <p>Write the lifting-line equation as \(\alpha(y) = \Gamma/(\pi V_\infty c) + \alpha_{L=0}(y) + \alpha_i\). With elliptic loading, α<sub>i</sub> is constant, so the circulation \(\Gamma = \pi V_\infty c\,[\alpha - \alpha_{L=0} - \alpha_i]\) is elliptic whenever the product \(c(y)\,[\alpha(y) - \alpha_{L=0}(y) - \alpha_i]\) is. Three ways achieve it:</p>
+  <ul>
+    <li><b>Elliptic chord</b> \(c(y)\) with constant α and α<sub>L=0</sub> (the Spitfire; its quarter-chord line, not its mid-chord, is straight, so it is not drawn as a symmetric ellipse).</li>
+    <li><b>Geometric twist</b>: constant chord, with α(y) varied so the product is elliptic.</li>
+    <li><b>Aerodynamic twist</b>: constant chord and α, with the airfoil (and hence α<sub>L=0</sub>) changing along the span.</li>
+  </ul>
+  <p>Or any combination. All are expensive to build, and a twisted design is elliptic at only one C<sub>L</sub>. The practical compromise is a straight-tapered wing.</p>
+
+  <h2 id="taper"><span class="sec">Section 3.2</span>Taper ratio and induced drag</h2>
+  <p>The <b class="term">taper ratio</b> is \(\lambda = c_t/c_r\), tip chord over root chord. λ = 1 is rectangular, λ = 0 a pointed tip, and λ &gt; 1 an impractical "bow-tie". For a straight-tapered wing</p>
+  $$c(y) = c_r\left[1 - (1-\lambda)\frac{2|y|}{b}\right],\qquad S = \frac{b\,c_r(1+\lambda)}{2},\qquad c_r = \frac{2S}{b(1+\lambda)} .$$
+  <p>Lifting-line theory gives the induced drag factor δ as a function of λ (Interactive 2). It has a shallow minimum near <b>λ ≈ 0.3–0.35</b>, where δ is under 0.02: a tapered wing comes close to elliptic. A rectangular wing (λ = 1) has δ ≈ 0.05 at AR 6, and an over-tapered wing (λ → 0) is worse than rectangular. So a tapered wing <b>may have larger or smaller</b> induced drag than a rectangular wing of the same AR and C<sub>L</sub>, depending on λ. Note also that the aspect ratio matters much more than δ: \(C_{D_i} = C_L^2(1+\delta)/(\pi AR)\).</p>
+  <div class="note"><b>Why taper? Advantages and disadvantages</b>Taper moves lift (and structure) inboard, which reduces the root bending moment and the wing weight; it puts a deep root where the spar, landing gear and fuel go; and moderate taper lowers the induced drag toward the elliptic value. The costs: the outboard sections run at a higher c<sub>ℓ</sub>, so the tips tend to stall first (with loss of aileron control), small tip chords mean low tip Reynolds numbers, and the manufacturing is more complex than a constant-chord wing.</div>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Taper and twist: where does the wing stall first?</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="tAR">Aspect ratio <output for="tAR"></output></label><input type="range" id="tAR" min="4" max="14" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="tL">Taper ratio λ <output for="tL"></output></label><input type="range" id="tL" min="0.05" max="1" step="0.05" value="0.3" data-dec="2"></div>
+    <div class="ctl"><label for="tT">Tip twist (− = washout) <output for="tT"></output></label><input type="range" id="tT" min="-6" max="3" step="0.5" value="0" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="tC">Wing C<sub>L</sub> <output for="tC"></output></label><input type="range" id="tC" min="0.2" max="1.4" step="0.05" value="1" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"tL":1,"tT":0}'>rectangular</button><button data-preset='{"tL":0.35,"tT":0}'>λ = 0.35</button>
+      <button data-preset='{"tL":0.1,"tT":0}'>λ = 0.1 (tip stall)</button><button data-preset='{"tL":0.1,"tT":-5}'>λ = 0.1 + washout</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="tP"></div><figcaption>Planform (right half) at the same scale.</figcaption></figure>
+    <div>
+      <figure><div id="tCl"></div><figcaption>Section lift coefficient c<sub>ℓ</sub>(y). The shaded band starts at c<sub>ℓ,max</sub> = 1.4: the first station to reach it stalls first.</figcaption></figure>
+      <figure><div id="tLp"></div><figcaption>Span loading L′(y)/(q∞c̄), with the elliptic loading of the same lift (dashed).</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="dist"><span class="sec">Section 3.3</span>c<sub>ℓ</sub>(y) versus L′(y), and tip stall</h2>
+  <p>Keep two distributions apart. The <b>span loading</b> \(L'(y) = q_\infty c\,c_\ell\) is the force per unit span: on any normal wing it is largest at the root and falls to zero at the tips. The <b>section lift coefficient</b> \(c_\ell(y) = L'/(q_\infty c)\) is the loading divided by the local chord. It tells you how hard each airfoil section is working, and so where stall starts.</p>
+  <ul>
+    <li><b>Rectangular wing:</b> L′ is fuller than elliptic near the tips but the chord is constant, so c<sub>ℓ</sub> is largest at the root and falls toward the tips. The root stalls first, which is benign (the ailerons keep working, and the separated root flow buffets the tail as a warning).</li>
+    <li><b>Moderate taper (λ ≈ 0.35–0.5):</b> c<sub>ℓ</sub> is nearly flat, close to elliptic.</li>
+    <li><b>Strong taper (λ → 0):</b> L′ falls toward the tips, but the chord falls faster, so c<sub>ℓ</sub> peaks outboard. The tips reach c<sub>ℓ,max</sub> first: <b>tip stall</b>, with loss of roll control and a tendency to drop a wing.</li>
+    <li><b>Elliptic planform:</b> c<sub>ℓ</sub> is constant, so the whole span stalls at once.</li>
+  </ul>
+  <p>Aft sweep loads the tips further (Lesson 4); washout unloads them.</p>
+
+  <h2 id="schrenk"><span class="sec">Section 3.4</span>Schrenk's approximation</h2>
+  <p>Schrenk (1940) proposed a quick estimate that needs no lifting-line solution: the span loading of an untwisted wing lies halfway between its chord distribution and an ellipse of the same span and area,</p>
+  $$L'(y) \approx \frac12\left[c(y) + \frac{4S}{\pi b}\sqrt{1 - \left(\frac{2y}{b}\right)^2}\,\right]\frac{L}{S},\qquad c_\ell(y) \approx \frac{C_L}{2}\left[1 + \frac{4}{\pi}\frac{\bar c}{c(y)}\sqrt{1 - \left(\frac{2y}{b}\right)^2}\,\right],$$
+  <p>with \(\bar c = S/b\). Both terms integrate to S, so the total lift is right. The second form makes the tip-stall tendency obvious: where the local chord c(y) is small, c<sub>ℓ</sub> is large.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Induced drag factor versus taper ratio</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="dAR">Aspect ratio <output for="dAR"></output></label><input type="range" id="dAR" min="4" max="14" step="1" value="6" data-dec="0"></div>
+    <div class="ctl"><label for="dL">Taper ratio λ <output for="dL"></output></label><input type="range" id="dL" min="0.05" max="1.5" step="0.05" value="0.35" data-dec="2"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="dP"></div><figcaption>δ(λ) from lifting-line theory (untwisted, unswept), with the current wing marked.</figcaption></figure>
+    <figure><div id="sP"></div><figcaption>Schrenk: chord (dotted), ellipse of equal area (dashed) and their average (solid), against the lifting-line loading (points), all as L′/(q∞C<sub>L</sub>).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="twist"><span class="sec">Section 3.5</span>Twisted wings: basic and additional loading</h2>
+  <p>Measure every angle from the zero-lift line. The <b class="term">absolute angle of attack</b> \(\alpha_a = \alpha - \alpha_{L=0}\) of a section splits into two parts:</p>
+  $$\alpha_a(y) = \alpha_{aw} + \alpha_{ab}(y),$$
+  <ul>
+    <li>\(\alpha_{aw}\), the <b>additional</b> absolute angle: the angle of the wing's own zero-lift line, the same for every section. It is the part that changes as the airplane pitches.</li>
+    <li>\(\alpha_{ab}(y)\), the <b>basic</b> absolute angle: the angle from each section's zero-lift line to the wing's zero-lift line. It is fixed by the twist and independent of the wing's attitude.</li>
+  </ul>
+  <p>The lifting-line equation is linear in Γ, so the circulation splits the same way, \(\Gamma = \Gamma_a + \Gamma_b\):</p>
+  $$\alpha_{aw} = \frac{\Gamma_a}{\pi V_\infty c} + \alpha_i[\Gamma_a],\qquad \alpha_{ab}(y_0) = \frac{\Gamma_b}{\pi V_\infty c} + \alpha_i[\Gamma_b] .$$
+  <p>The <b>additional loading</b> Γ<sub>a</sub> is the loading of the untwisted wing, scaled by α<sub>aw</sub> (and so by C<sub>L</sub>). The <b>basic loading</b> Γ<sub>b</sub> is the loading at zero total lift, \(\int\Gamma_b\,dy = 0\). With <b>washout</b> (tips twisted nose-down) the basic loading is positive inboard and negative at the tips; with wash-in it is the reverse.</p>
+  <p>Consequences you should be able to explain:</p>
+  <ul>
+    <li>Washout lowers the tip c<sub>ℓ</sub> at every lift, so it is the standard fix for tip stall on tapered and swept wings.</li>
+    <li>A twisted wing has <b>induced drag at C<sub>L</sub> = 0</b>: the basic loading still sheds trailing vorticity (lift up inboard, down at the tips), even though the net lift is zero.</li>
+    <li>Its induced drag polar is not symmetric about C<sub>L</sub> = 0: \(C_{D_i} = \pi AR\sum n(A_{n,a} + A_{n,b})^2\) has a term linear in C<sub>L</sub>, so the minimum induced drag occurs at a positive C<sub>L</sub> for washout, and e depends on C<sub>L</sub>.</li>
+  </ul>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Basic + additional loading of a twisted wing</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="wT">Tip twist <output for="wT"></output></label><input type="range" id="wT" min="-10" max="4" step="0.5" value="-6" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="wL">Taper ratio λ <output for="wL"></output></label><input type="range" id="wL" min="0.2" max="1" step="0.05" value="1" data-dec="2"></div>
+    <div class="ctl"><label for="wC">Wing C<sub>L</sub> <output for="wC"></output></label><input type="range" id="wC" min="-0.4" max="1.2" step="0.05" value="0.5" data-dec="2"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="wG"></div><figcaption>Γ/(2bV∞): basic (zero net lift), additional (∝ C<sub>L</sub>) and total. AR 8.</figcaption></figure>
+    <figure><div id="wD"></div><figcaption>Induced drag polar C<sub>Di</sub>(C<sub>L</sub>) of the twisted wing (solid) and of the same wing untwisted (dashed). Note C<sub>Di</sub> &gt; 0 at C<sub>L</sub> = 0.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="scale"><span class="sec">Section 3.6</span>Rescaling data with aspect ratio</h2>
+  <p>Wind-tunnel data are measured on one model; we often need them for another aspect ratio (Prandtl's classic plots rescale many rectangular wings to AR = 5, collapsing them onto one curve). Assume the two wings have the same airfoil, the same profile drag at a given C<sub>L</sub>, and nearly the same e. At the <b>same C<sub>L</sub></b>:</p>
+  $$C_{D,1} = C_{D,2} + \frac{C_L^2}{\pi e}\left(\frac1{AR_1} - \frac1{AR_2}\right),\qquad \alpha_1 = \alpha_2 + \frac{C_L}{\pi e}\left(\frac1{AR_1} - \frac1{AR_2}\right)\ \ (\text{rad}).$$
+  <p>The second line follows because the effective angle (and hence the profile drag) is the same at the same C<sub>L</sub>; only α<sub>i</sub> changes. Equivalently, the lift slopes scale as</p>
+  $$\frac{a_1}{a_2} = \frac{1 + a_0/(\pi AR_2)}{1 + a_0/(\pi AR_1)} \xrightarrow{a_0 = 2\pi} \frac{1 + 2/AR_2}{1 + 2/AR_1},$$
+  <p>so at the same α (measured from α<sub>L=0</sub>), \(C_{L,1}/C_{L,2} = a_1/a_2\). For a non-elliptic wing, \(a = a_0/[1 + (a_0/\pi AR)(1+\tau)]\).</p>
+  <div class="note warn"><b>Limitations</b>e and τ change slightly with AR, and C<sub>D0</sub> is really the airfoil c<sub>d</sub>, which varies with C<sub>L</sub> (a 4412 section's drag bucket), so the drag polar is only approximately a parabola.</div>
+</div>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Rescale a measured polar to a new aspect ratio</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="kA2">Test wing AR₂ <output for="kA2"></output></label><input type="range" id="kA2" min="2" max="12" step="0.5" value="4" data-dec="1"></div>
+    <div class="ctl"><label for="kA1">Target AR₁ <output for="kA1"></output></label><input type="range" id="kA1" min="2" max="20" step="0.5" value="10" data-dec="1"></div>
+    <div class="ctl"><label for="ke">e <output for="ke"></output></label><input type="range" id="ke" min="0.8" max="1" step="0.01" value="0.95" data-dec="2"></div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="kD"></div><figcaption>"Measured" polar of the test wing (points) and the rescaled prediction (line).</figcaption></figure>
+    <figure><div id="kL"></div><figcaption>Lift curves: test wing (points) and rescaled (line).</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="key"><span class="sec">Section 3.7</span>Key equations</h2>
+</div>
+<div class="keyeq">
+  <div><h4>Planform</h4>
+    $$\lambda = \frac{c_t}{c_r},\quad c_r = \frac{2S}{b(1+\lambda)},\quad c_\ell = \frac{L'}{q_\infty c}$$
+    $$L' \approx \tfrac12\left[c + \tfrac{4S}{\pi b}\sqrt{1-(2y/b)^2}\right]\tfrac{L}{S}\ \ (\text{Schrenk})$$
+    $$\alpha_a = \alpha - \alpha_{L=0} = \alpha_{aw} + \alpha_{ab}(y),\quad \textstyle\int\Gamma_b\,dy = 0$$</div>
+  <div><h4>Aspect-ratio scaling (same C<sub>L</sub>)</h4>
+    $$C_{D,1} = C_{D,2} + \frac{C_L^2}{\pi e}\left(\frac1{AR_1} - \frac1{AR_2}\right)$$
+    $$\alpha_1 = \alpha_2 + \frac{C_L}{\pi e}\left(\frac1{AR_1} - \frac1{AR_2}\right)$$
+    $$\frac{a_1}{a_2} = \frac{1 + 2/AR_2}{1 + 2/AR_1}\ \ (a_0 = 2\pi)$$</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 3.8</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 3.1 · Root chord</button><button>Ex 3.2 · Schrenk</button><button>Ex 3.3 · Rescale a polar</button><button>Ex 3.4 · Lift-slope ratio</button></div>
+  <div class="panel">
+    <p>A wing has b = 12 m, S = 18 m² and λ = 0.4. Find AR, c<sub>r</sub>, c<sub>t</sub> and the chord at 2y/b = 0.5.</p>
+    <details><summary>Solution</summary><p>AR = 144/18 = 8. c<sub>r</sub> = 2(18)/[12(1.4)] = 2.143 m, c<sub>t</sub> = 0.857 m. c(0.5) = 2.143[1 − 0.6(0.5)] = 1.500 m (which is also the mean chord S/b, as it must be for a straight taper at mid-semispan).</p></details>
+  </div>
+  <div class="panel">
+    <p>For the wing of Ex 3.1 at C<sub>L</sub> = 1.0, use Schrenk to find c<sub>ℓ</sub> at the root and at 2y/b = 0.9.</p>
+    <details><summary>Solution</summary>
+    <p>c̄ = S/b = 1.5 m and (4/π)c̄ = 1.910 m.</p>
+    <p>Root: c<sub>ℓ</sub> = 0.5[1 + 1.910/2.143] = 0.5(1.891) = 0.946.</p>
+    <p>2y/b = 0.9: c = 2.143(1 − 0.54) = 0.986 m; √(1 − 0.81) = 0.436. c<sub>ℓ</sub> = 0.5[1 + 1.910(0.436)/0.986] = 0.5(1.845) = 0.922. Nearly flat, as expected near λ ≈ 0.4. Repeat with λ = 0.1 and the outboard c<sub>ℓ</sub> rises above the root value.</p></details>
+  </div>
+  <div class="panel">
+    <p>A wing of AR 5 measures C<sub>L</sub> = 0.8, C<sub>D</sub> = 0.062 at α = 9.6°. Predict C<sub>D</sub> and α for an AR 9 wing with the same airfoil at C<sub>L</sub> = 0.8 (e = 0.95).</p>
+    <details><summary>Solution</summary>
+    <p>C<sub>L</sub>²/(πe) = 0.64/2.985 = 0.2144; (1/9 − 1/5) = −0.0889.</p>
+    <p>C<sub>D</sub> = 0.062 − 0.2144(0.0889) = 0.0429. Δα = (0.8/2.985)(−0.0889) = −0.0238 rad = −1.37°, so α = 8.2°.</p></details>
+  </div>
+  <div class="panel">
+    <p>An AR 4 wing (thin airfoil) gives C<sub>L</sub> = 0.5 at α = 6° (α<sub>L=0</sub> = 0). What C<sub>L</sub> does an AR 12 wing of the same airfoil give at 6°?</p>
+    <details><summary>Solution</summary><p>a₁₂/a₄ = (1 + 2/4)/(1 + 2/12) = 1.5/1.1667 = 1.286, so C<sub>L</sub> = 0.643.</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 3.9</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>Sketch c<sub>ℓ</sub>(y) for λ = 0, 0.3 and 1 (untwisted, same AR and C<sub>L</sub>) and say which stalls first where.</p><details><summary>Answer</summary><p>λ = 1: largest at the root (root stall). λ ≈ 0.3: nearly flat. λ = 0: rises toward the tips (tip stall).</p></details></div>
+    <div class="sc"><p>Give three ways to mitigate tip stall.</p><details><summary>Answer</summary><p>Washout (geometric or aerodynamic twist), vortex generators on the outboard wing, and boundary-layer fences. Also less taper or a high-c<sub>ℓ,max</sub> airfoil at the tip, or leading-edge slots/slats outboard.</p></details></div>
+    <div class="sc"><p>Why does a wing with washout have induced drag at zero lift?</p><details><summary>Answer</summary><p>Its basic loading is up inboard and down at the tips. The net lift is zero, but Γ(y) still varies, so trailing vortices are shed and there is downwash and induced drag.</p></details></div>
+    <div class="sc"><p>True or false: a tapered wing always has less induced drag than a rectangular one of the same AR.</p><details><summary>Answer</summary><p>False. Near λ ≈ 0.3 it has less; at λ → 0 it has more.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 3.10</span>Practice problem generator</h2>
+  <p>Conceptual, matching and numerical problems with full solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const D = Math.PI / 180, fmt = UI.fmt, LL = AQH.liftingLine, N = 16;
+  // right semispan: η = 2y/b ∈ [0, 1] with y = −(b/2)cos θ, so θ = acos(−η) ∈ [π/2, π)
+  const etaR = UI.linspace(0, 0.995, 200), thR = etaR.map(e => Math.acos(-e));
+  const gamma = (A, t) => A.reduce((s, a, j) => s + a * Math.sin((2 * j + 1) * t), 0);
+  const chord = (lam, AR, e) => { const S = 1 / AR, cr = 2 * S / (1 + lam); return cr * (1 - (1 - lam) * e); }; // b = 1
+
+  function planSVG(lam) {
+    const W = 560, H = 120, x0 = 30, sx = 500, cr = 70 * 2 / (1 + lam), ct = cr * lam, qx = 40 + cr * 0.25;
+    return `<svg viewBox="0 0 ${W} ${H}" class="diagram" style="width:100%;max-width:600px"><path d="M${x0} ${qx - cr * 0.25} L${x0 + sx} ${qx - ct * 0.25} L${x0 + sx} ${qx + ct * 0.75} L${x0} ${qx + cr * 0.75} Z" fill="var(--surface-2)" stroke="var(--text)"/><line x1="${x0}" x2="${x0 + sx}" y1="${qx}" y2="${qx}" stroke="var(--muted)" stroke-dasharray="4 3"/><text x="${x0 + sx * 0.3}" y="${qx - 6}" font-size="11" fill="var(--muted)">quarter-chord line (unswept)</text><text x="${x0}" y="${H - 4}" font-size="11" fill="var(--muted)">root</text><text x="${x0 + sx}" y="${H - 4}" font-size="11" text-anchor="end" fill="var(--muted)">tip</text></svg>`;
+  }
+  // solve at a target C_L: liftingLine is linear in α, so scale the twist-free part
+  function atCL(o, CL) {
+    const L1 = LL({ ...o, alphaDeg: 1 }), L0 = LL({ ...o, alphaDeg: 0 }); // C_L(α) = L0 + α(L1 − L0)
+    const al = (CL - L0.CL) / (L1.CL - L0.CL);
+    return { ...LL({ ...o, alphaDeg: al }), alpha: al, basic: L0.A.map((x, j) => x - (L0.CL / (L1.CL - L0.CL)) * (L1.A[j] - L0.A[j])), add1: L1.A.map((x, j) => x - L0.A[j]), slope: (L1.CL - L0.CL) / D };
+  }
+
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const AR = UI.val("tAR"), lam = UI.val("tL"), tw = UI.val("tT"), CL = UI.val("tC");
+    const s = atCL({ AR, lam, twistDeg: tw, N }, CL);
+    const c = etaR.map(e => chord(lam, AR, e)), g = thR.map(t => gamma(s.A, t));
+    const cl = g.map((v, i) => 4 * v / c[i]), Lp = g.map(v => 4 * v * AR); // L′/(q c̄) with c̄ = S/b = 1/AR (b = 1)
+    const ell = etaR.map(e => (4 / Math.PI) * CL * Math.sqrt(1 - e * e));
+    document.getElementById("tP").innerHTML = planSVG(lam);
+    const imax = cl.indexOf(Math.max(...cl));
+    UI.plot("#tCl", { xlabel: "2y/b (root → tip)", ylabel: "c_ℓ", xlim: [0, 1], ylim: [0, Math.max(1.8, Math.max(...cl) * 1.1)], h: 260, series: [{ x: etaR, y: cl, c: 4, width: 2.4 }], hlines: [{ y: 1.4, label: "c_ℓ,max", c: 1 }, { y: CL, label: "C_L", c: 6 }], points: [{ x: etaR[imax], y: cl[imax], c: 1, label: "max" }] });
+    UI.plot("#tLp", { xlabel: "2y/b (root → tip)", ylabel: "L′/(q∞c̄)", xlim: [0, 1], h: 260, series: [{ x: etaR, y: ell, c: 6, dash: true, label: "elliptic" }, { x: etaR, y: Lp, c: 4, width: 2.4, label: "this wing" }], legend: "bl" });
+    const rise = cl[imax] / cl[0];
+    const where = etaR[imax] < 0.15 ? "root" : rise < 1.06 ? "nearly uniform (close to elliptic)" : etaR[imax] > 0.6 ? "outboard (tip stall)" : "mid-semispan";
+    UI.readout("#ro1", [["root α (from zero lift)", fmt(s.alpha, 3) + "°"], ["δ", fmt(s.delta, 3)], ["e", fmt(s.e, 4)], ["c_ℓ,max on the wing", fmt(cl[imax], 3) + " at 2y/b = " + fmt(etaR[imax], 2)], ["first to stall", where], ["wing C_L at first stall ≈", fmt(1.4 * CL / cl[imax], 3)]]);
+    UI.live("#lab1", where);
+  });
+  // ---------- Interactive 2 ----------
+  const cache = {};
+  UI.wire("#lab2", () => {
+    const AR = UI.val("dAR"), lam = UI.val("dL");
+    if (!cache[AR]) { const ls = UI.linspace(0.02, 1.5, 60); cache[AR] = { ls, d: ls.map(l => LL({ AR, lam: l, alphaDeg: 5, N: 20 }).delta) }; }
+    const C = cache[AR], dNow = LL({ AR, lam, alphaDeg: 5, N: 20 }).delta, k = C.d.indexOf(Math.min(...C.d));
+    UI.plot("#dP", { xlabel: "taper ratio λ", ylabel: "δ", xlim: [0, 1.5], ylim: [0, Math.max(...C.d) * 1.1], h: 280, series: [{ x: C.ls, y: C.d, c: 4, width: 2.3 }], points: [{ x: lam, y: dNow, c: 1, label: `λ = ${lam}` }], vlines: [{ x: 1, label: "rectangular", c: 6 }] });
+    // Schrenk vs lifting line, as L′/(q C_L) per unit b with b = 1, S = 1/AR
+    const S = 1 / AR, c = etaR.map(e => chord(lam, AR, e)), ce = etaR.map(e => 4 * S / Math.PI * Math.sqrt(1 - e * e)), sch = c.map((v, i) => 0.5 * (v + ce[i]));
+    const sol = LL({ AR, lam, alphaDeg: 5, N: 20 }), pts = [0, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95].map(e => ({ x: e, y: 4 * gamma(sol.A, Math.acos(-e)) / sol.CL, c: 1 }));
+    UI.plot("#sP", { xlabel: "2y/b", ylabel: "L′/(q∞C_L b)", xlim: [0, 1], h: 280, series: [{ x: etaR, y: c, c: 6, dash: true, label: "chord" }, { x: etaR, y: ce, c: 3, dash: true, label: "ellipse" }, { x: etaR, y: sch, c: 4, width: 2.3, label: "Schrenk" }], points: pts, legend: "bl" });
+    UI.readout("#ro2", [["δ at this λ", fmt(dNow, 4)], ["e", fmt(1 / (1 + dNow), 4)], ["minimum δ", fmt(C.d[k], 3) + " at λ ≈ " + fmt(C.ls[k], 2)], ["δ rectangular", fmt(LL({ AR, lam: 1, alphaDeg: 5, N: 20 }).delta, 3)]]);
+    UI.live("#lab2", `δ = ${fmt(dNow, 3)}`);
+  });
+  // ---------- Interactive 3 ----------
+  UI.wire("#lab3", () => {
+    const tw = UI.val("wT"), lam = UI.val("wL"), CL = UI.val("wC"), AR = 8;
+    const s = atCL({ AR, lam, twistDeg: tw, N }, CL), u = atCL({ AR, lam, twistDeg: 0, N }, 1);
+    const th2 = UI.linspace(0.003, Math.PI - 0.003, 300), e2 = th2.map(t => -Math.cos(t));
+    const add = s.add1.map(x => x * (CL - 0) / (s.slope * D)); // additional part for this C_L
+    const gb = th2.map(t => gamma(s.basic, t)), ga = th2.map(t => gamma(add, t)), gt = gb.map((v, i) => v + ga[i]);
+    UI.plot("#wG", { xlabel: "2y/b", ylabel: "Γ/(2bV∞)", xlim: [-1, 1], h: 270, series: [{ x: e2, y: gb, c: 3, width: 2, label: "basic" }, { x: e2, y: ga, c: 6, dash: true, label: "additional" }, { x: e2, y: gt, c: 4, width: 2.4, label: "total" }], hlines: [{ y: 0, c: 6 }], legend: "bl" });
+    const CLs = UI.linspace(-0.6, 1.4, 81), cdi = A => Math.PI * AR * A.reduce((s2, a, j) => s2 + (2 * j + 1) * a * a, 0);
+    const tw1 = CLs.map(c => cdi(s.basic.map((b, j) => b + s.add1[j] * c / (s.slope * D)))), un = CLs.map(c => cdi(u.add1.map(a => a * c / (u.slope * D))));
+    const kk = s.add1.map(a => a / (s.slope * D)), num = kk.reduce((t, k, j) => t + (2 * j + 1) * k * s.basic[j], 0), den = kk.reduce((t, k, j) => t + (2 * j + 1) * k * k, 0), cstar = -num / den;
+    const kmin = tw1.indexOf(Math.min(...tw1));
+    UI.plot("#wD", { xlabel: "C_Di", ylabel: "C_L", h: 270, series: [{ x: un, y: CLs, c: 6, dash: true, label: "untwisted" }, { x: tw1, y: CLs, c: 4, width: 2.4, label: "twisted" }], points: [{ x: cdi(s.basic.map((b, j) => b + kk[j] * cstar)), y: cstar, c: 1, label: "min" }], legend: "br" });
+    UI.readout("#ro3", [["C_Di at C_L = 0", fmt(cdi(s.basic), 3)], ["C_Di at this C_L", fmt(s.CDi, 3)], ["e at this C_L", fmt(s.e, 3)], ["C_L at minimum C_Di", fmt(cstar, 3)], ["∫Γ_b dy (should be 0)", fmt(Math.abs(s.basic[0]) < 1e-15 ? 0 : s.basic[0], 2)]]);
+    UI.live("#lab3", `C_Di(0) = ${fmt(cdi(s.basic), 3)}`);
+  });
+  // ---------- Interactive 4 ----------
+  UI.wire("#lab4", () => {
+    const A2 = UI.val("kA2"), A1 = UI.val("kA1"), e = UI.val("ke");
+    // synthetic "test data": NACA 4412-like section c_d(c_ℓ) and lift curve
+    const CLs = [-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.15], cd = c => 0.0065 + 0.004 * (c - 0.35) ** 2 + 0.006 * Math.max(0, c - 0.9) ** 2 * 8;
+    const al0 = -4, a0 = 0.105 / D, a2 = a0 / (1 + a0 / (Math.PI * e * A2));
+    const meas = CLs.map(c => ({ CL: c, CD: cd(c) + c * c / (Math.PI * e * A2), al: al0 + c / a2 / D }));
+    const resc = meas.map(m => ({ CL: m.CL, CD: m.CD + m.CL * m.CL / (Math.PI * e) * (1 / A1 - 1 / A2), al: m.al + (m.CL / (Math.PI * e)) * (1 / A1 - 1 / A2) / D }));
+    UI.plot("#kD", { xlabel: "C_D", ylabel: "C_L", h: 280, series: [{ x: resc.map(r => r.CD), y: resc.map(r => r.CL), c: 4, width: 2.3, label: `AR ${A1} (rescaled)` }], points: meas.map(m => ({ x: m.CD, y: m.CL, c: 3 })), legend: "br" });
+    UI.plot("#kL", { xlabel: "α (deg)", ylabel: "C_L", h: 280, series: [{ x: resc.map(r => r.al), y: resc.map(r => r.CL), c: 4, width: 2.3, label: `AR ${A1} (rescaled)` }], points: meas.map(m => ({ x: m.al, y: m.CL, c: 3 })), legend: "br" });
+    const m8 = meas[5], r8 = resc[5];
+    UI.readout("#ro4", [["at C_L = 0.8: C_D (AR₂ → AR₁)", `${fmt(m8.CD, 3)} → ${fmt(r8.CD, 3)}`], ["α (AR₂ → AR₁)", `${fmt(m8.al, 3)}° → ${fmt(r8.al, 3)}°`], ["lift-slope ratio a₁/a₂", fmt((1 + a0 / (Math.PI * e * A2)) / (1 + a0 / (Math.PI * e * A1)), 4)]]);
+    UI.live("#lab4", `AR ${A2} → ${A1}`);
+  });
+  AQL.practice("#gen", ["L3-concept", "L3-scale-cd", "L3-schrenk", "planform", "span-match"]);
+})();
+</script>
+</body>
+</html>

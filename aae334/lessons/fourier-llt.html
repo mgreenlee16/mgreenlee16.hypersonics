@@ -227,7 +227,7 @@
     const lo = Math.min(...ai), hi = Math.max(...ai), pad = Math.max(0.2, 0.1 * (hi - lo));
     UI.plot("#sI", { xlabel: "2y/b", ylabel: "αᵢ (deg)", xlim: [-1, 1], ylim: [Math.min(0, lo - pad), hi + pad], h: 280, series: [{ x: eta, y: ai, c: 4, width: 2.3 }], hlines: [{ y: L.CL / (Math.PI * AR) / D, label: "C_L/(πAR)", c: 6 }] });
     UI.readout("#ro3", [["C_L", fmt(L.CL)], ["C_L/(α − α_L=0)", L.CL ? fmt(L.CL / (al * D)) + " /rad" : "—"], ["δ", fmt(L.delta, 4)], ["e", fmt(L.e, 4)], ["C_Di", fmt(L.CDi)]]);
-    UI.table("#sTab", ["n", ...ns.slice(0, 8)], [["Aₙ", ...L.A.slice(0, 8).map(x => x.toExponential(3))], ["n(Aₙ/A₁)²", ...ns.slice(0, 8).map((n, j) => (n * (L.A[j] / L.A[0]) ** 2).toExponential(2))]]);
+    UI.table("#sTab", ["n", ...ns.slice(0, 8)], [["Aₙ", ...L.A.slice(0, 8).map(x => fmt(x, 3))], ["n(Aₙ/A₁)²", ...ns.slice(0, 8).map((n, j) => fmt(n * (L.A[j] / L.A[0]) ** 2, 3))]]);
     UI.live("#lab3", `δ = ${fmt(L.delta, 3)}`);
   });
   AQL.practice("#gen", ["L2-concept", "L2-station", "L2-rect", "llt-coef", "p2-llt"]);
