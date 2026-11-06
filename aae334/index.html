@@ -14,7 +14,7 @@
         <div class="eyebrow">Purdue AAE 33400 · Aerodynamics · Exam review</div>
         <h1>AAE 334 Review</h1>
         <p class="lead">Exam preparation for AAE 33400: practice exams in the real format with full solutions, a topic drill, a formula summary, compressible flow tables, and the trend tables and mistakes that matter most. Every practice exam is newly generated, so you can keep taking them until the material is automatic.</p>
-        <div class="stats"><div><b>18</b><span>problem types</span></div><div><b>∞</b><span>practice exams</span></div><div><b>2 h</b><span>timed mode</span></div></div>
+        <div class="stats"><div><b>10</b><span>lessons</span></div><div><b>47</b><span>problem types</span></div><div><b>∞</b><span>practice exams</span></div></div>
       </div>
       <svg viewBox="0 0 420 220" aria-hidden="true">
         <path d="M40 120 Q160 60 260 110 Q300 130 380 118" fill="none" stroke="#9fb0cf" stroke-width="1.4"/>
@@ -26,6 +26,13 @@
         <text x="250" y="200" style="fill:#9fb0cf;font-size:12px">C_M,cg = 0 at trim</text>
       </svg>
     </div>
+  </section>
+
+  <section class="section-head" id="lessons">
+    <div class="eyebrow">Lessons</div>
+    <h2>Learn each topic</h2>
+    <p>Each lesson has the key derivations, equations and assumptions, several interactive figures, worked examples, self-check questions and its own practice problem generator (conceptual and numerical, new numbers every time).</p>
+    <div class="grid" id="l334cards"></div>
   </section>
 
   <section class="section-head">
@@ -57,5 +64,7 @@
 </main>
 <script src="../assets/js/gasdyn.js"></script>
 <script src="../assets/js/ui.js"></script>
+<script src="../assets/js/aae334/lessons.js"></script>
+<script>AQL.cards("#l334cards");</script>
 </body>
 </html>
