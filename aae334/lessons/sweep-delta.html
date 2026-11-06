@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sweep, Delta Wings and Wingtip Devices · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="sweep-delta">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 4 · Lectures 11 and 16 · Exam 2</div>
+  <h1>Sweep, Delta Wings and Wingtip Devices</h1>
+  <p class="lead">Lifting-line theory assumes a straight, slender wing. Real aircraft sweep their wings, fly delta planforms, add winglets and deploy flaps and slats. This lesson covers what each does qualitatively (the material of Part I questions), how a delta wing makes lift with leading-edge vortices, and the airplane drag polar that sets L/D and stall speed.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#stall">Stall and high-lift devices (review)</a></li>
+    <li><a href="#tips">Wingtip devices</a></li>
+    <li><a href="#sweep">Effects of wing sweep</a></li>
+    <li><a href="#tipstall">Mitigating tip stall</a></li>
+    <li><a href="#methods">Beyond lifting line: vortex lattice and panel methods</a></li>
+    <li><a href="#delta">Delta wings and leading-edge vortices</a></li>
+    <li><a href="#breakdown">Vortex breakdown and delta-wing stall</a></li>
+    <li><a href="#polar">The airplane drag polar and L/D</a></li>
+    <li><a href="#key">Key facts and equations</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="stall"><span class="sec">Section 4.1</span>Stall and high-lift devices (review)</h2>
+  <p>Airfoils stall in three ways. <b>Trailing-edge stall</b> (thick sections such as the NACA 4421): separation starts at the trailing edge and creeps forward, so the lift curve rounds over gently. <b>Leading-edge stall</b> (moderately thick sections such as the 4412): a short laminar separation bubble near the nose bursts and the lift drops abruptly. <b>Thin-airfoil stall</b> (flat plates, very thin sections): a long leading-edge bubble grows with α until it covers the chord. c<sub>ℓ,max</sub> rises with thickness up to about 12–15% and then falls.</p>
+  <p>In level flight L = W, so</p>
+  $$V_\infty = \sqrt{\frac{2W}{\rho_\infty S C_L}},\qquad V_\text{stall} = \sqrt{\frac{2W}{\rho_\infty S C_{L,\max}}} .$$
+  <p>A higher C<sub>L,max</sub> lowers the stall speed, shortening takeoff and landing. <b>Trailing-edge flaps</b> add camber (and with Fowler flaps, area): the lift curve shifts up and left (α<sub>L=0</sub> more negative) with about the same slope, and C<sub>L,max</sub> rises, but the stall angle falls slightly. <b>Leading-edge slats and Krueger flaps</b> delay leading-edge separation: the lift curve extends to a much higher stall angle (the 4412 goes from about 15° to near 30°) with little change at low α. Multi-element wings get very high c<sub>ℓ</sub> because high-momentum air through each slot gives the next element a fresh boundary layer. By convention, coefficients still use the clean wing area. Typical values: c<sub>ℓ,max</sub> ≈ 1.3–1.7 clean, 2.5–3.5 with flaps and slats.</p>
+
+  <h2 id="tips"><span class="sec">Section 4.2</span>Wingtip devices</h2>
+  <p>A wing needs circulation to lift, and trailing vorticity cannot be eliminated, only redistributed. Span is limited by structural weight and airport gates, so designers try to move the tip vorticity outward or spread it.</p>
+  <ul>
+    <li><b>Non-lifting end plates</b> block the flow around the tip but add viscous drag; they are not effective on airplanes (they are useful in wind tunnels to simulate 2-D flow).</li>
+    <li><b>Lifting winglets</b> act like a small span extension: they move the vortex outward and partly cancel downwash. Reported induced-drag reductions are a few percent (fuel savings of several percent on some retrofits). Drawbacks: weight, root bending moment, interference drag (avoid lining up the C<sub>p,min</sub> of wing and winglet, which lowers the critical Mach number) and ground or gate clearance.</li>
+    <li><b>Raked tips, blended, split-scimitar and spiroid winglets</b> trade the same benefits against clearance and weight.</li>
+  </ul>
+
+  <h2 id="sweep"><span class="sec">Section 4.3</span>Effects of wing sweep</h2>
+  <p>Sweep angle Λ is usually measured at the quarter-chord line. Lifting-line theory no longer applies; Weissinger's method (a vortex lattice with one chordwise panel) or a full vortex-lattice method is needed. Know at least five effects of <b>aft sweep</b>:</p>
+  <ol>
+    <li><b>Raises the critical Mach number</b>: the wing responds mainly to the velocity component normal to its leading edge, V cos Λ (simple sweep theory).</li>
+    <li><b>Reduces the magnitude of the minimum pressure coefficient</b> for the same reason.</li>
+    <li><b>Reduces the lift slope and the lift coefficient</b> at a given α.</li>
+    <li><b>Loads the tips</b>: the bound vortex of each half-wing induces downwash on the other near the root, unloading it, so the spanwise c<sub>ℓ</sub> peaks outboard: tip stall.</li>
+    <li><b>Drives the boundary layer outboard</b>: a 3-D boundary layer with spanwise flow toward the tips thickens the tip boundary layer and promotes tip stall (it is also less stable at low Reynolds number).</li>
+    <li><b>Tip stall moves the center of pressure forward</b> (the tips of an aft-swept wing are behind the root), giving a nose-up pitch break that hurts stability.</li>
+  </ol>
+  <p><b>Forward sweep</b> reverses the induced effects: each half-wing gets upwash from the other near the root, the root is loaded and stalls first (keeping aileron control), and the boundary layer flows inboard. But root stall moves the center of pressure forward too, and forward-swept wings are prone to aeroelastic divergence (X-29, HFB-320 Hansa Jet).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Sweep: lift slope and critical Mach number</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="wL">Quarter-chord sweep Λ <output for="wL"></output></label><input type="range" id="wL" min="-40" max="60" step="1" value="35" data-dec="0" data-unit="°"></div>
+    <div class="ctl"><label for="wAR">Aspect ratio <output for="wAR"></output></label><input type="range" id="wAR" min="3" max="12" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="wM">Unswept critical Mach number <output for="wM"></output></label><input type="range" id="wM" min="0.6" max="0.8" step="0.01" value="0.7" data-dec="2"></div>
+    <div id="ro1" class="readout"></div>
+    <p class="note">Lift slope from the Helmbold–Diederich (Kuchemann) formula a = a₀cos Λ / [√(1 + (a₀cos Λ/(πAR))²) + a₀cos Λ/(πAR)]; critical Mach number from simple sweep theory, M<sub>cr</sub>/cos Λ. Both are estimates.</p>
+  </div>
+  <div class="views two-up">
+    <figure><div id="wP"></div><figcaption>Lift slope versus sweep for the chosen AR, with lifting-line (Λ = 0, elliptic) for reference.</figcaption></figure>
+    <figure><div id="wS"></div><figcaption>Planform (right half). Forward sweep (Λ &lt; 0) loads the root; aft sweep loads the tips.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="tipstall"><span class="sec">Section 4.4</span>Mitigating tip stall</h2>
+  <p>Three standard strategies, which you should be able to recognize on real airplanes:</p>
+  <ul>
+    <li><b>Twist (washout)</b>: geometric or aerodynamic twist that lowers the tip c<sub>ℓ</sub> (Lesson 3).</li>
+    <li><b>Vortex generators</b>: small vanes that mix high-momentum air into the boundary layer and delay separation, at a small drag penalty (also micro vortex generators and active versions: synthetic jets and plasma actuators).</li>
+    <li><b>Boundary-layer fences</b>: chordwise plates that block the outward spanwise boundary-layer flow on swept wings (MiG-15, Caravelle; a dogtooth or a saw-cut leading edge does the same job aerodynamically, as on the F-4).</li>
+  </ul>
+
+  <h2 id="methods"><span class="sec">Section 4.5</span>Beyond lifting line: vortex lattice and panel methods</h2>
+  <p>A <b>vortex-lattice method</b> covers the planform with panels, each carrying a horseshoe vortex whose bound segment lies on the panel's quarter-chord line, with a control point at the three-quarter chord. Flow tangency at N control points gives N equations for the N vortex strengths. Camber can be included by tilting the boundary condition; thickness cannot. A 3-D <b>panel method</b> (Hess–Smith) puts sources and doublets on the actual surface and does capture thickness. Programs such as XFLR5/FLOW5 use these methods.</p>
+
+  <h2 id="delta"><span class="sec">Section 4.6</span>Delta wings and leading-edge vortices</h2>
+  <p>Delta wings (Concorde, F-102, the Space Shuttle, many fighters) are used for supersonic flight: the highly swept leading edge stays inside the Mach cone, and the long root chord gives low thickness ratio with deep structure. They still have to land, and at low speed they behave very differently from a high-aspect-ratio wing.</p>
+  <p>At moderate α the flow separates at the sharp, swept leading edge. The shear layer rolls up into a pair of strong, stable <b>leading-edge vortices</b> lying above the upper surface. Their low-pressure cores produce large suction peaks on the outboard upper surface, so the spanwise C<sub>p</sub> distribution has two suction humps. This adds a nonlinear <b>vortex lift</b> to the ordinary (potential) lift. Polhamus's leading-edge suction analogy writes</p>
+  $$C_L = K_p\sin\alpha\cos^2\alpha + K_v\cos\alpha\sin^2\alpha,$$
+  <p>where the first term is the potential lift and the second the vortex lift (K<sub>v</sub> ≈ π for slender deltas). Compared with a high-AR wing, a delta wing has:</p>
+  <ul>
+    <li>a <b>smaller lift slope</b> (low aspect ratio, AR = 4/tan Λ<sub>LE</sub>);</li>
+    <li>a <b>much higher stall angle</b> (often 30–40°);</li>
+    <li>about the <b>same C<sub>L,max</sub></b>.</li>
+  </ul>
+  <p>The low slope means very nose-high landing attitudes (Concorde's drooping nose, the F-14's variable sweep). L/D is poor: a rounded leading edge recovers some suction at low speed but is impractical supersonically; leading-edge vortex flaps redirect the vortex suction forward to cut drag.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Delta wing versus high-aspect-ratio wing</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="dS">Delta leading-edge sweep <output for="dS"></output></label><input type="range" id="dS" min="55" max="80" step="1" value="70" data-dec="0" data-unit="°"></div>
+    <div class="ctl"><label for="dAR">Straight wing AR <output for="dAR"></output></label><input type="range" id="dAR" min="5" max="14" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="dA">Angle of attack <output for="dA"></output></label><input type="range" id="dA" min="0" max="50" step="1" value="20" data-dec="0" data-unit="°"></div>
+    <div id="ro2" class="readout"></div>
+    <p class="note">Illustrative model: Polhamus's suction analogy for the delta (K<sub>p</sub> from the low-AR lift slope, K<sub>v</sub> = π) with vortex breakdown fading the vortex lift; a linear lift curve with a rounded stall near C<sub>L,max</sub> ≈ 1.35 for the straight wing.</p>
+  </div>
+  <div class="views two-up">
+    <figure><div id="dL"></div><figcaption>Lift curves. Dotted: the delta's potential lift alone.</figcaption></figure>
+    <figure><div id="dV"></div><figcaption>The delta wing seen from above, with the leading-edge vortices and the breakdown point (×) at the chosen α.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="breakdown"><span class="sec">Section 4.7</span>Vortex breakdown and delta-wing stall</h2>
+  <p>A leading-edge vortex has a strong axial jet in its core. As α rises, the adverse pressure gradient along the core grows until, at some point, the core suddenly stagnates, expands into a larger, turbulent, slower swirling region: <b>vortex breakdown</b> (bubble or spiral type). Downstream of breakdown the vortex no longer produces strong suction.</p>
+  <p>At low α breakdown happens in the wake, behind the trailing edge. As α increases the breakdown point moves upstream over the wing. Lift keeps growing until breakdown has moved well forward; when it approaches the apex the vortex lift collapses and the wing stalls. That is why delta-wing stall is gradual and occurs at a high angle (around 35° for a 70–75° delta). Asymmetric breakdown can cause abrupt roll; breakdown over the tails of the F/A-18 and F-16 causes buffeting.</p>
+
+  <h2 id="polar"><span class="sec">Section 4.8</span>The airplane drag polar and L/D</h2>
+  <p>For a whole airplane, a good approximation is the parabolic polar</p>
+  $$C_D = C_{D,0} + KC_L^2,\qquad K = \frac{1}{\pi e AR},$$
+  <p>where C<sub>D,0</sub> is the zero-lift (parasite) drag of everything and e is the <b>Oswald efficiency factor</b>, lower than the wing's span efficiency because it also absorbs the variation of profile drag with lift. A common curve fit for straight-wing aircraft (Raymer) is \(e = 1.78(1 - 0.045AR^{0.68}) - 0.64\). The lift-to-drag ratio \(L/D = C_L/(C_{D,0} + KC_L^2)\) is largest where \(d(L/D)/dC_L = 0\):</p>
+  $$C_L^* = \sqrt{\frac{C_{D,0}}{K}},\qquad \left(\frac LD\right)_{\max} = \frac{1}{2\sqrt{KC_{D,0}}} = \frac12\sqrt{\frac{\pi eAR}{C_{D,0}}},$$
+  <p>at the point where induced drag equals zero-lift drag. Higher aspect ratio and lower parasite drag both raise (L/D)<sub>max</sub>, which sets glide ratio and, for jets, best range.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Airplane drag polar, L/D and stall speed</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="pC">C<sub>D,0</sub> <output for="pC"></output></label><input type="range" id="pC" min="0.012" max="0.05" step="0.001" value="0.025" data-dec="3"></div>
+    <div class="ctl"><label for="pA">Aspect ratio <output for="pA"></output></label><input type="range" id="pA" min="4" max="30" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="pE">Oswald e <output for="pE"></output></label><input type="range" id="pE" min="0.6" max="1" step="0.01" value="0.8" data-dec="2"></div>
+    <div class="ctl inline"><span>e from</span><div class="seg" id="pEf" data-value="slider"><button data-value="slider" aria-pressed="true">slider</button><button data-value="raymer" aria-pressed="false">Raymer fit</button></div></div>
+    <div class="ctl"><label for="pW">Wing loading W/S <output for="pW"></output></label><input type="range" id="pW" min="300" max="7000" step="50" value="1500" data-dec="0" data-unit=" N/m²"></div>
+    <div class="ctl"><label for="pM">C<sub>L,max</sub> <output for="pM"></output></label><input type="range" id="pM" min="1" max="3.2" step="0.05" value="1.5" data-dec="2"></div>
+    <div class="presets"><span>Try</span><button data-preset='{"pC":0.009,"pA":30,"pE":0.9}'>sailplane</button><button data-preset='{"pC":0.028,"pA":7.5,"pE":0.78}'>light airplane</button><button data-preset='{"pC":0.018,"pA":9.5,"pE":0.82,"pW":6500}'>airliner</button></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="pD"></div><figcaption>Drag polar with the tangent from the origin (its touching point is (L/D)<sub>max</sub>).</figcaption></figure>
+    <figure><div id="pLD"></div><figcaption>L/D versus C<sub>L</sub>, up to C<sub>L,max</sub>.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose"><h2 id="key"><span class="sec">Section 4.9</span>Key facts and equations</h2></div>
+<div class="keyeq">
+  <div><h4>Facts to know</h4>
+    <p>Aft sweep: higher M<sub>cr</sub>, lower |C<sub>p,min</sub>|, lower lift slope and C<sub>L</sub>, tip loading, outboard boundary-layer flow, tip stall, forward shift of c.p.</p>
+    <p>Tip-stall fixes: washout, vortex generators, fences.</p>
+    <p>Delta vs high-AR: smaller slope, higher α<sub>stall</sub>, similar C<sub>L,max</sub>; stall by vortex breakdown reaching the apex.</p></div>
+  <div><h4>Equations</h4>
+    $$V_\text{stall} = \sqrt{\frac{2W}{\rho S C_{L,\max}}}$$
+    $$C_D = C_{D,0} + \frac{C_L^2}{\pi eAR}$$
+    $$C_L^* = \sqrt{C_{D,0}\pi eAR},\quad \left(\frac LD\right)_{\max} = \frac12\sqrt{\frac{\pi eAR}{C_{D,0}}}$$
+    $$C_L = K_p\sin\alpha\cos^2\alpha + K_v\cos\alpha\sin^2\alpha$$</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 4.10</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 4.1 · (L/D)max</button><button>Ex 4.2 · Stall speed</button><button>Ex 4.3 · Sketch</button><button>Ex 4.4 · Spot the device</button></div>
+  <div class="panel">
+    <p>A business jet has C<sub>D,0</sub> = 0.021, AR = 8.5 and e = 0.80. Find K, C<sub>L</sub>* and (L/D)<sub>max</sub>.</p>
+    <details><summary>Solution</summary><p>K = 1/(π·0.8·8.5) = 0.04681. C<sub>L</sub>* = √(0.021/0.04681) = 0.670. (L/D)<sub>max</sub> = 1/(2√(0.04681·0.021)) = 15.95. At that point C<sub>D</sub> = 2C<sub>D,0</sub> = 0.042 and 0.670/0.042 = 15.95 ✓.</p></details>
+  </div>
+  <div class="panel">
+    <p>A 1100 kg airplane has S = 16.2 m². Clean C<sub>L,max</sub> = 1.5; with full flaps 2.1. Find both stall speeds at sea level.</p>
+    <details><summary>Solution</summary><p>V = √(2·10787/(1.225·16.2·C<sub>L,max</sub>)) = √(1087/C<sub>L,max</sub>): 26.9 m/s clean and 22.8 m/s with flaps (52 and 44 knots). The ratio is √(1.5/2.1) = 0.845.</p></details>
+  </div>
+  <div class="panel">
+    <p>On one set of axes, sketch C<sub>L</sub> vs α for a 70° delta wing and an AR 8 straight wing with the same zero-lift angle.</p>
+    <details><summary>Solution</summary><p>Both lines start at the same α<sub>L=0</sub>. The straight wing is steeper (≈ 4.9 rad⁻¹) and stalls near 14–16° at C<sub>L,max</sub> ≈ 1.3–1.4. The delta starts with a shallow slope (≈ 2 rad⁻¹), curves upward as vortex lift builds, and peaks near 35° at a similar C<sub>L,max</sub>, then falls off gradually. Use Interactive 2 to check your sketch.</p></details>
+  </div>
+  <div class="panel">
+    <p>Name the device: (a) chordwise plates on the upper surface of a swept wing; (b) a row of small tabs near the leading edge of the outboard wing; (c) a vertical surface at the wingtip; (d) the outboard wing set at a lower incidence than the root.</p>
+    <details><summary>Solution</summary><p>(a) boundary-layer fences (block spanwise flow, against tip stall); (b) vortex generators (energize the boundary layer, against tip stall); (c) a winglet (reduce induced drag); (d) washout (against tip stall).</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 4.11</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>List five effects of sweeping a wing aft.</p><details><summary>Answer</summary><p>Higher critical Mach number; smaller |C<sub>p,min</sub>|; lower lift slope and C<sub>L</sub>; higher tip loading (tip stall); outboard spanwise boundary-layer flow; forward c.p. shift at stall.</p></details></div>
+    <div class="sc"><p>Why do forward-swept wings stall at the root?</p><details><summary>Answer</summary><p>The bound vortex of each half induces upwash on the other near the centerline, loading the root, and the boundary layer flows inboard.</p></details></div>
+    <div class="sc"><p>Sketch the spanwise C<sub>p</sub> on the upper surface of a delta wing at α = 20°.</p><details><summary>Answer</summary><p>Two strong suction peaks, one under each leading-edge vortex, outboard near the leading edges, with weaker suction in between.</p></details></div>
+    <div class="sc"><p>What ends the lift growth of a delta wing?</p><details><summary>Answer</summary><p>Vortex breakdown moving forward from the wake over the wing; near the apex the vortex suction is lost and the wing stalls.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 4.12</span>Practice problem generator</h2>
+  <p>Conceptual, sketch and numerical problems with full solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const D = Math.PI / 180, fmt = UI.fmt, a0 = 2 * Math.PI;
+  const hd = (AR, L) => { const k = a0 * Math.cos(L * D) / (Math.PI * AR); return a0 * Math.cos(L * D) / (Math.sqrt(1 + k * k) + k); };
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const L = UI.val("wL"), AR = UI.val("wAR"), Mc = UI.val("wM");
+    const Ls = UI.linspace(-45, 65, 111);
+    UI.plot("#wP", { xlabel: "Λ (deg)", ylabel: "dC_L/dα (rad⁻¹)", h: 280, series: [{ x: Ls, y: Ls.map(l => hd(AR, l)), c: 4, width: 2.3 }], points: [{ x: L, y: hd(AR, L), c: 1, label: `Λ = ${L}°` }], hlines: [{ y: a0 / (1 + 2 / AR), label: "lifting line, Λ = 0", c: 6 }] });
+    const half = 200, cr = 70, ct = cr * 0.35, xq = half * Math.tan(L * D), rx = 20;
+    const ys = [-0.25 * cr, 0.75 * cr, xq - 0.25 * ct, xq + 0.75 * ct], y0 = Math.min(...ys) - 30, y1 = Math.max(...ys) + 10;
+    const svg = `<svg viewBox="0 ${y0} ${half + 60} ${y1 - y0}" class="diagram" style="width:100%;max-width:320px;max-height:320px"><path d="M${rx} ${-0.25 * cr} L${rx + half} ${xq - 0.25 * ct} L${rx + half} ${xq + 0.75 * ct} L${rx} ${0.75 * cr} Z" fill="var(--surface-2)" stroke="var(--text)"/><line x1="${rx}" y1="0" x2="${rx + half}" y2="${xq}" stroke="var(--accent)" stroke-dasharray="4 3"/><text x="${rx}" y="${y0 + 14}" font-size="12" fill="var(--muted)">root · flow ↓ · quarter-chord line dashed</text></svg>`;
+    document.getElementById("wS").innerHTML = svg;
+    UI.readout("#ro1", [["lift slope", fmt(hd(AR, L), 4) + " /rad"], ["vs unswept", fmt(hd(AR, L) / hd(AR, 0), 3) + "×"], ["M_cr (simple sweep)", Math.abs(L) < 1e-9 ? fmt(Mc, 3) : fmt(Mc / Math.cos(L * D), 3)], ["first to stall", L > 5 ? "tips" : L < -5 ? "root" : "depends on taper"]]);
+    UI.live("#lab1", `a = ${fmt(hd(AR, L), 3)}/rad`);
+  });
+  // ---------- Interactive 2 ----------
+  UI.wire("#lab2", () => {
+    const Ld = UI.val("dS"), AR = UI.val("dAR"), al = UI.val("dA");
+    const ARd = 4 / Math.tan(Ld * D), Kp = 2 * Math.PI * ARd / (2 + Math.sqrt(ARd * ARd + 4)), Kv = Math.PI, abd = 18 + 0.7 * (Ld - 55); // breakdown reaches mid-chord
+    const delta = a => { const x = a * D; const fade = 1 / (1 + Math.exp((a - abd - 8) / 3)); return Kp * Math.sin(x) * Math.cos(x) ** 2 + Kv * Math.cos(x) * Math.sin(x) ** 2 * fade; };
+    const pot = a => { const x = a * D; return Kp * Math.sin(x) * Math.cos(x) ** 2; };
+    const aw = a0 / (1 + 2 / AR), CLm = 1.35, straight = a => { const lin = aw * a * D; if (lin < 0.85 * CLm) return lin; const t = (lin - 0.85 * CLm) / (0.15 * CLm); return t < 1 ? 0.85 * CLm + 0.15 * CLm * (2 * t - t * t) : CLm - 0.55 * Math.min(1, (t - 1) * 0.35); };
+    const xs = UI.linspace(0, 50, 201), dl = xs.map(delta), k = dl.indexOf(Math.max(...dl)), ks = xs.map(straight), k2 = ks.indexOf(Math.max(...ks));
+    UI.plot("#dL", { xlabel: "α (deg)", ylabel: "C_L", xlim: [0, 50], ylim: [0, 1.8], h: 290, series: [{ x: xs, y: ks, c: 3, width: 2.3, label: `straight, AR ${AR}` }, { x: xs, y: dl, c: 4, width: 2.3, label: `${Ld}° delta` }, { x: xs, y: xs.map(pot), c: 6, dash: true, label: "delta potential lift" }], vlines: [{ x: al, c: 6 }], legend: "tl" });
+    // planform view with vortices and breakdown location (fraction of root chord from apex)
+    const xb = Math.max(0, Math.min(1.25, 1.25 - (al - (abd - 18)) / 30));
+    const W = 300, H = 260, ax = 150, ay = 20, cr = 220, hs = cr * Math.tan((90 - Ld) * D);
+    const vx = f => [ax - hs * f * 0.72, ay + cr * f], vy = f => [ax + hs * f * 0.72, ay + cr * f];
+    const pts = n => Array.from({ length: n }, (_, i) => i / (n - 1));
+    const path = fn => pts(40).filter(f => f <= Math.min(1, xb)).map((f, i) => `${i ? "L" : "M"}${fn(f)[0].toFixed(1)} ${fn(f)[1].toFixed(1)}`).join(" ");
+    const xmark = xb <= 1 ? [vx(xb), vy(xb)].map(([x, y]) => `<text x="${x}" y="${y + 5}" font-size="16" text-anchor="middle" fill="var(--hot)">×</text>`).join("") : "";
+    document.getElementById("dV").innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="diagram" style="width:100%;max-width:340px"><path d="M${ax} ${ay} L${ax + hs} ${ay + cr} L${ax - hs} ${ay + cr} Z" fill="var(--surface-2)" stroke="var(--text)"/>${al > 3 ? `<path d="${path(vx)}" stroke="var(--accent)" stroke-width="3" fill="none"/><path d="${path(vy)}" stroke="var(--accent)" stroke-width="3" fill="none"/>` : ""}${xmark}<text x="${ax}" y="${H - 6}" font-size="11" text-anchor="middle" fill="var(--muted)">${al <= 3 ? "attached flow, no vortices" : xb > 1 ? "breakdown behind the trailing edge" : "vortex breakdown over the wing (×)"}</text></svg>`;
+    UI.readout("#ro2", [["delta AR = 4/tan Λ", fmt(ARd, 3)], ["delta slope K_p", fmt(Kp, 3) + " /rad"], ["straight slope", fmt(aw, 3) + " /rad"], ["delta C_L,max", fmt(dl[k], 3) + " at " + fmt(xs[k], 3) + "°"], ["straight C_L,max", fmt(ks[k2], 3) + " at " + fmt(xs[k2], 3) + "°"], ["at this α: delta / straight", `${fmt(delta(al), 3)} / ${fmt(straight(al), 3)}`]]);
+    UI.live("#lab2", `α = ${al}°`);
+  });
+  // ---------- Interactive 3 ----------
+  UI.wire("#lab3", () => {
+    const CD0 = UI.val("pC"), AR = UI.val("pA"), WS = UI.val("pW"), CLm = UI.val("pM");
+    const e = UI.seg("pEf") === "raymer" ? Math.max(0.3, 1.78 * (1 - 0.045 * Math.pow(AR, 0.68)) - 0.64) : UI.val("pE");
+    const K = 1 / (Math.PI * e * AR), CLs = Math.sqrt(CD0 / K), LD = 1 / (2 * Math.sqrt(K * CD0));
+    const cl = UI.linspace(0, CLm, 200), cd = cl.map(c => CD0 + K * c * c);
+    UI.plot("#pD", { xlabel: "C_D", ylabel: "C_L", h: 280, xlim: [0, Math.max(...cd) * 1.05], series: [{ x: cd, y: cl, c: 4, width: 2.3 }, { x: [0, (CLm / LD)], y: [0, CLm], c: 6, dash: true, label: "tangent from origin" }], points: [{ x: 2 * CD0, y: CLs, c: 1, label: "(L/D)max" }], legend: "br" });
+    UI.plot("#pLD", { xlabel: "C_L", ylabel: "L/D", h: 280, series: [{ x: cl, y: cl.map((c, i) => c / cd[i]), c: 4, width: 2.3 }], points: [{ x: CLs, y: LD, c: 1, label: fmt(LD, 3) }] });
+    const Vs = Math.sqrt(2 * WS / (1.225 * CLm)), VLD = Math.sqrt(2 * WS / (1.225 * CLs));
+    UI.readout("#ro3", [["e used", fmt(e, 3)], ["K = 1/(πeAR)", fmt(K, 4)], ["C_L*", fmt(CLs, 3)], ["(L/D)max", fmt(LD, 3)], ["V_stall (sea level)", fmt(Vs, 3) + " m/s"], ["V for (L/D)max", fmt(VLD, 3) + " m/s"]]);
+    UI.live("#lab3", `(L/D)max = ${fmt(LD, 3)}`);
+  });
+  AQL.practice("#gen", ["L4-concept", "L4-ld", "L4-stall", "aspect", "sketch"]);
+})();
+</script>
+</body>
+</html>
