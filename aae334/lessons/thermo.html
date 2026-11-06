@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thermodynamics Review · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="thermo">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 6 · Lecture 19 · Exam 2</div>
+  <h1>Thermodynamics Review</h1>
+  <p class="lead">Above about Mach 0.3 the density of air changes noticeably, and mass and momentum conservation become coupled to the energy equation. Before we can analyze compressible flow we need the thermodynamics of a perfect gas: its equation of state, its energies, the first and second laws, and the isentropic relations that come out of them.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#why">Why thermodynamics now</a></li>
+    <li><a href="#gas">The perfect gas</a></li>
+    <li><a href="#energy">Internal energy, enthalpy and specific heats</a></li>
+    <li><a href="#gamma">γ and molecular degrees of freedom</a></li>
+    <li><a href="#first">The first law and kinds of process</a></li>
+    <li><a href="#second">The second law and entropy</a></li>
+    <li><a href="#ds">Entropy change of a perfect gas</a></li>
+    <li><a href="#isen">Isentropic relations</a></li>
+    <li><a href="#key">Key equations</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="why"><span class="sec">Section 6.1</span>Why thermodynamics now</h2>
+  <p>In incompressible flow the density is a constant and pressure and velocity are linked by Bernoulli's equation; temperature is a passenger. In a high-speed flow, slowing the gas down compresses and heats it, so the density changes and the energy equation must be solved together with mass and momentum. The rule of thumb is that compressibility matters for <b>M &gt; 0.3</b>, where the stagnation density is about 5% above the freestream value (Lesson 7). Compressible flow also predicts new phenomena: a finite speed of sound and a limited zone of influence, linear sound waves, and nonlinear shock waves.</p>
+  <p>We take a <b>macroscopic</b> view: the gas is a continuum in <b>local thermodynamic equilibrium</b>, so at every point two properties fix the state (for example \(p = p(\rho, T)\)), and the bulk motion does not distort the random molecular motion.</p>
+
+  <h2 id="gas"><span class="sec">Section 6.2</span>The perfect gas</h2>
+  <p>A <b class="term">perfect (ideal) gas</b> has negligible intermolecular forces except during collisions. Its equation of state can be written per mole, per molecule or per unit mass:</p>
+  $$pV = n\mathcal R T,\qquad p = nk_BT\ \ (n\text{ per volume}),\qquad p = \rho RT,\qquad pv = RT,$$
+  <p>with \(\mathcal R = 8314\ \mathrm{J/(kmol\,K)}\), \(k_B = 1.381\times10^{-23}\ \mathrm{J/K}\), specific volume \(v = 1/\rho\) (not velocity!) and the <b>specific gas constant</b> \(R = \mathcal R/\mathcal M = k_B/m\). For air, \(\mathcal M = 28.97\) kg/kmol and</p>
+  $$R_\text{air} = 287\ \mathrm{J/(kg\,K)} = 1716\ \mathrm{ft\,lbf/(slug\,{}^\circ R)}.$$
+
+  <h2 id="energy"><span class="sec">Section 6.3</span>Internal energy, enthalpy and specific heats</h2>
+  <p>The specific internal energy \(e\) (also written u) is the energy of random molecular motion per unit mass. The specific <b class="term">enthalpy</b> adds the flow work:</p>
+  $$h = e + pv = e + \frac p\rho .$$
+  <p>The specific heats are the temperature derivatives at constant volume and constant pressure:</p>
+  $$c_v = \left(\frac{\partial e}{\partial T}\right)_v,\qquad c_p = \left(\frac{\partial h}{\partial T}\right)_p .$$
+  <p>In general \(e = e(\rho, T)\). A <b class="term">thermally perfect</b> gas has \(e = e(T)\) and \(h = h(T)\) only; then \(h = e + RT\) gives \(c_p - c_v = R\). A <b class="term">calorically perfect</b> gas also has constant specific heats, so</p>
+  $$e = c_vT,\qquad h = c_pT,\qquad \gamma = \frac{c_p}{c_v},\qquad c_v = \frac{R}{\gamma - 1},\qquad c_p = \frac{\gamma R}{\gamma - 1}.$$
+  <p>For air: c<sub>p</sub> = 1004.5 J/(kg K) ≈ 6006 ft·lbf/(slug·°R), c<sub>v</sub> = 717.5 J/(kg K). Don't confuse c<sub>p</sub> (specific heat) with C<sub>p</sub> (pressure coefficient).</p>
+
+  <h2 id="gamma"><span class="sec">Section 6.4</span>γ and molecular degrees of freedom</h2>
+  <p>Each fully excited quadratic energy mode holds \(\tfrac12k_BT\) per molecule (equipartition), so with n active degrees of freedom \(c_v = \tfrac n2R\) and</p>
+  $$\gamma = \frac{c_p}{c_v} = \frac{n + 2}{n}.$$
+  <ul>
+    <li><b>Monatomic</b> (He, Ar): 3 translational modes, γ = 5/3 = 1.667.</li>
+    <li><b>Diatomic</b> (N₂, O₂, air) near room temperature: 3 translation + 2 rotation, γ = 7/5 = 1.4. Vibration (2 more: kinetic and potential) starts to contribute above about 600 K; fully excited, γ → 9/7 = 1.29 (around 2000 K and up).</li>
+    <li><b>Polyatomic</b> (CO₂ γ = 1.289, steam 1.327, octane 1.044): more rotational and vibrational modes, γ closer to 1.</li>
+    <li>An incompressible substance has γ = 1.</li>
+  </ul>
+  <p>So for gases 1 &lt; γ ≤ 5/3, and γ = 1.4 for air at "typical" temperatures. At very high temperature electronic excitation, dissociation and ionization appear (the hypersonics lessons on this site cover them).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Specific heat and γ of a diatomic gas</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="gT">Temperature <output for="gT"></output></label><input type="range" id="gT" min="100" max="4000" step="10" value="300" data-dec="0" data-unit=" K"></div>
+    <div class="ctl inline"><span>Gas</span><div class="seg" id="gG" data-value="N2"><button data-value="N2" aria-pressed="true">N₂ (θ<sub>v</sub> = 3390 K)</button><button data-value="O2" aria-pressed="false">O₂ (2270 K)</button><button data-value="Ar" aria-pressed="false">Ar</button></div></div>
+    <div id="ro1" class="readout"></div>
+    <p class="note">Rigid-rotor, harmonic-oscillator model: c<sub>v</sub>/R = 3/2 + 1 + (θ<sub>v</sub>/T)²e<sup>θ<sub>v</sub>/T</sup>/(e<sup>θ<sub>v</sub>/T</sup> − 1)². Dissociation (above ≈ 2500 K for O₂) is ignored.</p>
+  </div>
+  <div class="views two-up">
+    <figure><div id="gC"></div><figcaption>c<sub>v</sub>/R versus temperature. Plateaus at 5/2 (translation + rotation) and 7/2 (plus vibration).</figcaption></figure>
+    <figure><div id="gY"></div><figcaption>γ versus temperature, with 1.4 and 9/7 marked.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="first"><span class="sec">Section 6.5</span>The first law and kinds of process</h2>
+  <p>For a fixed mass (a system moving with the flow), energy is conserved:</p>
+  $$\delta q + \delta w = de \qquad (\text{heat added} + \text{work done on the system} = \text{change in internal energy}).$$
+  <p>\(de\) depends only on the end states; \(\delta q\) and \(\delta w\) depend on the process. The kinds of process you must be able to distinguish, with an example of each:</p>
+  <ul>
+    <li><b class="term">Adiabatic</b>: no heat transfer, \(\delta q = 0\). Example: flow through a well-insulated duct, or through a shock wave.</li>
+    <li><b class="term">Reversible</b>: no dissipative effects (viscosity, heat conduction across finite ΔT, diffusion), so the system can be returned to its initial state with no change to the surroundings. Then \(\delta w = -p\,dv\) and \(\delta q = de + p\,dv\). Example: slow, frictionless compression in a cylinder (with heat exchange at nearly equal temperatures).</li>
+    <li><b class="term">Isentropic</b>: \(ds = 0\), which requires both adiabatic <i>and</i> reversible. Example: the flow outside the boundary layer in a nozzle, or a sound wave.</li>
+  </ul>
+
+  <h2 id="second"><span class="sec">Section 6.6</span>The second law and entropy</h2>
+  <p>Entropy measures molecular disorder. It is defined through reversible heat transfer, and real processes add an irreversible part:</p>
+  $$ds = \frac{\delta q_\text{rev}}{T},\qquad ds = \frac{\delta q}{T} + ds_\text{irrev},\qquad ds_\text{irrev} \ge 0\ \Rightarrow\ ds \ge \frac{\delta q}{T}.$$
+  <p>For an adiabatic process \(ds \ge 0\), with equality only if it is also reversible. Entropy is raised by heat addition and by irreversibility; it can be lowered locally only by cooling (\(\delta q &lt; 0\)).</p>
+
+  <h2 id="ds"><span class="sec">Section 6.7</span>Entropy change of a perfect gas</h2>
+  <div class="deriv"><b>Derivation</b>
+  <p>For a reversible path between the same two states, \(\delta q = T\,ds\) and \(\delta w = -p\,dv\), so the first law gives the Gibbs equation, which relates <i>properties</i> and therefore holds for any process:</p>
+  $$T\,ds = de + p\,dv .$$
+  <p>Since \(dh = de + p\,dv + v\,dp\), the second form is \(T\,ds = dh - v\,dp\). Divide by T and use \(de = c_vdT\), \(dh = c_pdT\), \(p/T = R/v\), \(v/T = R/p\):</p>
+  $$ds = c_v\frac{dT}{T} + R\frac{dv}{v} = c_p\frac{dT}{T} - R\frac{dp}{p}.$$
+  <p>Integrate with constant specific heats:</p>
+  </div>
+  $$\boxed{\;s_2 - s_1 = c_p\ln\frac{T_2}{T_1} - R\ln\frac{p_2}{p_1} = c_v\ln\frac{T_2}{T_1} + R\ln\frac{v_2}{v_1}\;}$$
+
+  <h2 id="isen"><span class="sec">Section 6.8</span>Isentropic relations</h2>
+  <p>At high Reynolds numbers, viscous dissipation and heat conduction are confined to thin boundary layers (and shocks). Elsewhere the flow is adiabatic and nearly reversible, i.e. isentropic. Setting \(s_2 = s_1\) in the first form and using \(c_p/R = \gamma/(\gamma - 1)\):</p>
+  $$\frac{p_2}{p_1} = \left(\frac{T_2}{T_1}\right)^{\gamma/(\gamma-1)} .$$
+  <p>The second form with \(c_v/R = 1/(\gamma - 1)\) gives \(T_2/T_1 = (v_2/v_1)^{-(\gamma-1)} = (\rho_2/\rho_1)^{\gamma-1}\). Together:</p>
+  $$\boxed{\;\frac{p_2}{p_1} = \left(\frac{\rho_2}{\rho_1}\right)^\gamma = \left(\frac{T_2}{T_1}\right)^{\gamma/(\gamma-1)}\;}\qquad\Longleftrightarrow\qquad pv^\gamma = \text{const}.$$
+  <p>γ is the "adiabatic exponent". For air, \(\gamma/(\gamma - 1) = 3.5\) and \(1/(\gamma - 1) = 2.5\).</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Processes on the T–s and p–v diagrams</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="pT1">Initial T₁ <output for="pT1"></output></label><input type="range" id="pT1" min="200" max="600" step="5" value="300" data-dec="0" data-unit=" K"></div>
+    <div class="ctl"><label for="pR">Pressure ratio p₂/p₁ <output for="pR"></output></label><input type="range" id="pR" min="0.2" max="10" step="0.1" value="4" data-dec="1"></div>
+    <div class="ctl inline"><span>Process</span><div class="seg" id="pP" data-value="s"><button data-value="s" aria-pressed="true">isentropic</button><button data-value="T" aria-pressed="false">isothermal</button><button data-value="v" aria-pressed="false">const. v</button><button data-value="irr" aria-pressed="false">adiab. 85%</button></div></div>
+    <div id="ro2" class="readout"></div>
+    <p class="note">Air, c<sub>p</sub> = 1004.5 J/(kg K), R = 287 J/(kg K), p₁ = 100 kPa. "85% efficient" means an adiabatic compressor or turbine whose temperature change is 1/0.85 (compression) or 0.85 (expansion) times the isentropic one.</p>
+  </div>
+  <div class="views two-up">
+    <figure><div id="pTs"></div><figcaption>T–s diagram with the isobars p₁ and p₂ (dashed).</figcaption></figure>
+    <figure><div id="pPv"></div><figcaption>p–v diagram.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose"><h2 id="key"><span class="sec">Section 6.9</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Perfect gas</h4>
+    $$p = \rho RT,\quad R = \mathcal R/\mathcal M,\quad h = e + p/\rho$$
+    $$c_p - c_v = R,\quad c_v = \frac{R}{\gamma-1},\quad c_p = \frac{\gamma R}{\gamma - 1}$$
+    $$\gamma = \frac{n+2}{n}:\ \ 5/3,\ 7/5,\ 9/7$$</div>
+  <div><h4>Laws and processes</h4>
+    $$\delta q + \delta w = de,\qquad ds \ge \delta q/T$$
+    $$s_2 - s_1 = c_p\ln\frac{T_2}{T_1} - R\ln\frac{p_2}{p_1}$$
+    $$\frac{p_2}{p_1} = \left(\frac{\rho_2}{\rho_1}\right)^\gamma = \left(\frac{T_2}{T_1}\right)^{\frac{\gamma}{\gamma-1}}$$</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 6.10</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 6.1 · Gas properties</button><button>Ex 6.2 · Isentropic compression</button><button>Ex 6.3 · Entropy change</button><button>Ex 6.4 · Process type</button></div>
+  <div class="panel">
+    <p>Find R, c<sub>v</sub>, c<sub>p</sub>, ρ, e and h for carbon dioxide (ℳ = 44.01, γ = 1.289) at 400 K and 200 kPa.</p>
+    <details><summary>Solution</summary><p>R = 8314/44.01 = 188.9 J/(kg K); c<sub>v</sub> = 188.9/0.289 = 653.6; c<sub>p</sub> = 1.289(653.6) = 842.5 J/(kg K). ρ = 200000/(188.9·400) = 2.647 kg/m³. e = c<sub>v</sub>T = 261.4 kJ/kg; h = c<sub>p</sub>T = 337.0 kJ/kg (check: h − e = RT = 75.6 kJ/kg ✓).</p></details>
+  </div>
+  <div class="panel">
+    <p>Air at 101.3 kPa and 288 K is compressed isentropically to 600 kPa. Find T₂ and ρ₂/ρ₁.</p>
+    <details><summary>Solution</summary><p>T₂ = 288(600/101.3)<sup>0.2857</sup> = 288(5.923)<sup>0.2857</sup> = 288(1.6623) = 478.7 K. ρ₂/ρ₁ = (p₂/p₁)<sup>1/γ</sup> = 5.923<sup>0.7143</sup> = 3.563 (check: p₂/p₁ = (ρ₂/ρ₁)(T₂/T₁) = 3.563 × 1.662 = 5.923 ✓).</p></details>
+  </div>
+  <div class="panel">
+    <p>Air goes from 300 K, 100 kPa to 500 K, 500 kPa. Find Δs. Could the process have been adiabatic?</p>
+    <details><summary>Solution</summary><p>Δs = 1004.5 ln(5/3) − 287 ln 5 = 513.1 − 461.9 = 51.2 J/(kg K). Δs &gt; 0, so an adiabatic irreversible process (e.g., a real compressor) could do it. The isentropic end temperature would be 300(5)<sup>0.2857</sup> = 475 K; the extra 25 K is the dissipation.</p></details>
+  </div>
+  <div class="panel">
+    <p>Classify: (a) air in an insulated cylinder compressed rapidly with friction; (b) flow through a normal shock; (c) the inviscid core of a wind-tunnel nozzle; (d) a gas cooled at constant volume.</p>
+    <details><summary>Solution</summary><p>(a) adiabatic, irreversible (Δs &gt; 0); (b) adiabatic, irreversible (Δs &gt; 0, T₀ constant); (c) isentropic; (d) reversible heat removal possible, Δs &lt; 0 (entropy can fall only by cooling).</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 6.11</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>Explain the difference between internal energy and enthalpy.</p><details><summary>Answer</summary><p>e is the energy of the molecules' random motion; h = e + p/ρ adds the flow work needed to push the fluid into a control volume. In a flow, h (and h₀) is the natural energy variable.</p></details></div>
+    <div class="sc"><p>State the range of γ for gases and its value for air at typical temperatures.</p><details><summary>Answer</summary><p>1 &lt; γ ≤ 5/3; air 1.4 (falls toward 1.29 when vibration is excited, above ~600 K).</p></details></div>
+    <div class="sc"><p>True or false: an adiabatic process is always isentropic.</p><details><summary>Answer</summary><p>False. Adiabatic means no heat transfer; isentropic also requires reversibility. A shock is adiabatic but not isentropic.</p></details></div>
+    <div class="sc"><p>Derive p₂/p₁ = (T₂/T₁)<sup>γ/(γ−1)</sup>.</p><details><summary>Answer</summary><p>Set Δs = c<sub>p</sub>ln(T₂/T₁) − R ln(p₂/p₁) = 0 and use c<sub>p</sub>/R = γ/(γ − 1).</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 6.12</span>Practice problem generator</h2>
+  <p>Conceptual and numerical thermodynamics problems with full solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const fmt = UI.fmt, cp = 1004.5, R = 287, g = 1.4;
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const T = UI.val("gT"), gas = UI.seg("gG"), tv = { N2: 3390, O2: 2270, Ar: 0 }[gas];
+    const cvR = t => gas === "Ar" ? 1.5 : 2.5 + (x => x * x * Math.exp(x) / (Math.exp(x) - 1) ** 2)(tv / t);
+    const Ts = UI.linspace(100, 4000, 200);
+    UI.plot("#gC", { xlabel: "T (K)", ylabel: "c_v/R", h: 270, ylim: [1, 4], series: [{ x: Ts, y: Ts.map(cvR), c: 4, width: 2.3 }], hlines: [{ y: 2.5, label: "5/2", c: 6 }, { y: 3.5, label: "7/2", c: 6 }, { y: 1.5, label: "3/2", c: 6 }], points: [{ x: T, y: cvR(T), c: 1 }] });
+    UI.plot("#gY", { xlabel: "T (K)", ylabel: "γ", h: 270, ylim: [1.2, 1.7], series: [{ x: Ts, y: Ts.map(t => 1 + 1 / cvR(t)), c: 4, width: 2.3 }], hlines: [{ y: 1.4, label: "7/5", c: 6 }, { y: 9 / 7, label: "9/7", c: 6 }, { y: 5 / 3, label: "5/3", c: 6 }], points: [{ x: T, y: 1 + 1 / cvR(T), c: 1 }] });
+    const c = cvR(T), n = 2 * c;
+    UI.readout("#ro1", [["c_v/R", fmt(c, 4)], ["effective degrees of freedom n = 2c_v/R", fmt(n, 3)], ["γ = 1 + R/c_v", fmt(1 + 1 / c, 4)], ["vibration excited", gas === "Ar" ? "none (monatomic)" : fmt(100 * (c - 2.5), 3) + "% of one full mode pair"]]);
+    UI.live("#lab1", `γ = ${fmt(1 + 1 / c, 4)}`);
+  });
+  // ---------- Interactive 2 ----------
+  UI.wire("#lab2", () => {
+    const T1 = UI.val("pT1"), r = UI.val("pR"), P = UI.seg("pP"), p1 = 100;
+    let T2, path;
+    const Ts = T1 * Math.pow(r, (g - 1) / g);
+    if (P === "s") T2 = Ts;
+    else if (P === "T") T2 = T1;
+    else if (P === "v") T2 = T1 * r;
+    else T2 = r >= 1 ? T1 + (Ts - T1) / 0.85 : T1 + (Ts - T1) * 0.85;
+    const p2 = p1 * r, v1 = R * T1 / (p1 * 1000), v2 = R * T2 / (p2 * 1000), ds0 = cp * Math.log(T2 / T1) - R * Math.log(r), ds = Math.abs(ds0) < 1e-8 ? 0 : ds0;
+    const N = 60, ks = UI.linspace(0, 1, N);
+    // path: for s/T/v use the exact curve; for irreversible draw a dashed straight line (not a quasi-static path)
+    const Tp = ks.map(k => P === "s" ? T1 * Math.pow(1 + (r - 1) * k, (g - 1) / g) : P === "T" ? T1 : P === "v" ? T1 * (1 + (r - 1) * k) : T1 + (T2 - T1) * k);
+    const pp = ks.map(k => p1 * (1 + (r - 1) * k));
+    const sp = Tp.map((t, i) => P === "irr" ? ds * ks[i] : cp * Math.log(t / T1) - R * Math.log(pp[i] / p1));
+    const vp = Tp.map((t, i) => R * t / (pp[i] * 1000));
+    const iso = pr => { const tt = UI.linspace(150, Math.max(T1, T2) * 1.25, 60); return { x: tt.map(t => cp * Math.log(t / T1) - R * Math.log(pr / p1)), y: tt }; };
+    UI.plot("#pTs", { xlabel: "s − s₁ (J/kg K)", ylabel: "T (K)", h: 280, series: [{ ...iso(p1), c: 6, dash: true, label: "p₁" }, { ...iso(p2), c: 3, dash: true, label: "p₂" }, { x: sp, y: Tp, c: 4, width: 2.6, dash: P === "irr", label: "process" }], points: [{ x: 0, y: T1, c: 4, label: "1" }, { x: ds, y: T2, c: 1, label: "2" }], legend: "tl" });
+    UI.plot("#pPv", { xlabel: "v (m³/kg)", ylabel: "p (kPa)", h: 280, series: [{ x: vp, y: pp, c: 4, width: 2.6, dash: P === "irr" }], points: [{ x: v1, y: p1, c: 4, label: "1" }, { x: v2, y: p2, c: 1, label: "2" }] });
+    const w = P === "v" ? 0 : P === "T" ? R * T1 * Math.log(r) : cp / g * (T2 - T1); // work done on gas (adiabatic: Δe)
+    const q = (cp / g) * (T2 - T1) - w;
+    UI.readout("#ro2", [["T₂", fmt(T2, 4) + " K"], ["ρ₂/ρ₁", fmt(v1 / v2, 4)], ["s₂ − s₁", fmt(ds, 4) + " J/(kg K)"], ["work done on gas", fmt(w / 1000, 4) + " kJ/kg"], ["heat added", fmt(q / 1000, 4) + " kJ/kg"], ["type", P === "s" ? "adiabatic + reversible" : P === "irr" ? "adiabatic, irreversible (Δs > 0)" : "reversible with heat transfer"]]);
+    UI.live("#lab2", `Δs = ${fmt(ds, 3)} J/(kg K)`);
+  });
+  AQL.practice("#gen", ["L6-concept", "L6-entropy", "L6-gas", "thermo"]);
+})();
+</script>
+</body>
+</html>
