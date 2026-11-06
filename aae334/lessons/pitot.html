@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitot Probes · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="pitot">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 9 · Lecture 22 · Exam 2</div>
+  <h1>Pitot Probes</h1>
+  <p class="lead">A Pitot tube is a tube pointed into the flow, closed at the back, so the gas in its mouth is brought to rest. It is how airliners measure airspeed and how wind tunnels measure Mach number. What it reads, and which formula turns the reading into a speed, depends on whether the flow is incompressible, subsonic compressible or supersonic.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#probe">What a Pitot probe measures</a></li>
+    <li><a href="#incomp">Incompressible flow: Bernoulli</a></li>
+    <li><a href="#sub">Subsonic compressible flow</a></li>
+    <li><a href="#sup">Supersonic flow: the Rayleigh–Pitot formula</a></li>
+    <li><a href="#which">Which formula? The 1.893 test</a></li>
+    <li><a href="#static">Measuring the static pressure</a></li>
+    <li><a href="#key">Key equations and procedure</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="probe"><span class="sec">Section 9.1</span>What a Pitot probe measures</h2>
+  <p>The gas that enters the probe mouth is decelerated to rest, smoothly and without heat transfer, so the pressure transducer at the back reads a <b>stagnation pressure</b>. A separate measurement of the <b>static pressure</b> (from a static port on the side of the probe, a Pitot-static tube, or a wall tap) gives the second number needed. A thermocouple <b>stagnation-temperature probe</b> gives T₀, from which the static temperature, and hence the speed of sound and velocity, follow. (The device is named for Henri Pitot, 1732; Henry Darcy added the static port in the 1850s.)</p>
+
+  <h2 id="incomp"><span class="sec">Section 9.2</span>Incompressible flow: Bernoulli</h2>
+  <p>At low speed (M &lt; 0.3) Bernoulli's equation along the stagnation streamline gives</p>
+  $$p_0 = p_\infty + \tfrac12\rho_\infty V_\infty^2\quad\Longrightarrow\quad V_\infty = \sqrt{\frac{2(p_0 - p_\infty)}{\rho_\infty}} .$$
+  <p>The density is needed: from \(\rho = p/(RT)\) with a separate temperature measurement, or from a known atmosphere. Airspeed indicators are calibrated this way with sea-level density, which is why they read "indicated" airspeed.</p>
+
+  <h2 id="sub"><span class="sec">Section 9.3</span>Subsonic compressible flow</h2>
+  <p>Above M ≈ 0.3, Bernoulli's equation is no longer accurate (Lesson 7). The deceleration into the probe is still isentropic, so</p>
+  $$\frac{p_0}{p_\infty} = \left(1 + \frac{\gamma - 1}{2}M_\infty^2\right)^{\gamma/(\gamma-1)}\quad\Longrightarrow\quad M_\infty = \sqrt{\frac{2}{\gamma - 1}\left[\left(\frac{p_0}{p_\infty}\right)^{(\gamma-1)/\gamma} - 1\right]} .$$
+  <p>The pressure ratio gives the <b>Mach number</b>, not the velocity. For the velocity we need the temperature: a thermocouple probe reads T₀, then</p>
+  $$T_\infty = \frac{T_0}{1 + \frac{\gamma-1}{2}M_\infty^2},\qquad V_\infty = M_\infty\sqrt{\gamma RT_\infty} .$$
+  <p>This assumes there are no shocks, i.e. the freestream is subsonic.</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Read a Pitot probe</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="kP">Pitot reading p<sub>Pitot</sub> <output for="kP"></output></label><input type="range" id="kP" min="50" max="1500" step="0.1" value="72.6" data-dec="1" data-unit=" kPa"></div>
+    <div class="ctl"><label for="kS">Static pressure p∞ <output for="kS"></output></label><input type="range" id="kS" min="10" max="200" step="0.1" value="50" data-dec="1" data-unit=" kPa"></div>
+    <div class="ctl"><label for="kT">Thermocouple T₀ <output for="kT"></output></label><input type="range" id="kT" min="250" max="900" step="1" value="300" data-dec="0" data-unit=" K"></div>
+    <div class="presets"><span>Try</span><button data-preset='{"kP":72.6,"kS":50}'>ratio 1.452 (subsonic)</button><button data-preset='{"kP":94.5,"kS":50}'>ratio 1.89 (≈ sonic)</button><button data-preset='{"kP":282,"kS":50}'>ratio 5.64 (supersonic)</button><button data-preset='{"kP":1000,"kS":30}'>ratio 33 (M ≈ 5)</button></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views">
+    <figure><div id="kD"></div><figcaption>The probe and what it sees. A bow shock stands ahead of the mouth when the flow is supersonic.</figcaption></figure>
+    <div id="kTab"></div>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="sup"><span class="sec">Section 9.4</span>Supersonic flow: the Rayleigh–Pitot formula</h2>
+  <p>In supersonic flow a detached <b>bow shock</b> forms ahead of the probe. On the stagnation streamline it is a normal shock. The gas is therefore processed in two steps: from 1 to 2 by the normal-shock jump, then from 2 to 3 (the probe mouth) isentropically to rest. The probe reads p₃ = p₀₂, not p₀₁. Combining the shock relation for p₂/p₁ and M₂ with the isentropic relation for p₀₂/p₂ gives the <b class="term">Rayleigh–Pitot formula</b>:</p>
+  $$\frac{p_{02}}{p_1} = \frac{p_{02}}{p_2}\cdot\frac{p_2}{p_1} = \left[\frac{(\gamma + 1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma - 1)}\right]^{\gamma/(\gamma-1)}\frac{1 - \gamma + 2\gamma M_1^2}{\gamma + 1}.$$
+  <p>It is tabulated in the normal-shock table (Appendix B) as the column p₀₂/p₁. Given the measured ratio, find M₁ from the table (closest entry) or by iteration. The thermocouple still gives the freestream T₀, because the shock is adiabatic (T₀₂ = T₀₁), so T₁ and V₁ follow exactly as in the subsonic case. Warning: the formula is valid only because the shock on the stagnation streamline is normal.</p>
+
+  <h2 id="which"><span class="sec">Section 9.5</span>Which formula? The 1.893 test</h2>
+  <p>At M = 1 both formulas give the same ratio, p₀/p = (1.2)<sup>3.5</sup> = <b>1.893</b>. Since both ratios increase with M:</p>
+  <ul>
+    <li>\(p_\text{Pitot}/p_\infty &lt; 1.893\): subsonic, use the isentropic relation.</li>
+    <li>\(p_\text{Pitot}/p_\infty &gt; 1.893\): supersonic, use Rayleigh–Pitot.</li>
+  </ul>
+  <p>Using the isentropic relation in supersonic flow underestimates the Mach number (a ratio of 5.64 would give M = 1.79 instead of 2.00), because it ignores the stagnation-pressure loss through the shock.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">Pressure ratio versus Mach number, and the cost of the wrong formula</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="eM">True freestream Mach number <output for="eM"></output></label><input type="range" id="eM" min="0.05" max="4" step="0.01" value="0.9" data-dec="2"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="eR"></div><figcaption>p<sub>Pitot</sub>/p∞: isentropic (subsonic) and Rayleigh–Pitot (supersonic) branches meet at 1.893; the dashed lines continue each formula where it does not apply.</figcaption></figure>
+    <figure><div id="eE"></div><figcaption>Error in the computed velocity (or Mach number) when using Bernoulli, or the isentropic relation above M = 1.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="static"><span class="sec">Section 9.6</span>Measuring the static pressure</h2>
+  <p>Behind the bow shock the static pressure is p₂, not p₁, so a static port on the probe's side might seem to read the wrong value. In practice the static holes are placed well downstream of the nose (about ten diameters), where the bow shock has weakened through its interaction with the expansion waves around the probe shoulder to nearly a Mach wave, and the pressure there is close to p₁. In wind tunnels the freestream static pressure is usually measured with a wall tap instead. In problems, "the static pressure" means p₁ unless stated otherwise.</p>
+</div>
+
+<div class="prose"><h2 id="key"><span class="sec">Section 9.7</span>Key equations and procedure</h2></div>
+<div class="keyeq">
+  <div><h4>Procedure</h4>
+    <p>1. Form p<sub>Pitot</sub>/p∞ and compare with 1.893.</p>
+    <p>2. Subsonic: M from p₀/p = (1 + 0.2M²)<sup>3.5</sup>. Supersonic: M₁ from the p₀₂/p₁ column (Rayleigh–Pitot).</p>
+    <p>3. T∞ = T₀/(1 + 0.2M²) using the thermocouple T₀ (unchanged by the shock).</p>
+    <p>4. V∞ = M√(γRT∞). If asked, p₀∞ = p∞(1 + 0.2M²)<sup>3.5</sup> (the freestream value, larger than the Pitot reading in supersonic flow).</p></div>
+  <div><h4>Equations</h4>
+    $$V = \sqrt{2(p_0 - p)/\rho}\ \ (M &lt; 0.3)$$
+    $$\frac{p_0}{p} = \left(1 + \tfrac{\gamma-1}2M^2\right)^{\frac{\gamma}{\gamma-1}}\ \ (M &lt; 1)$$
+    $$\frac{p_{02}}{p_1} = \left[\frac{(\gamma+1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma-1)}\right]^{\frac{\gamma}{\gamma-1}}\frac{1 - \gamma + 2\gamma M_1^2}{\gamma+1}\ \ (M &gt; 1)$$</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 9.8</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 9.1 · Subsonic</button><button>Ex 9.2 · Supersonic</button><button>Ex 9.3 · Freestream p₀</button><button>Ex 9.4 · Low speed</button></div>
+  <div class="panel">
+    <p>A Pitot probe reads 72.6 kPa, the static pressure is 50.0 kPa and a stagnation thermocouple reads 300 K. Find M∞, T∞ and V∞. What would Bernoulli give?</p>
+    <details><summary>Solution</summary><p>Ratio 1.452 &lt; 1.893: subsonic. Isentropic table: p₀/p = 1.452 → M = 0.75 (closest entry; exact 0.7498). T∞ = 300/(1 + 0.2·0.5625) = 269.7 K, a = 329.2 m/s, V = 246.8 m/s.</p>
+    <p>Bernoulli: ρ = 50000/(287·269.7) = 0.6460 kg/m³, V = √(2·22600/0.6460) = 264.5 m/s, 7% too high.</p></details>
+  </div>
+  <div class="panel">
+    <p>In a wind tunnel the Pitot probe reads 282 kPa, a wall tap reads 50.0 kPa, and T₀ = 300 K. Find M∞, T∞ and V∞.</p>
+    <details><summary>Solution</summary><p>Ratio 5.64 &gt; 1.893: supersonic. Normal-shock table, p₀₂/p₁ = 5.640 → M₁ = 2.00. T∞ = 300/1.8 = 166.7 K, a = 258.8 m/s, V = 517.5 m/s. (The isentropic formula would have given M = 1.79, 10% low.)</p></details>
+  </div>
+  <div class="panel">
+    <p>For Ex 9.2, find the freestream stagnation pressure and the stagnation-pressure loss through the probe's bow shock.</p>
+    <details><summary>Solution</summary><p>p₀₁ = 50.0(7.824) = 391.2 kPa (isentropic table at M = 2). The probe reads p₀₂ = 282 kPa, so p₀₂/p₀₁ = 0.721 (the table value at M = 2 is 0.7209 ✓): 28% of the stagnation pressure is lost.</p></details>
+  </div>
+  <div class="panel">
+    <p>A Pitot-static tube in a low-speed tunnel reads p₀ − p = 1.20 kPa; the air is at 101 kPa and 295 K. Find V and check that Bernoulli is justified.</p>
+    <details><summary>Solution</summary><p>ρ = 101000/(287·295) = 1.193 kg/m³; V = √(2·1200/1.193) = 44.85 m/s; a = 344.3 m/s, M = 0.13 &lt; 0.3 ✓ (the compressible answer differs by about 0.2%).</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 9.9</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>Why does a Pitot probe in supersonic flow read less than the freestream stagnation pressure?</p><details><summary>Answer</summary><p>The gas passes through the normal part of the bow shock first, losing stagnation pressure; the probe reads p₀₂ &lt; p₀₁.</p></details></div>
+    <div class="sc"><p>The probe gives M. What else do you need for V, and why is a thermocouple reading in supersonic flow still useful?</p><details><summary>Answer</summary><p>The static temperature (for a). A thermocouple gives T₀, which is unchanged across the adiabatic shock, so T∞ = T₀/(1 + 0.2M²).</p></details></div>
+    <div class="sc"><p>A probe reads p<sub>Pitot</sub>/p = 1.80. Which formula, and roughly what M?</p><details><summary>Answer</summary><p>Subsonic (1.80 &lt; 1.893): isentropic, M ≈ 0.96.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 9.10</span>Practice problem generator</h2>
+  <p>Branch-choice questions, probe-plus-thermocouple problems and full exam-style Pitot problems with solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const fmt = UI.fmt, g = 1.4, R = 287, I = GD.isen, NS = GD.normalShock;
+  const rp = M => NS(M, g).p02_p1;
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const pp = UI.val("kP"), ps = UI.val("kS"), T0 = UI.val("kT"), r = pp / ps;
+    let M, regime;
+    if (r <= 1) { M = 0; regime = "no flow (ratio ≤ 1)"; }
+    else if (r < 1.8929) { M = I.M_from_p0_p(r, g); regime = "subsonic → isentropic"; }
+    else { M = GD.normalShockFrom("p02_p1", r, g).M1; regime = "supersonic → Rayleigh–Pitot"; }
+    const T = T0 / I.T0_T(M, g), a = Math.sqrt(g * R * T), V = M * a, rho = ps * 1000 / (R * T);
+    const Vb = Math.sqrt(Math.max(0, 2 * (pp - ps) * 1000 / rho)), Mi = I.M_from_p0_p(Math.max(1, r), g);
+    // drawing
+    const sup = M > 1, W = 640, H = 150, nx = 420, cy = 75;
+    const shock = sup ? (() => { const so = 18 + 40 / (M * M); const pts = []; for (let y = -70; y <= 70; y += 5) { const x = nx - so - (y * y) / (60 + 25 * M); pts.push(`${x.toFixed(1)},${(cy + y).toFixed(1)}`); } return `<polyline points="${pts.join(" ")}" fill="none" stroke="var(--hot)" stroke-width="2.5"/><text x="${nx - so - 70}" y="18" font-size="12" fill="var(--hot)">bow shock (normal on the axis)</text>`; })() : "";
+    const lines = [-45, -25, 25, 45].map(y => sup ? `<line x1="20" x2="${nx - 40}" y1="${cy + y}" y2="${cy + y}" stroke="var(--muted)" stroke-dasharray="4 4"/>` : `<path d="M20 ${cy + y} C ${nx - 120} ${cy + y}, ${nx - 60} ${cy + y * 1.5}, ${nx + 40} ${cy + y * 1.5}" fill="none" stroke="var(--muted)" stroke-dasharray="4 4"/>`).join("");
+    document.getElementById("kD").innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="diagram" style="width:100%;max-width:680px">${lines}
+      <line x1="20" x2="${nx}" y1="${cy}" y2="${cy}" stroke="var(--accent)" stroke-width="1.5"/><text x="24" y="${cy - 6}" font-size="12" fill="var(--accent)">M∞ = ${fmt(M, 3)}</text>${shock}
+      <path d="M${nx} ${cy - 10} L${nx + 190} ${cy - 10} L${nx + 190} ${cy + 10} L${nx} ${cy + 10}" fill="var(--surface-2)" stroke="var(--text)" stroke-width="2"/><circle cx="${nx + 3}" cy="${cy}" r="3" fill="var(--hot)"/>
+      <text x="${nx + 95}" y="${cy + 30}" font-size="12" text-anchor="middle" fill="var(--text)">reads p${sup ? "₀₂" : "₀"} = ${fmt(pp, 4)} kPa</text><text x="${nx + 120}" y="${cy - 18}" font-size="11" fill="var(--muted)">static port →</text></svg>`;
+    UI.readout("#ro1", [["p_Pitot / p∞", fmt(r, 4)], ["regime", regime], ["M∞", fmt(M, 4)], ["T∞", fmt(T, 4) + " K"], ["V∞", fmt(V, 4) + " m/s"], ["freestream p₀∞", fmt(ps * I.p0_p(M, g), 4) + " kPa"]]);
+    UI.table("#kTab", ["method", "M", "V (m/s)", "error in V"], [["correct", fmt(M, 4), fmt(V, 4), "—"], ["Bernoulli (ρ from p∞, T∞)", "", fmt(Vb, 4), fmt(100 * (Vb / V - 1), 3) + "%"], ["isentropic formula regardless", fmt(Mi, 4), fmt(Mi * Math.sqrt(g * R * T0 / I.T0_T(Mi, g)), 4), fmt(100 * (Mi * Math.sqrt(g * R * T0 / I.T0_T(Mi, g)) / V - 1), 3) + "%"]]);
+    UI.live("#lab1", regime);
+  });
+  // ---------- Interactive 2 ----------
+  UI.wire("#lab2", () => {
+    const M = UI.val("eM"), sub = UI.linspace(0.01, 1, 60), sup = UI.linspace(1, 4, 120), all = UI.linspace(0.05, 4, 200);
+    UI.plot("#eR", { xlabel: "M∞", ylabel: "p_Pitot/p∞", h: 290, logy: true, ylim: [1, 25], series: [{ x: sup, y: sup.map(m => I.p0_p(m, g)), c: 6, dash: true, label: "isentropic (invalid)" }, { x: sub, y: sub.map(m => I.p0_p(m, g)), c: 4, width: 2.4, label: "isentropic" }, { x: sup, y: sup.map(rp), c: 1, width: 2.4, label: "Rayleigh–Pitot" }], hlines: [{ y: 1.893, label: "1.893", c: 6 }], points: [{ x: M, y: M < 1 ? I.p0_p(M, g) : rp(M), c: 3 }], legend: "tl" });
+    const reading = m => (m < 1 ? I.p0_p(m, g) : rp(m));
+    const errB = all.map(m => { const r = reading(m); return 100 * (Math.sqrt(2 * (r - 1) / (g * m * m)) - 1); }); // Bernoulli V/V_true − 1 (same T)
+    const errI = all.map(m => (m < 1 ? 0 : 100 * (I.M_from_p0_p(reading(m), g) / m - 1)));
+    UI.plot("#eE", { xlabel: "M∞", ylabel: "error (%)", h: 290, ylim: [-40, 60], series: [{ x: all, y: errB, c: 4, width: 2.3, label: "Bernoulli V" }, { x: all, y: errI, c: 1, width: 2.3, label: "isentropic M" }], hlines: [{ y: 0, c: 6 }], vlines: [{ x: M, c: 6 }], legend: "tl" });
+    const k = Math.round((M - 0.05) / (3.95 / 199));
+    UI.readout("#ro2", [["true reading p_Pitot/p∞", fmt(reading(M), 4)], ["Bernoulli V error", fmt(errB[k], 3) + "%"], ["isentropic M error", fmt(errI[k], 3) + "%"]]);
+    UI.live("#lab2", `ratio = ${fmt(reading(M), 4)}`);
+  });
+  AQL.practice("#gen", ["L9-concept", "L9-branch", "L9-tc", "isen-concept", "p2-pitot"]);
+})();
+</script>
+</body>
+</html>
