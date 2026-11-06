@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy Equation and Isentropic Flow · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="isentropic">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 7 · Lecture 21 · Exam 2</div>
+  <h1>Energy Equation and Isentropic Flow</h1>
+  <p class="lead">Bring a moving gas to rest and its temperature, pressure and density rise. How much depends only on the Mach number. This lesson derives the stagnation (total) relations from the energy equation and the isentropic relations of Lesson 6, finds the speed of sound, defines the sonic reference state, and answers the question "when is a flow compressible?".</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#energy">The energy equation</a></li>
+    <li><a href="#sound">The speed of sound</a></li>
+    <li><a href="#t0">Stagnation temperature</a></li>
+    <li><a href="#p0">Stagnation pressure and density</a></li>
+    <li><a href="#star">Sonic (critical) conditions</a></li>
+    <li><a href="#trends">Trends with Mach number</a></li>
+    <li><a href="#compress">When is a flow compressible?</a></li>
+    <li><a href="#tables">Using the isentropic table</a></li>
+    <li><a href="#key">Key equations</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="energy"><span class="sec">Section 7.1</span>The energy equation</h2>
+  <p>Apply the first law to a steady control volume (a stream tube) between stations 1 and 2, with no heat transfer (adiabatic), no shaft work and no body forces. The energy carried in by the flow is the enthalpy (internal energy plus flow work) plus the kinetic energy, so</p>
+  $$h_1 + \frac{u_1^2}{2} = h_2 + \frac{u_2^2}{2} \equiv h_0 = \text{const}.$$
+  <p>\(h_0\) is the <b class="term">stagnation (total) enthalpy</b>: the enthalpy the gas would have if brought to rest adiabatically. Note what was <i>not</i> assumed: the result holds even if there is friction or a shock inside the control volume, as long as no heat or work crosses its boundary. (This is effectively the compressible Bernoulli equation, but in this form it involves h, which depends on p and ρ, not p and ρ separately.)</p>
+
+  <h2 id="sound"><span class="sec">Section 7.2</span>The speed of sound</h2>
+  <div class="deriv"><b>Derivation: a weak pressure wave</b>
+  <p>A weak compression wave moves at speed a into still gas (p, ρ). Ride with the wave: the gas arrives at speed a and leaves at a − du, compressed to p + dp, ρ + dρ, where du is the velocity the wave gives the gas in the lab frame (in the direction the wave travels).</p>
+  $$\text{mass: } \rho a = (\rho + d\rho)(a - du)\ \Rightarrow\ du = \frac{a}{\rho}d\rho,\qquad \text{momentum: } p + \rho a^2 = (p + dp) + \rho a(a - du)\ \Rightarrow\ dp = \rho a\,du .$$
+  <p>Eliminating du gives \(dp = a^2d\rho\). A sound wave is so weak that it is reversible and adiabatic: isentropic. So</p>
+  $$a^2 = \left(\frac{\partial p}{\partial\rho}\right)_s = \frac{\gamma p}{\rho} = \gamma RT .$$
+  </div>
+  <p>The speed of sound depends on temperature alone (for a given gas), and it is of the same order as the mean molecular speed, since sound is carried by molecular collisions. At sea level (288.15 K) \(a = \sqrt{1.4(287)(288.15)} = 340.3\) m/s = 1116 ft/s = 761 mph, about a fifth of a mile per second: count the seconds after lightning and divide by five for the distance in miles. The <b class="term">Mach number</b> \(M = u/a\) compares the directed motion of the gas with the random thermal motion of its molecules.</p>
+
+  <h2 id="t0"><span class="sec">Section 7.3</span>Stagnation temperature</h2>
+  <p>For a calorically perfect gas, \(h = c_pT\), so the energy equation reads \(c_pT_0 = c_pT + u^2/2\). Divide by c<sub>p</sub>T and use \(c_p = \gamma R/(\gamma - 1)\) and \(a^2 = \gamma RT\):</p>
+  $$\frac{T_0}{T} = 1 + \frac{u^2}{2c_pT} = 1 + \frac{(\gamma - 1)u^2}{2\gamma RT}\quad\Longrightarrow\quad \boxed{\;\frac{T_0}{T} = 1 + \frac{\gamma - 1}{2}M^2\;}$$
+  <p>This needs only adiabatic flow, so T₀ is constant through shocks and friction too. Since T₀ is fixed, the static temperature falls as the Mach number rises.</p>
+
+  <h2 id="p0"><span class="sec">Section 7.4</span>Stagnation pressure and density</h2>
+  <p>If the deceleration is also reversible (isentropic), Lesson 6's relations apply between the static and the stagnation state:</p>
+  $$\boxed{\;\frac{p_0}{p} = \left(1 + \frac{\gamma - 1}{2}M^2\right)^{\gamma/(\gamma - 1)},\qquad \frac{\rho_0}{\rho} = \left(1 + \frac{\gamma - 1}{2}M^2\right)^{1/(\gamma - 1)}\;}$$
+  <p>For air the exponents are 3.5 and 2.5. These are the equations worth memorizing.</p>
+  <div class="note"><b>Stagnation conditions are local properties</b>Even if the actual flow is not isentropic, p₀, T₀ and ρ₀ can be defined at every point as the values the gas <i>would</i> reach if brought to rest isentropically from its local state. T₀ stays constant in any adiabatic flow; p₀ stays constant only along isentropic paths and drops across shocks. For a compressible flow, compute p₀ with this relation, never with Bernoulli's equation.</div>
+
+  <h2 id="star"><span class="sec">Section 7.5</span>Sonic (critical) conditions</h2>
+  <p>A second reference state is the one reached by accelerating or decelerating the flow isentropically to M = 1, denoted by an asterisk. It occurs in practice at a nozzle throat. Setting M = 1:</p>
+  $$\frac{T^*}{T_0} = \frac{2}{\gamma + 1} = 0.8333,\qquad \frac{p^*}{p_0} = \left(\frac{2}{\gamma + 1}\right)^{\gamma/(\gamma-1)} = 0.5283,\qquad \frac{\rho^*}{\rho_0} = \left(\frac{2}{\gamma + 1}\right)^{1/(\gamma-1)} = 0.6339,$$
+  <p>(numbers for γ = 1.4) and \(a^* = \sqrt{\gamma RT^*}\). The <b>characteristic Mach number</b> \(M^* = u/a^*\) is sometimes used; it tends to \(\sqrt{(\gamma+1)/(\gamma-1)} = 2.449\) as M → ∞. The inverse \(p_0/p^* = 1.893\) appears again for Pitot probes (Lesson 9) and nozzle choking (Lesson 10). A tank discharging through a small hole into an atmosphere at p<sub>b</sub> has sonic (choked) flow in the hole whenever \(p_b/p_0 \le 0.528\).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Isentropic ratios versus Mach number</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="iM">Mach number <output for="iM"></output></label><input type="range" id="iM" min="0" max="5" step="0.01" value="0.8" data-dec="2"></div>
+    <div class="ctl"><label for="iT0">T₀ <output for="iT0"></output></label><input type="range" id="iT0" min="250" max="1000" step="5" value="300" data-dec="0" data-unit=" K"></div>
+    <div class="ctl"><label for="ip0">p₀ <output for="ip0"></output></label><input type="range" id="ip0" min="50" max="2000" step="10" value="100" data-dec="1" data-unit=" kPa"></div>
+    <div class="presets"><span>Try</span><button data-preset='{"iM":0.3}'>M = 0.3</button><button data-preset='{"iM":1}'>sonic</button><button data-preset='{"iM":2}'>M = 2</button><button data-preset='{"iM":4.5}'>M = 4.5</button></div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="iP"></div><figcaption>p/p₀, T/T₀ and ρ/ρ₀ (log scale). All fall as the flow accelerates.</figcaption></figure>
+    <div><div id="iTab"></div><p class="aq-muted" style="font-size:.85rem">The closest table entry is what you would read on the exam (no interpolation). Here it is compared with the exact value.</p></div>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="trends"><span class="sec">Section 7.6</span>Trends with Mach number</h2>
+  <p>For isentropic flow, as the Mach number increases (flow accelerates and expands): static pressure, temperature, density and the speed of sound decrease; velocity increases; stagnation pressure, temperature and density and the entropy stay the same. These trends make physical sense and are your best tool for spotting an error in a solution.</p>
+
+  <h2 id="compress"><span class="sec">Section 7.7</span>When is a flow compressible?</h2>
+  <p>At a stagnation point the density rises by \(\rho_0/\rho_\infty = (1 + 0.2M^2)^{2.5}\): 1% at M = 0.14, 5% at M = 0.31, 10% at M = 0.44. That is the origin of the M &gt; 0.3 rule. In terms of pressure, expand \(p_0/p\) in a Taylor series in M²:</p>
+  $$p_0 - p_\infty = \tfrac12\rho_\infty V_\infty^2\left(1 + \frac{M^2}{4} + \frac{2 - \gamma}{24}M^4 + \cdots\right).$$
+  <p>The first term is Bernoulli; the bracket is the compressibility correction, under 2.5% at M = 0.3 and about 17% at M = 0.8. Viewed another way, bringing a high-Mach-number flow to rest converts its large kinetic energy into internal energy: at M = 5 the stagnation temperature is six times the static value.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">How wrong is incompressible flow?</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="cM">Mach number <output for="cM"></output></label><input type="range" id="cM" min="0" max="1" step="0.01" value="0.3" data-dec="2"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="cR"></div><figcaption>Stagnation-point density ratio ρ₀/ρ∞; incompressible flow assumes 1.</figcaption></figure>
+    <figure><div id="cB"></div><figcaption>(p₀ − p∞)/(½ρ∞V∞²): exact isentropic value versus Bernoulli (= 1) and the two-term series.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="tables"><span class="sec">Section 7.8</span>Using the isentropic table</h2>
+  <p>The isentropic table (Appendix A of Anderson, and the <a href="../tables.html">tables page</a> here) lists p/p₀, ρ/ρ₀, T/T₀ and A/A* against M. Given any one ratio you can read M, and from M every other ratio. On the exam, <b>do not interpolate</b>: use the entry closest to the value you need, being careful to pick the closest one. Typical chains:</p>
+  <ul>
+    <li>Given T₀, p₀ and M: T = T₀(T/T₀), p = p₀(p/p₀), ρ = p/(RT), a = √(γRT), u = Ma, h = c<sub>p</sub>T, h₀ = c<sub>p</sub>T₀.</li>
+    <li>Given p and p₀ (e.g., a Pitot reading in subsonic flow): p/p₀ → M → T/T₀.</li>
+    <li>Given T and u: M = u/√(γRT), then T₀ and p₀.</li>
+  </ul>
+  <p>Entropy is the same at every point of an isentropic flow; s − s<sub>ref</sub> = c<sub>p</sub>ln(T/T<sub>ref</sub>) − R ln(p/p<sub>ref</sub>) gives the same answer at any station.</p>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Stagnation conditions in flight</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="fZ">Altitude <output for="fZ"></output></label><input type="range" id="fZ" min="0" max="25000" step="250" value="11000" data-dec="0" data-unit=" m"></div>
+    <div class="ctl"><label for="fV">Flight speed <output for="fV"></output></label><input type="range" id="fV" min="20" max="1500" step="5" value="250" data-dec="0" data-unit=" m/s"></div>
+    <div class="ctl inline"><span>Units</span><div class="seg" id="fU" data-value="SI"><button data-value="SI" aria-pressed="true">SI</button><button data-value="EN" aria-pressed="false">English</button></div></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="fP"></div><figcaption>Static and stagnation temperature and pressure for this altitude as the speed varies (standard atmosphere).</figcaption></figure></div>
+</section>
+
+<div class="prose"><h2 id="key"><span class="sec">Section 7.9</span>Key equations</h2></div>
+<div class="keyeq">
+  <div><h4>Energy and sound</h4>
+    $$h_0 = h + \tfrac12u^2 = c_pT_0,\qquad a = \sqrt{\gamma RT},\qquad M = u/a$$
+    $$\frac{T_0}{T} = 1 + \frac{\gamma - 1}{2}M^2\ \ (\text{adiabatic})$$</div>
+  <div><h4>Isentropic</h4>
+    $$\frac{p_0}{p} = \left(\frac{T_0}{T}\right)^{\frac{\gamma}{\gamma-1}},\qquad \frac{\rho_0}{\rho} = \left(\frac{T_0}{T}\right)^{\frac1{\gamma-1}}$$
+    $$\frac{T^*}{T_0} = 0.8333,\quad \frac{p^*}{p_0} = 0.5283,\quad \frac{\rho^*}{\rho_0} = 0.6339$$</div>
+</div>
+
+<div class="prose"><h2 id="examples"><span class="sec">Section 7.10</span>Worked examples</h2></div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 7.1 · Flight (English)</button><button>Ex 7.2 · Reservoir</button><button>Ex 7.3 · Throat</button><button>Ex 7.4 · Bernoulli error</button></div>
+  <div class="panel">
+    <p>An airplane flies at 830 ft/s at 30,000 ft, where p = 4.37 psia and T = 411.8 °R. Use c<sub>p</sub> = 6006 ft·lbf/(slug·°R). Find M, h₀, T₀ and p₀.</p>
+    <details><summary>Solution</summary><p>a = √(1.4·1716·411.8) = 994.7 ft/s; M = 0.8344. h₀ = 6006(411.8) + ½(830)² = 2.473×10⁶ + 3.445×10⁵ = 2.818×10⁶ ft²/s². T₀ = 411.8(1 + 0.2·0.6962) = 469.1 °R (= h₀/c<sub>p</sub> ✓). p₀ = 4.37(1.13924)<sup>3.5</sup> = 4.37(1.5786) = 6.90 psia.</p></details>
+  </div>
+  <div class="panel">
+    <p>Air from a reservoir at p₀ = 800 kPa, T₀ = 450 K expands isentropically to M = 2.2. Find p, T, ρ, u and the entropy change.</p>
+    <details><summary>Solution</summary><p>T₀/T = 1 + 0.2(4.84) = 1.968 → T = 228.7 K. p₀/p = 1.968<sup>3.5</sup> = 10.69 → p = 74.83 kPa. ρ = 74830/(287·228.7) = 1.140 kg/m³. a = 303.1 m/s, u = 666.9 m/s. Δs = 0 (isentropic). Table at M = 2.20: p/p₀ = 0.09352, T/T₀ = 0.5081, the same values.</p></details>
+  </div>
+  <div class="panel">
+    <p>For the reservoir of Ex 7.2, find the throat conditions when the throat is sonic.</p>
+    <details><summary>Solution</summary><p>T* = 0.8333(450) = 375.0 K; p* = 0.5283(800) = 422.6 kPa; ρ* = 422600/(287·375) = 3.927 kg/m³; u* = a* = √(1.4·287·375) = 388.2 m/s.</p></details>
+  </div>
+  <div class="panel">
+    <p>At sea level a probe is in a flow at M = 0.7. How much does Bernoulli's equation underestimate p₀ − p∞?</p>
+    <details><summary>Solution</summary><p>Exact: p₀/p = (1.098)<sup>3.5</sup> = 1.3871, so p₀ − p = 0.3871p. Bernoulli: ½ρV² = ½γpM² = 0.343p. Ratio 0.343/0.3871 = 0.886: Bernoulli is 11.4% low on the pressure difference (the series 1 + M²/4 + M⁴/40 = 1.1285 agrees).</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 7.11</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>What assumptions give h₀ = h + u²/2 = constant? Which of them does T₀/T = 1 + 0.2M² add?</p><details><summary>Answer</summary><p>Steady, adiabatic, no shaft work, no body forces (inviscid is often stated, but friction inside the CV does not change h₀). T₀/T adds a calorically perfect gas.</p></details></div>
+    <div class="sc"><p>Why does p₀ need "isentropic" while T₀ needs only "adiabatic"?</p><details><summary>Answer</summary><p>T₀ follows from energy alone. p₀ requires the Gibbs relation with ds = 0; irreversibility at the same h₀ lowers p₀ (p₀₂/p₀₁ = e<sup>−Δs/R</sup>).</p></details></div>
+    <div class="sc"><p>Two gases have the same T. Which has the higher speed of sound, helium or air?</p><details><summary>Answer</summary><p>Helium: a = √(γRT) with γ = 5/3 and R = 2077 J/(kg K), about 2.9 times faster than air at the same T.</p></details></div>
+    <div class="sc"><p>Above what Mach number is compressibility important, and why?</p><details><summary>Answer</summary><p>About 0.3: the stagnation density is ~5% above the freestream value, and the error in Bernoulli's p₀ − p is about 2%.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 7.12</span>Practice problem generator</h2>
+  <p>Conceptual and numerical isentropic-flow problems (SI and English units) with full solutions.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const fmt = UI.fmt, g = 1.4, R = 287, cp = 1004.5, I = GD.isen;
+  const tableM = M => { const step = M < 3 ? 0.02 : M < 5 ? 0.05 : 0.5; const base = M < 3 ? 0 : M < 5 ? 3 : 5; return +(base + Math.round((M - base) / step) * step).toFixed(2); };
+  // ---------- Interactive 1 ----------
+  const Ms = UI.linspace(0.01, 5, 300);
+  UI.wire("#lab1", () => {
+    const M = UI.val("iM"), T0 = UI.val("iT0"), p0 = UI.val("ip0");
+    UI.plot("#iP", { xlabel: "M", ylabel: "ratio", logy: true, ylim: [0.002, 1.05], h: 300, series: [{ x: Ms, y: Ms.map(m => 1 / I.p0_p(m, g)), c: 4, width: 2.2, label: "p/p₀" }, { x: Ms, y: Ms.map(m => 1 / I.rho0_rho(m, g)), c: 3, width: 2.2, label: "ρ/ρ₀" }, { x: Ms, y: Ms.map(m => 1 / I.T0_T(m, g)), c: 1, width: 2.2, label: "T/T₀" }], vlines: [{ x: M, c: 6 }, { x: 1, label: "M = 1", c: 6 }], legend: "bl" });
+    const Mt = tableM(M), r = m => [1 / I.p0_p(m, g), 1 / I.rho0_rho(m, g), 1 / I.T0_T(m, g), m > 0 ? I.A_Astar(m, g) : Infinity];
+    const ex = r(M), tb = r(Mt);
+    UI.table("#iTab", ["", "exact at M = " + fmt(M, 3), "table at M = " + Mt.toFixed(2)], [["p/p₀", fmt(ex[0], 4), fmt(tb[0], 4)], ["ρ/ρ₀", fmt(ex[1], 4), fmt(tb[1], 4)], ["T/T₀", fmt(ex[2], 4), fmt(tb[2], 4)], ["A/A*", isFinite(ex[3]) ? fmt(ex[3], 4) : "∞", isFinite(tb[3]) ? fmt(tb[3], 4) : "∞"]]);
+    const T = T0 / I.T0_T(M, g), p = p0 / I.p0_p(M, g), rho = p * 1000 / (R * T), a = Math.sqrt(g * R * T);
+    UI.readout("#ro1", [["T", fmt(T, 4) + " K"], ["p", fmt(p, 4) + " kPa"], ["ρ", fmt(rho, 4) + " kg/m³"], ["a", fmt(a, 4) + " m/s"], ["u = Ma", fmt(M * a, 4) + " m/s"], ["h = c_pT", fmt(cp * T / 1000, 4) + " kJ/kg"], ["h₀ = c_pT₀", fmt(cp * T0 / 1000, 4) + " kJ/kg"]]);
+    UI.live("#lab1", `p/p₀ = ${fmt(ex[0], 4)}`);
+  });
+  // ---------- Interactive 2 ----------
+  UI.wire("#lab2", () => {
+    const M = UI.val("cM"), xs = UI.linspace(0, 1, 101);
+    UI.plot("#cR", { xlabel: "M∞", ylabel: "ρ₀/ρ∞", h: 270, ylim: [1, 1.6], series: [{ x: xs, y: xs.map(m => I.rho0_rho(m, g)), c: 4, width: 2.3 }], hlines: [{ y: 1.01, label: "1%", c: 6 }, { y: 1.05, label: "5%", c: 6 }, { y: 1.1, label: "10%", c: 6 }], points: [{ x: M, y: I.rho0_rho(M, g), c: 1 }] });
+    const ex = m => m < 1e-6 ? 1 : (I.p0_p(m, g) - 1) / (0.5 * g * m * m);
+    UI.plot("#cB", { xlabel: "M∞", ylabel: "(p₀ − p)/q∞", h: 270, ylim: [0.95, 1.35], series: [{ x: xs, y: xs.map(ex), c: 4, width: 2.3, label: "exact" }, { x: xs, y: xs.map(m => 1 + m * m / 4), c: 3, dash: true, label: "1 + M²/4" }, { x: xs, y: xs.map(() => 1), c: 6, dash: true, label: "Bernoulli" }], points: [{ x: M, y: ex(M), c: 1 }], legend: "tl" });
+    UI.readout("#ro2", [["ρ₀/ρ∞", fmt(I.rho0_rho(M, g), 4)], ["density change", fmt(100 * (I.rho0_rho(M, g) - 1), 3) + "%"], ["(p₀ − p)/q∞", fmt(ex(M), 4)], ["Bernoulli error on p₀ − p", fmt(100 * (1 - 1 / ex(M)), 3) + "% low"]]);
+    UI.live("#lab2", `ρ₀/ρ∞ = ${fmt(I.rho0_rho(M, g), 4)}`);
+  });
+  // ---------- Interactive 3 ----------
+  UI.wire("#lab3", () => {
+    const z = UI.val("fZ"), V = UI.val("fV"), en = UI.seg("fU") === "EN", at = GD.atmosphere(z);
+    const a = Math.sqrt(g * R * at.T), M = V / a, T0 = at.T * I.T0_T(M, g), p0 = at.p * I.p0_p(M, g), pB = at.p + 0.5 * at.rho * V * V;
+    const vs = UI.linspace(0, 1500, 151);
+    UI.plot("#fP", { xlabel: "V (m/s)", ylabel: "T₀ (K)", h: 280, series: [{ x: vs, y: vs.map(v => at.T + v * v / (2 * cp)), c: 1, width: 2.2, label: "T₀" }, { x: vs, y: vs.map(() => at.T), c: 6, dash: true, label: "T (static)" }], points: [{ x: V, y: T0, c: 1, label: `M = ${fmt(M, 3)}` }], legend: "tl" });
+    const T_ = t => en ? fmt(t * 1.8, 4) + " °R" : fmt(t, 4) + " K", P_ = p => en ? fmt(p / 6894.76, 4) + " psia" : fmt(p / 1000, 4) + " kPa", V_ = v => en ? fmt(v / 0.3048, 4) + " ft/s" : fmt(v, 4) + " m/s";
+    UI.readout("#ro3", [["static T", T_(at.T)], ["static p", P_(at.p)], ["a", V_(a)], ["M", fmt(M, 4)], ["T₀", T_(T0)], ["p₀ (isentropic)", P_(p0)], ["p₀ from Bernoulli (wrong if M > 0.3)", P_(pB)], ["h₀", en ? fmt((cp * T0) / 0.3048 ** 2 / 1e6, 4) + "×10⁶ ft²/s²" : fmt(cp * T0 / 1000, 4) + " kJ/kg"]]);
+    UI.live("#lab3", `M = ${fmt(M, 3)}`);
+  });
+  AQL.practice("#gen", ["L7-concept", "L7-stag", "L7-sonic", "isen-concept", "p2-tunnel"]);
+})();
+</script>
+</body>
+</html>
