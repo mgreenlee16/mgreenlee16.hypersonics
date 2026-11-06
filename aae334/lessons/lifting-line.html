@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finite Wings and Lifting-Line Theory · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="lifting-line">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 1 · Lecture 13 · Exam 2</div>
+  <h1>Finite Wings and Lifting-Line Theory</h1>
+  <p class="lead">An airfoil is a wing of infinite span. A real wing has tips, and around them the high pressure under the wing leaks to the low pressure above. The result is a pair of trailing vortices, a downwash over the wing, a smaller lift than the airfoil would give, and a new kind of drag. Prandtl's lifting-line theory (1918) turns this picture into one equation.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#tips">Wingtip vortices and downwash</a></li>
+    <li><a href="#angles">Geometric, effective and induced angles</a></li>
+    <li><a href="#vortex">The vortex system: horseshoe vortices</a></li>
+    <li><a href="#downwash">The downwash integral</a></li>
+    <li><a href="#prandtl">Prandtl's lifting-line equation</a></li>
+    <li><a href="#forces">Lift and induced drag from Γ(y)</a></li>
+    <li><a href="#elliptic">Elliptic loading</a></li>
+    <li><a href="#ar">Lift slope and aspect ratio</a></li>
+    <li><a href="#key">Key equations and assumptions</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="tips"><span class="sec">Section 1.1</span>Wingtip vortices and downwash</h2>
+  <p>A lifting wing has higher pressure on its lower surface than on its upper surface. At the tips nothing separates the two, so air curls from below to above. Combined with the oncoming freestream, this swirling motion rolls up into a <b class="term">trailing (wingtip) vortex</b> behind each tip: clockwise behind the left tip and counter-clockwise behind the right tip, seen from behind.</p>
+  <p>The two vortices induce a downward velocity, the <b class="term">downwash</b> \(w\), everywhere between them, including at the wing itself. Two consequences follow, and they are the whole subject of this lesson:</p>
+  <ol>
+    <li>Each wing section sees a relative wind tilted downward, so it works at a smaller angle of attack than its geometric angle and produces <b>less lift</b>.</li>
+    <li>The local lift vector, perpendicular to the local relative wind, tilts backward. Its streamwise component is the <b class="term">induced drag</b>, or drag due to lift.</li>
+  </ol>
+  <div class="note"><b>Why "induced"?</b>Induced drag exists even in inviscid flow. It is not friction and not separation: it is the rate at which the wing puts kinetic energy into the trailing vortex wake. It cannot be eliminated while the wing makes lift, only minimized.</div>
+
+  <h2 id="angles"><span class="sec">Section 1.2</span>Geometric, effective and induced angles</h2>
+  <p>Let \(\alpha\) be the geometric angle between the chord line and the freestream \(V_\infty\). The downwash \(w\) (negative when downward) adds to the freestream and rotates the local relative wind by the <b class="term">induced angle of attack</b></p>
+  $$\alpha_i = \arctan\!\left(\frac{-w}{V_\infty}\right) \approx \frac{-w}{V_\infty}\qquad(|w| \ll V_\infty).$$
+  <p>The section therefore sees the <b class="term">effective angle of attack</b></p>
+  $$\alpha_\text{eff} = \alpha - \alpha_i\qquad\Longleftrightarrow\qquad \alpha = \alpha_\text{eff} + \alpha_i .$$
+  <p>The local airfoil does not know it is part of a finite wing: it makes the lift its 2-D lift curve gives at \(\alpha_\text{eff}\), perpendicular to its own relative wind. Resolving that force in the freestream axes gives a lift \(L' \cos\alpha_i \approx L'\) and a drag \(D_i' = L'\sin\alpha_i \approx L'\alpha_i\).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">The induced-angle triangle</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="g1a">Geometric α <output for="g1a"></output></label><input type="range" id="g1a" min="0" max="12" step="0.5" value="8" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="g1w">Downwash −w/V∞ (exaggerated) <output for="g1w"></output></label><input type="range" id="g1w" min="0" max="0.25" step="0.01" value="0.06" data-dec="2"></div>
+    <div id="ro1" class="readout"></div>
+    <p class="note">The angles are exaggerated so you can see them. Real values of α<sub>i</sub> are a degree or two.</p>
+  </div>
+  <div class="views"><figure><div id="tri1"></div><figcaption>The freestream V∞ (gray), downwash w (blue), local relative wind (dashed), the local lift L′ perpendicular to it, and its components: lift (up) and induced drag D<sub>i</sub>′ (back).</figcaption></figure></div>
+</section>
+
+<div class="prose">
+  <h2 id="vortex"><span class="sec">Section 1.3</span>The vortex system: horseshoe vortices</h2>
+  <p>Lift on a 2-D airfoil comes from its circulation Γ, through the Kutta–Joukowski theorem \(L' = \rho_\infty V_\infty\Gamma\). To model a wing, Prandtl replaced it by a <b class="term">bound vortex</b> along the quarter-chord line. Helmholtz's vortex theorems say the strength of a vortex filament is constant along it and that it cannot end in the fluid, so the bound vortex must turn at the tips and trail downstream to infinity: a <b class="term">horseshoe vortex</b>.</p>
+  <p>A single horseshoe has constant Γ across the span, so the lift per unit span would be uniform, and the downwash it induces on the wing is infinite at the tips, where the trailing legs are. That is unphysical. The fix is to superimpose many horseshoes of different spans: wherever the bound circulation changes by \(d\Gamma\) along the span, a trailing filament of strength \(d\Gamma\) is shed. In the limit, the wing is a <b class="term">lifting line</b> with continuous circulation Γ(y), and it sheds a <b>trailing vortex sheet</b> whose strength per unit span is \(-d\Gamma/dy\).</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">From one horseshoe to a lifting line</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="hN">Number of horseshoe vortices N <output for="hN"></output></label><input type="range" id="hN" min="1" max="60" step="1" value="1" data-dec="0"></div>
+    <div class="ctl inline"><span>Target loading</span>
+      <div class="seg" id="hShape" data-value="ell"><button data-value="ell" aria-pressed="true">elliptic</button><button data-value="par" aria-pressed="false">parabolic</button><button data-value="flat" aria-pressed="false">nearly flat</button></div></div>
+    <div class="presets"><span>Try</span><button data-preset='{"hN":1}'>one horseshoe</button><button data-preset='{"hN":4}'>4</button><button data-preset='{"hN":40}'>40</button></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="hG"></div><figcaption>Γ(y)/Γ₀ built from N stacked horseshoes (steps) and the target loading (line).</figcaption></figure>
+    <figure><div id="hW"></div><figcaption>Downwash −w/(Γ₀/b) on the line, from Biot–Savart with each trailing leg. For elliptic loading it tends to the constant 1/2.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="downwash"><span class="sec">Section 1.4</span>The downwash integral</h2>
+  <p>The Biot–Savart law gives the velocity induced by a straight vortex filament. An infinite line vortex of strength Γ induces \(\Gamma/(2\pi h)\) at distance \(h\). A <b>semi-infinite</b> filament that starts on the lifting line at \(y\) and runs downstream induces half that at a point \(y_0\) on the line, because it only extends one way:</p>
+  $$dw(y_0) = -\frac{(d\Gamma/dy)\,dy}{4\pi(y_0 - y)} .$$
+  <p>(The sign makes \(w\) negative, i.e., downward, inboard of a tip where Γ is falling.) Adding the contributions of the whole trailing sheet,</p>
+  $$w(y_0) = -\frac{1}{4\pi}\int_{-b/2}^{b/2}\frac{(d\Gamma/dy)}{y_0 - y}\,dy,\qquad \alpha_i(y_0) = \frac{1}{4\pi V_\infty}\int_{-b/2}^{b/2}\frac{(d\Gamma/dy)}{y_0 - y}\,dy .$$
+  <p>The integral is a Cauchy principal value: the integrand is singular at \(y = y_0\), and the two sides cancel symmetrically. The bound vortex itself induces nothing on its own line, so only the trailing sheet produces downwash.</p>
+
+  <h2 id="prandtl"><span class="sec">Section 1.5</span>Prandtl's lifting-line equation</h2>
+  <p>Now connect the circulation to the section aerodynamics. Each section follows its 2-D lift curve at the effective angle of attack, with slope \(a_0\) (\(= 2\pi\) for thin-airfoil theory):</p>
+  $$c_\ell(y_0) = a_0\left[\alpha_\text{eff}(y_0) - \alpha_{L=0}(y_0)\right].$$
+  <p>Kutta–Joukowski strip by strip gives the same section lift in terms of Γ: \(L' = \rho_\infty V_\infty \Gamma = \tfrac12\rho_\infty V_\infty^2\,c\,c_\ell\), so</p>
+  $$c_\ell(y_0) = \frac{2\Gamma(y_0)}{V_\infty\,c(y_0)} .$$
+  <p>Equating the two, solving for \(\alpha_\text{eff}\) and using \(\alpha = \alpha_\text{eff} + \alpha_i\) gives <b class="term">Prandtl's lifting-line equation</b> (with \(a_0 = 2\pi\)):</p>
+  $$\boxed{\;\alpha(y_0) = \underbrace{\frac{\Gamma(y_0)}{\pi V_\infty c(y_0)} + \alpha_{L=0}(y_0)}_{\alpha_\text{eff}} \;+\; \underbrace{\frac{1}{4\pi V_\infty}\int_{-b/2}^{b/2}\frac{(d\Gamma/dy)}{y_0 - y}\,dy}_{\alpha_i}\;}$$
+  <p>For a general \(a_0\), the first term is \(2\Gamma/(a_0V_\infty c)\). Given the wing geometry, \(\alpha(y)\), \(c(y)\) and \(\alpha_{L=0}(y)\), the only unknown is Γ(y). It is an integro-differential equation: the induced angle depends on the lift, and the lift depends on the induced angle. Lesson 2 solves it for any wing; here we solve it for the most important case.</p>
+
+  <h2 id="forces"><span class="sec">Section 1.6</span>Lift and induced drag from Γ(y)</h2>
+  <p>Once Γ(y) is known, everything follows by integrating across the span:</p>
+  $$L'(y) = \rho_\infty V_\infty\Gamma(y),\qquad L = \rho_\infty V_\infty\int_{-b/2}^{b/2}\Gamma\,dy,\qquad C_L = \frac{2}{V_\infty S}\int_{-b/2}^{b/2}\Gamma(y)\,dy,$$
+  $$D_i = \int_{-b/2}^{b/2} L'(y)\,\alpha_i(y)\,dy,\qquad C_{D_i} = \frac{2}{V_\infty S}\int_{-b/2}^{b/2}\Gamma(y)\,\alpha_i(y)\,dy .$$
+
+  <h2 id="elliptic"><span class="sec">Section 1.7</span>Elliptic loading</h2>
+  <p>Take the circulation to be elliptic, with root value Γ₀:</p>
+  $$\Gamma(y) = \Gamma_0\sqrt{1 - \left(\frac{2y}{b}\right)^2}.$$
+  <p><b>Downwash.</b> Substitute \(y = -\tfrac b2\cos\theta\) (so \(\sqrt{1-(2y/b)^2} = \sin\theta\) and \(\Gamma = \Gamma_0\sin\theta\)). Then \((d\Gamma/dy)\,dy = \Gamma_0\cos\theta\,d\theta\) and \(y_0 - y = \tfrac b2(\cos\theta - \cos\theta_0)\), so</p>
+  $$w(\theta_0) = -\frac{\Gamma_0}{2\pi b}\int_0^\pi\frac{\cos\theta}{\cos\theta - \cos\theta_0}\,d\theta = -\frac{\Gamma_0}{2\pi b}\cdot\pi = -\frac{\Gamma_0}{2b}.$$
+  <p>The integral is Glauert's, \(\int_0^\pi \frac{\cos n\theta\,d\theta}{\cos\theta - \cos\theta_0} = \pi\frac{\sin n\theta_0}{\sin\theta_0}\), with \(n = 1\). The downwash is <b>the same at every station</b>, and so is the induced angle, \(\alpha_i = \Gamma_0/(2bV_\infty)\).</p>
+  <p><b>Lift.</b> \(\int_{-b/2}^{b/2}\sqrt{1-(2y/b)^2}\,dy = \pi b/4\), so \(L = \rho_\infty V_\infty\Gamma_0\pi b/4\) and</p>
+  $$C_L = \frac{\pi b\,\Gamma_0}{2V_\infty S}\quad\Longrightarrow\quad \Gamma_0 = \frac{2V_\infty S C_L}{\pi b},\qquad \alpha_i = \frac{\Gamma_0}{2bV_\infty} = \frac{C_L}{\pi AR},\qquad AR = \frac{b^2}{S}.$$
+  <p><b>Induced drag.</b> Because α<sub>i</sub> is constant it comes out of the integral: \(C_{D_i} = \alpha_i\cdot\frac{2}{V_\infty S}\int\Gamma\,dy = \alpha_i C_L\), so</p>
+  $$\boxed{\;C_{D_i} = \frac{C_L^2}{\pi AR}\;}$$
+  <p>Induced drag grows with the square of the lift and falls inversely with aspect ratio. In the 2-D limit \(AR \to\infty\) it vanishes. Lesson 2 shows that, for a given span and lift, the elliptic distribution has the <b>least</b> induced drag of any planar wing.</p>
+  <p><b>Constant section lift.</b> If the wing is untwisted (α constant) and has the same airfoil everywhere (α<sub>L=0</sub> constant), then α<sub>eff</sub> = α − α<sub>i</sub> is constant along the span, and so is \(c_\ell\). Since \(C_L = \frac1S\int c_\ell c\,dy\), the wing's \(C_L\) equals the section \(c_\ell\). With \(L' \propto c\,c_\ell\) elliptic and \(c_\ell\) constant, the chord must be elliptic: an untwisted wing with elliptic loading has an <b>elliptic planform</b> (the Spitfire's wing is the famous example).</p>
+
+  <h2 id="ar"><span class="sec">Section 1.8</span>Lift slope and aspect ratio</h2>
+  <p>For that wing, \(C_L = c_\ell = a_0(\alpha - \alpha_i - \alpha_{L=0}) = a_0\left(\alpha - \alpha_{L=0} - \frac{C_L}{\pi AR}\right)\). Solving for \(C_L\):</p>
+  $$C_L = \frac{a_0}{1 + a_0/(\pi AR)}\,(\alpha - \alpha_{L=0}),\qquad a = \frac{dC_L}{d\alpha} = \frac{a_0}{1 + a_0/(\pi AR)} \xrightarrow{a_0 = 2\pi} \frac{2\pi}{1 + 2/AR}.$$
+  <p>The ratio \(a/a_0\) is 0.67 at AR 4, 0.80 at AR 8 and 0.875 at AR 14. Two wings with the same airfoil but different aspect ratios therefore have lift curves that cross the axis at the <b>same</b> α<sub>L=0</sub> but with different slopes, and drag polars \(C_D = c_d + C_L^2/(\pi AR)\) that share the same minimum but open more widely at low AR. High aspect ratio helps on both counts, which is why gliders, the U-2/ER-2, Global Hawk and solar aircraft have long, slender wings; structural weight and airport gates limit it on transports.</p>
+  <div class="note warn"><b>Units trap</b>In \(a_0/(\pi AR)\), \(a_0\) must be per radian. If a problem gives \(a_0\) per degree, multiply by 180/π first, and convert the answer back if you want per degree.</div>
+</div>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Elliptic wing calculator</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="eAR">Aspect ratio AR <output for="eAR"></output></label><input type="range" id="eAR" min="3" max="25" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="eA">Geometric α <output for="eA"></output></label><input type="range" id="eA" min="-4" max="14" step="0.25" value="5" data-dec="2" data-unit="°"></div>
+    <div class="ctl"><label for="eA0">Zero-lift angle α<sub>L=0</sub> <output for="eA0"></output></label><input type="range" id="eA0" min="-5" max="0" step="0.25" value="-2" data-dec="2" data-unit="°"></div>
+    <div class="ctl"><label for="eV">V∞ <output for="eV"></output></label><input type="range" id="eV" min="20" max="120" step="1" value="60" data-dec="0" data-unit=" m/s"></div>
+    <div class="ctl"><label for="eb">Span b <output for="eb"></output></label><input type="range" id="eb" min="5" max="40" step="0.5" value="12" data-dec="1" data-unit=" m"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views"><figure><div id="eG"></div><figcaption>Lift per unit span L′(y) (elliptic) and the uniform downwash w. Sea-level density, a₀ = 2π.</figcaption></figure></div>
+</section>
+
+<section class="lab" id="lab4">
+  <div class="lab-head"><span class="num">Interactive 4</span><span class="title">Lift curves and drag polars for two aspect ratios</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="pA1">Wing A: AR <output for="pA1"></output></label><input type="range" id="pA1" min="2" max="30" step="0.5" value="5" data-dec="1"></div>
+    <div class="ctl"><label for="pA2">Wing B: AR <output for="pA2"></output></label><input type="range" id="pA2" min="2" max="30" step="0.5" value="12" data-dec="1"></div>
+    <div class="ctl"><label for="pcd">Profile drag c<sub>d</sub> <output for="pcd"></output></label><input type="range" id="pcd" min="0.005" max="0.03" step="0.001" value="0.01" data-dec="3"></div>
+    <div class="ctl"><label for="pe">Span efficiency e <output for="pe"></output></label><input type="range" id="pe" min="0.7" max="1" step="0.01" value="1" data-dec="2"></div>
+    <div id="ro4" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="pL"></div><figcaption>C<sub>L</sub> vs α for the airfoil (AR → ∞) and both wings (α<sub>L=0</sub> = −2°, notional stall near c<sub>ℓ,max</sub> = 1.4).</figcaption></figure>
+    <figure><div id="pD"></div><figcaption>Drag polars C<sub>D</sub> = c<sub>d</sub> + C<sub>L</sub>²/(πeAR). The higher-AR polar is narrower.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="key"><span class="sec">Section 1.9</span>Key equations and assumptions</h2>
+</div>
+<div class="keyeq">
+  <div><h4>Lifting line</h4>
+    $$\alpha = \alpha_\text{eff} + \alpha_i,\qquad \alpha_i \approx -\frac{w}{V_\infty}$$
+    $$c_\ell = \frac{2\Gamma}{V_\infty c} = a_0(\alpha_\text{eff} - \alpha_{L=0})$$
+    $$w(y_0) = -\frac1{4\pi}\int_{-b/2}^{b/2}\frac{d\Gamma/dy}{y_0-y}dy$$
+    $$C_L = \frac{2}{V_\infty S}\int\Gamma\,dy,\quad C_{D_i} = \frac{2}{V_\infty S}\int\Gamma\alpha_i\,dy$$</div>
+  <div><h4>Elliptic loading</h4>
+    $$\Gamma = \Gamma_0\sqrt{1-(2y/b)^2},\qquad w = -\frac{\Gamma_0}{2b}$$
+    $$\Gamma_0 = \frac{2V_\infty SC_L}{\pi b},\qquad \alpha_i = \frac{C_L}{\pi AR}$$
+    $$C_{D_i} = \frac{C_L^2}{\pi AR},\qquad a = \frac{a_0}{1 + a_0/(\pi AR)}$$</div>
+</div>
+<div class="prose">
+  <div class="note"><b>Assumptions of lifting-line theory</b>Steady, inviscid, incompressible flow; attached flow on every section (no stall); each section acts like a 2-D airfoil at its local α<sub>eff</sub> with a linear lift curve; small angles (α<sub>i</sub> ≪ 1, w ≪ V∞); a flat trailing wake leaving in the freestream direction; a straight, unswept (or nearly unswept) lifting line on a wing of moderate-to-high aspect ratio. It is not valid for highly swept or low-AR (delta) wings, which need lifting-surface (vortex-lattice) methods.</div>
+
+  <h2 id="examples"><span class="sec">Section 1.10</span>Worked examples</h2>
+</div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 1.1 · Elliptic wing</button><button>Ex 1.2 · Per-degree slope</button><button>Ex 1.3 · Two aspect ratios</button><button>Ex 1.4 · Fuel burn</button></div>
+  <div class="panel">
+    <p>A 1500 kg airplane cruises at 70 m/s at sea level. Its untwisted elliptic wing has a span of 11 m and S = 16 m². Find C<sub>L</sub>, Γ₀, w, α<sub>i</sub>, C<sub>Di</sub> and D<sub>i</sub>.</p>
+    <details><summary>Solution</summary>
+    <p>AR = 11²/16 = 7.5625; q∞ = ½(1.225)(70²) = 3001 Pa; C<sub>L</sub> = 1500(9.807)/(3001 × 16) = 0.3063.</p>
+    <p>Γ₀ = 2V∞SC<sub>L</sub>/(πb) = 2(70)(16)(0.3063)/(π·11) = 19.86 m²/s; w = −Γ₀/(2b) = −0.903 m/s.</p>
+    <p>α<sub>i</sub> = C<sub>L</sub>/(πAR) = 0.01289 rad = 0.739° (check: −w/V∞ = 0.903/70 = 0.0129 ✓).</p>
+    <p>C<sub>Di</sub> = C<sub>L</sub>²/(πAR) = 0.003949; D<sub>i</sub> = q∞SC<sub>Di</sub> = 189.6 N, which also equals Wα<sub>i</sub> = 14710(0.01289) ✓.</p></details>
+  </div>
+  <div class="panel">
+    <p>An airfoil has a₀ = 0.105 per degree and α<sub>L=0</sub> = −1.5°. Find the lift slope (per degree) of an untwisted elliptic wing with AR = 6 made from it, and C<sub>L</sub> at α = 6°.</p>
+    <details><summary>Solution</summary>
+    <p>a₀ = 0.105 × 57.30 = 6.016 rad⁻¹. a = 6.016/(1 + 6.016/(6π)) = 6.016/1.3192 = 4.560 rad⁻¹ = 0.0796 per degree.</p>
+    <p>C<sub>L</sub> = 0.0796(6 − (−1.5)) = 0.597. The common error is a = 0.105/(1 + 0.105/(6π)) = 0.1044 per degree, which barely differs from the airfoil.</p></details>
+  </div>
+  <div class="panel">
+    <p>Two untwisted elliptic wings with the same thin symmetric airfoil have AR = 5 and AR = 10. At C<sub>L</sub> = 0.6 compare α and C<sub>Di</sub>.</p>
+    <details><summary>Solution</summary>
+    <p>Slopes: 2π/(1 + 2/5) = 4.488 and 2π/(1 + 2/10) = 5.236 rad⁻¹. Angles: 0.6/4.488 = 0.1337 rad = 7.66° and 0.6/5.236 = 6.57°.</p>
+    <p>C<sub>Di</sub> = 0.36/(5π) = 0.02292 and 0.36/(10π) = 0.01146: doubling AR halves the induced drag at the same lift. The effective angle (0.6/2π = 5.47°) is the same for both; only α<sub>i</sub> (2.19° vs 1.09°) differs.</p></details>
+  </div>
+  <div class="panel">
+    <p>An airplane with an elliptic wing flies at constant speed and altitude. During the flight it burns 15% of its weight in fuel. By how much do C<sub>L</sub>, C<sub>Di</sub> and D<sub>i</sub> change?</p>
+    <details><summary>Solution</summary>
+    <p>C<sub>L</sub> = W/(q∞S) falls by 15% (factor 0.85). C<sub>Di</sub> ∝ C<sub>L</sub>² falls by a factor 0.7225 (−27.75%). D<sub>i</sub> = q∞SC<sub>Di</sub> falls by the same factor; equivalently D<sub>i</sub> = W²/(q∞πb²), so the induced drag depends on the <b>span loading</b> W/b, not on AR by itself.</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 1.11</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>Sketch a wing and its tip vortices, and state in one sentence how they change the lift and drag.</p><details><summary>Answer</summary><p>The tip vortices induce downwash over the wing, which lowers the effective angle of attack (less lift than the airfoil at the same α) and tilts the lift vector back (induced drag).</p></details></div>
+    <div class="sc"><p>Why can a single horseshoe vortex not represent a real wing?</p><details><summary>Answer</summary><p>It has constant Γ (uniform loading) and its trailing legs sit at the tips, where they induce infinite downwash. Superposing many horseshoes gives a smooth Γ(y) that falls to zero at the tips.</p></details></div>
+    <div class="sc"><p>Name the three terms of Prandtl's equation.</p><details><summary>Answer</summary><p>Geometric angle α (left side) = effective angle Γ/(πV∞c) + α<sub>L=0</sub>, plus the induced angle given by the downwash integral.</p></details></div>
+    <div class="sc"><p>For an untwisted wing with an elliptic planform, how does c<sub>ℓ</sub> vary along the span?</p><details><summary>Answer</summary><p>It is constant and equal to C<sub>L</sub>, because α, α<sub>L=0</sub> and α<sub>i</sub> are all constant.</p></details></div>
+    <div class="sc"><p>Draw the lift curves and drag polars of two rectangular untwisted wings with the same airfoil and AR = 4 and AR = 12.</p><details><summary>Answer</summary><p>Lift curves: both pass through the same α<sub>L=0</sub>; the AR 12 line is steeper (closer to the airfoil's), and the AR 4 wing reaches stall at a higher α. Polars: same C<sub>D</sub> at C<sub>L</sub> = 0, but the AR 4 parabola is wider (more drag at any nonzero C<sub>L</sub>).</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 1.12</span>Practice problem generator</h2>
+  <p>Conceptual and numerical problems on this lesson, with new numbers every time and full solutions after you check. Untick topics to focus.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const D = Math.PI / 180, fmt = UI.fmt;
+  // ---------- Interactive 1: angle triangle ----------
+  UI.wire("#lab1", () => {
+    const al = UI.val("g1a") * D, r = UI.val("g1w"), ai = Math.atan(r);
+    const W = 520, H = 300, ox = 120, oy = 170, Lv = 300;
+    const P = (x, y) => `${(ox + x).toFixed(1)},${(oy - y).toFixed(1)}`;
+    const vx = Lv, wy = -Lv * r; // freestream along +x, downwash down
+    const rel = [Math.cos(-ai), Math.sin(-ai)], Lmag = 150, Ln = [-Math.sin(-ai) * Lmag, Math.cos(-ai) * Lmag];
+    // chord line at α above freestream
+    const ch = [Math.cos(al) * 170, Math.sin(al) * 170];
+    const svg = `<svg viewBox="0 0 ${W} ${H}" class="diagram" style="width:100%;max-width:560px">
+      <defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
+      <line x1="${ox - 90}" y1="${oy}" x2="${ox + 10}" y2="${oy}" stroke="var(--muted)"/>
+      <line x1="${ox - ch[0] * 0.5}" y1="${oy - ch[1] * 0.5}" x2="${ox + ch[0] * 0.5}" y2="${oy + ch[1] * 0.5}" stroke="var(--text)" stroke-width="6" stroke-linecap="round"/>
+      <g style="color:var(--muted)"><line x1="${ox}" y1="${oy}" x2="${ox + vx}" y2="${oy}" stroke="currentColor" stroke-width="2" marker-end="url(#ar1)"/><text x="${ox + vx - 30}" y="${oy - 8}" font-size="13" fill="currentColor">V∞</text></g>
+      <g style="color:var(--accent)"><line x1="${ox + vx}" y1="${oy}" x2="${ox + vx}" y2="${oy - wy}" stroke="currentColor" stroke-width="2" marker-end="url(#ar1)"/><text x="${ox + vx + 6}" y="${oy - wy / 2 + 4}" font-size="13" fill="currentColor">w</text></g>
+      <line x1="${ox}" y1="${oy}" x2="${ox + vx}" y2="${oy - wy}" stroke="var(--text)" stroke-dasharray="6 4"/>
+      <g style="color:var(--hot)"><line x1="${ox}" y1="${oy}" x2="${ox + Ln[0]}" y2="${oy - Ln[1]}" stroke="currentColor" stroke-width="2.5" marker-end="url(#ar1)"/><text x="${ox + Ln[0] - 30}" y="${oy - Ln[1] - 6}" font-size="13" fill="currentColor">L′</text>
+        <line x1="${ox + Ln[0]}" y1="${oy - Ln[1]}" x2="${ox + Ln[0]}" y2="${oy}" stroke="currentColor" stroke-dasharray="3 3"/>
+        <line x1="${ox}" y1="${oy + 2}" x2="${ox + Ln[0]}" y2="${oy + 2}" stroke="currentColor" stroke-width="4"/><text x="${ox + Ln[0] - 4}" y="${oy + 22}" font-size="12" fill="currentColor" text-anchor="middle">Dᵢ′</text></g>
+      <text x="${ox + 175}" y="${oy + 22}" font-size="12" fill="var(--muted)">αᵢ</text>
+      <text x="${ox - ch[0] * 0.5 - 4}" y="${oy - ch[1] * 0.5 - 8}" font-size="12" fill="var(--text)" text-anchor="middle">chord at α</text>
+    </svg>`;
+    document.getElementById("tri1").innerHTML = svg;
+    UI.readout("#ro1", [["α", fmt(al / D, 3) + "°"], ["αᵢ = atan(−w/V∞)", fmt(ai / D, 3) + "°"], ["α_eff = α − αᵢ", fmt((al - ai) / D, 3) + "°"], ["Dᵢ′/L′ = sin αᵢ", fmt(Math.sin(ai), 3)], ["small-angle αᵢ ≈ −w/V∞", fmt(r / D, 3) + "°"]]);
+    UI.live("#lab1", `α_eff = ${fmt((al - ai) / D, 3)}°`);
+  });
+
+  // ---------- Interactive 2: horseshoe superposition ----------
+  UI.wire("#lab2", () => {
+    const N = Math.round(UI.val("hN")), shape = UI.seg("hShape");
+    const G = { ell: e => Math.sqrt(Math.max(0, 1 - e * e)), par: e => 1 - e * e, flat: e => Math.pow(Math.max(0, 1 - e ** 8), 0.5) }[shape];
+    // N horseshoes, nested symmetric: k-th spans |η| < η_k, η_k = (N − k + 1)/N ... strengths so stacked Γ matches G at midpoints
+    const edges = Array.from({ length: N }, (_, k) => 1 - k / N); // η of trailing legs (outer to inner)
+    const levels = edges.map((e, k) => G(k === N - 1 ? 0 : (edges[k] + edges[k + 1]) / 2)); // step heights
+    const step = e => { let g = 0; for (let k = 0; k < N; k++) if (Math.abs(e) < edges[k]) g = levels[k]; return g; };
+    const xs = UI.linspace(-1, 1, 801), gs = xs.map(step), tg = xs.map(G);
+    UI.plot("#hG", { xlabel: "2y/b", ylabel: "Γ/Γ₀", xlim: [-1.05, 1.05], ylim: [0, 1.15], h: 280, series: [{ x: xs, y: tg, c: 6, dash: true, label: "target" }, { x: xs, y: gs, c: 4, width: 2.2, label: "N horseshoes" }], legend: "bl" });
+    // trailing legs: at ±edge_k with strength dΓ_k = level_k − level_{k−1}
+    const legs = [];
+    for (let k = 0; k < N; k++) { const d = levels[k] - (k ? levels[k - 1] : 0); legs.push([-edges[k], d], [edges[k], -d]); } // dΓ as y increases
+    const b = 2; // so η = y (b/2 = 1)
+    const wfun = y0 => -legs.reduce((s, [y, dG]) => s + dG / (y0 - y), 0) / (4 * Math.PI); // w/Γ₀ with b = 2
+    const yw = UI.linspace(-0.995, 0.995, 600).filter(y => legs.every(([yy]) => Math.abs(y - yy) > 0.004));
+    const ww = yw.map(y => -wfun(y) * b); // −w/(Γ₀/b)
+    const clip = ww.map(v => Math.max(-0.5, Math.min(2, v)));
+    UI.plot("#hW", { xlabel: "2y/b", ylabel: "−w b/Γ₀", xlim: [-1.05, 1.05], ylim: [-0.5, 2], h: 280, series: [{ x: yw, y: clip, c: 4, width: 2 }], hlines: shape === "ell" ? [{ y: 0.5, label: "elliptic limit 1/2", c: 6 }] : [] });
+    const mid = ww[Math.floor(ww.length / 2)];
+    UI.readout("#ro2", [["horseshoes", N], ["trailing filaments", 2 * N], ["−w b/Γ₀ at the root", fmt(mid, 3)], ["exact (elliptic, N → ∞)", shape === "ell" ? "0.5 everywhere" : "varies along span"]]);
+    UI.live("#lab2", `N = ${N}`);
+  });
+
+  // ---------- Interactive 3: elliptic wing calculator ----------
+  UI.wire("#lab3", () => {
+    const AR = UI.val("eAR"), al = UI.val("eA") * D, a0l = UI.val("eA0") * D, V = UI.val("eV"), b = UI.val("eb"), rho = 1.225;
+    const a = 2 * Math.PI / (1 + 2 / AR), CL = a * (al - a0l), S = b * b / AR, q = 0.5 * rho * V * V;
+    const G0 = 2 * V * S * CL / (Math.PI * b), w = -G0 / (2 * b), ai = CL / (Math.PI * AR), CDi = CL * CL / (Math.PI * AR);
+    const ys = UI.linspace(-b / 2, b / 2, 301), Lp = ys.map(y => rho * V * G0 * Math.sqrt(Math.max(0, 1 - (2 * y / b) ** 2)));
+    UI.plot("#eG", { xlabel: "y (m)", ylabel: "L′ (N/m)", h: 300, series: [{ x: ys, y: Lp, c: 4, width: 2.4, fill: true, label: "L′(y) = ρV∞Γ(y)" }], notes: [{ x: 0, y: Lp[150] * 0.45, text: `w = ${fmt(w, 3)} m/s at every station`, anchor: "middle" }] });
+    UI.readout("#ro3", [["S = b²/AR", fmt(S) + " m²"], ["a = 2π/(1 + 2/AR)", fmt(a) + " /rad"], ["C_L", fmt(CL)], ["Γ₀", fmt(G0) + " m²/s"], ["w = −Γ₀/2b", fmt(w, 3) + " m/s"], ["αᵢ = C_L/πAR", fmt(ai / D, 3) + "°"], ["α_eff", fmt((al - ai) / D, 3) + "°"], ["C_Di", fmt(CDi)], ["L", fmt(q * S * CL) + " N"], ["Dᵢ", fmt(q * S * CDi) + " N"]]);
+    UI.live("#lab3", `C_L = ${fmt(CL, 3)}, C_Di = ${fmt(CDi, 3)}`);
+  });
+
+  // ---------- Interactive 4: lift curves and polars ----------
+  UI.wire("#lab4", () => {
+    const A1 = UI.val("pA1"), A2 = UI.val("pA2"), cd = UI.val("pcd"), e = UI.val("pe"), a0 = 2 * Math.PI, al0 = -2, clmax = 1.4;
+    const slope = AR => a0 / (1 + a0 / (Math.PI * e * AR));
+    const curve = a => { const xs = UI.linspace(-6, 24, 241); return { x: xs, y: xs.map(x => { const lin = a * (x - al0) * D; return lin < 0.8 * clmax ? lin : 0.8 * clmax + 0.2 * clmax * Math.tanh((lin - 0.8 * clmax) / (0.2 * clmax)); }) }; };
+    const c0 = curve(a0), c1 = curve(slope(A1)), c2 = curve(slope(A2));
+    UI.plot("#pL", { xlabel: "α (deg)", ylabel: "C_L", h: 300, xlim: [-6, 24], ylim: [-0.5, 1.6], series: [{ ...c0, c: 6, dash: true, label: "airfoil" }, { ...c1, c: 3, width: 2.2, label: `A: AR ${A1}` }, { ...c2, c: 4, width: 2.2, label: `B: AR ${A2}` }], legend: "br" });
+    const CLs = UI.linspace(-0.4, 1.4, 181);
+    UI.plot("#pD", { xlabel: "C_D", ylabel: "C_L", h: 300, series: [{ x: CLs.map(c => cd + c * c / (Math.PI * e * A1)), y: CLs, c: 3, width: 2.2, label: `A: AR ${A1}` }, { x: CLs.map(c => cd + c * c / (Math.PI * e * A2)), y: CLs, c: 4, width: 2.2, label: `B: AR ${A2}` }, { x: CLs.map(() => cd), y: CLs, c: 6, dash: true, label: "airfoil (AR → ∞)" }], legend: "br" });
+    UI.readout("#ro4", [["a_A", fmt(slope(A1)) + " /rad"], ["a_B", fmt(slope(A2)) + " /rad"], ["a/a₀ (A, B)", `${fmt(slope(A1) / a0, 3)}, ${fmt(slope(A2) / a0, 3)}`], ["C_D at C_L = 0.8 (A, B)", `${fmt(cd + 0.64 / (Math.PI * e * A1))}, ${fmt(cd + 0.64 / (Math.PI * e * A2))}`]]);
+    UI.live("#lab4", `a_B/a_A = ${fmt(slope(A2) / slope(A1), 3)}`);
+  });
+
+  AQL.practice("#gen", ["L1-angles", "L1-ell-num", "L1-ar-compare", "elliptic", "aspect", "p2-elliptic"]);
+})();
+</script>
+</body>
+</html>

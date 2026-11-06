@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>General Loading: the Fourier Solution · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body data-root="../../" data-section="aae334" data-gamma="off" data-l334="fourier-llt">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Lesson 2 · Lectures 14–15 · Exam 2</div>
+  <h1>General Loading: the Fourier Solution</h1>
+  <p class="lead">Elliptic loading is the ideal, but real wings are tapered, twisted or rectangular because they are cheaper to build or easier to make safe at stall. To analyze them we write the circulation as a Fourier sine series, which turns Prandtl's integro-differential equation into a set of linear equations, and gives the lift and induced drag in two short formulas.</p>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#series">The Fourier sine series for Γ</a></li>
+    <li><a href="#monoplane">Substituting into Prandtl's equation</a></li>
+    <li><a href="#solve">Solving: collocation and symmetry</a></li>
+    <li><a href="#lift">Lift coefficient</a></li>
+    <li><a href="#drag">Induced angle, induced drag, δ and e</a></li>
+    <li><a href="#rect">Example: the rectangular wing</a></li>
+    <li><a href="#key">Key equations</a></li>
+    <li><a href="#examples">Worked examples</a></li>
+    <li><a href="#check">Check your understanding</a></li>
+    <li><a href="#practice">Practice problem generator</a></li>
+  </ol></nav>
+
+  <h2 id="series"><span class="sec">Section 2.1</span>The Fourier sine series for Γ</h2>
+  <p>Change the spanwise variable from \(y\) to an angle θ:</p>
+  $$y = -\frac b2\cos\theta,\qquad y_0 = -\frac b2\cos\theta_0,\qquad 0 \le \theta \le \pi .$$
+  <p>θ = 0 is the left tip, θ = π/2 the root and θ = π the right tip. Since Γ must vanish at both tips, a sine series is the natural expansion:</p>
+  $$\Gamma(\theta) = 2bV_\infty\sum_{n=1}^{N}A_n\sin n\theta .$$
+  <p>Each term vanishes at θ = 0 and π. The factor \(2bV_\infty\) makes the coefficients \(A_n\) dimensionless. For the elliptic distribution, \(\sqrt{1-(2y/b)^2} = \sin\theta\), so \(\Gamma = \Gamma_0\sin\theta\): only the first term appears, with</p>
+  $$A_1 = \frac{\Gamma_0}{2bV_\infty},\qquad A_n = 0\ \ (n \ge 2).$$
+  <p>The higher harmonics are the departures from elliptic. Odd harmonics (n = 3, 5, …) are symmetric about the root; even ones are antisymmetric (they would describe, e.g., a rolling wing or a deflected aileron).</p>
+</div>
+
+<section class="lab" id="lab1">
+  <div class="lab-head"><span class="num">Interactive 1</span><span class="title">Build a loading from Fourier modes</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="m3">A₃/A₁ <output for="m3"></output></label><input type="range" id="m3" min="-0.3" max="0.3" step="0.005" value="0.12" data-dec="3"></div>
+    <div class="ctl"><label for="m5">A₅/A₁ <output for="m5"></output></label><input type="range" id="m5" min="-0.15" max="0.15" step="0.005" value="0.025" data-dec="3"></div>
+    <div class="ctl"><label for="m7">A₇/A₁ <output for="m7"></output></label><input type="range" id="m7" min="-0.1" max="0.1" step="0.005" value="0.005" data-dec="3"></div>
+    <div class="ctl"><label for="m2">A₂/A₁ (antisymmetric) <output for="m2"></output></label><input type="range" id="m2" min="-0.3" max="0.3" step="0.01" value="0" data-dec="2"></div>
+    <div class="presets"><span>Try</span>
+      <button data-preset='{"m3":0,"m5":0,"m7":0,"m2":0}'>elliptic</button>
+      <button data-preset='{"m3":0.12,"m5":0.024,"m7":0.004,"m2":0}'>rectangular AR 6</button>
+      <button data-preset='{"m3":-0.12,"m5":0.02,"m7":0,"m2":0}'>tip-heavy (λ → 0)</button>
+      <button data-preset='{"m3":0,"m5":0,"m7":0,"m2":0.2}'>rolling (A₂)</button>
+    </div>
+    <div id="ro1" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="mG"></div><figcaption>Γ/(2bV∞A₁) for the chosen modes (solid) and the elliptic sin θ (dashed). Same total lift: only A₁ makes lift.</figcaption></figure>
+    <figure><div id="mA"></div><figcaption>Induced angle α<sub>i</sub>/A₁ = Σ n(Aₙ/A₁) sin nθ / sin θ. It is flat (= 1) only for the ellipse.</figcaption></figure>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="monoplane"><span class="sec">Section 2.2</span>Substituting into Prandtl's equation</h2>
+  <div class="deriv"><b>Derivation</b>
+  <p>Differentiate the series and change variables with \(dy/d\theta = \tfrac b2\sin\theta\):</p>
+  $$\frac{d\Gamma}{d\theta} = 2bV_\infty\sum nA_n\cos n\theta\quad\Rightarrow\quad \frac{d\Gamma}{dy}\,dy = \frac{d\Gamma}{d\theta}\,d\theta = 2bV_\infty\sum nA_n\cos n\theta\,d\theta .$$
+  <p>With \(y_0 - y = \tfrac b2(\cos\theta - \cos\theta_0)\), the induced angle becomes</p>
+  $$\alpha_i(\theta_0) = \frac{1}{4\pi V_\infty}\int_0^\pi\frac{2bV_\infty\sum nA_n\cos n\theta}{\tfrac b2(\cos\theta - \cos\theta_0)}\,d\theta = \frac1\pi\sum nA_n\int_0^\pi\frac{\cos n\theta\,d\theta}{\cos\theta - \cos\theta_0}.$$
+  <p>Glauert's integral, \(\int_0^\pi \frac{\cos n\theta}{\cos\theta - \cos\theta_0}d\theta = \pi\frac{\sin n\theta_0}{\sin\theta_0}\), evaluates it:</p>
+  $$\alpha_i(\theta_0) = \sum_{n=1}^N nA_n\frac{\sin n\theta_0}{\sin\theta_0}.$$
+  <p>The effective-angle term is \(\Gamma/(\pi V_\infty c) = \frac{2b}{\pi c}\sum A_n\sin n\theta_0\). Adding the two:</p>
+  </div>
+  $$\boxed{\;\sum_{n=1}^{N}A_n\sin n\theta_0\left(\frac{2b}{\pi c(\theta_0)} + \frac{n}{\sin\theta_0}\right) = \alpha(\theta_0) - \alpha_{L=0}(\theta_0)\;}$$
+  <p>This is the <b class="term">monoplane equation</b>. For a section slope \(a_0\) other than 2π, replace \(2b/(\pi c)\) by \(4b/(a_0c)\). The integral is gone: the equation is algebraic and linear in the unknown \(A_n\).</p>
+
+  <h2 id="solve"><span class="sec">Section 2.3</span>Solving: collocation and symmetry</h2>
+  <p>Truncate the series to N terms and enforce the equation at N stations θ₀₁ … θ₀N. That gives N linear equations for N unknowns, \(\mathbf M\mathbf A = \boldsymbol\alpha - \boldsymbol\alpha_{L=0}\), with</p>
+  $$M_{mn} = \sin n\theta_{0m}\left(\frac{2b}{\pi c(\theta_{0m})} + \frac{n}{\sin\theta_{0m}}\right).$$
+  <p>Skip the tips (θ₀ = 0, π), where \(\sin\theta_0 = 0\). For a <b>symmetric</b> wing at zero sideslip, the loading is symmetric about the root, all even \(A_n\) vanish, and it is enough to use odd n = 1, 3, 5, … and stations on one half of the span, e.g. θ₀ = π/8, π/4, 3π/8, π/2 for four terms. The solution converges quickly; four to ten terms give C<sub>L</sub> and δ to engineering accuracy.</p>
+
+  <h2 id="lift"><span class="sec">Section 2.4</span>Lift coefficient</h2>
+  $$C_L = \frac{2}{V_\infty S}\int_{-b/2}^{b/2}\Gamma\,dy = \frac{2}{V_\infty S}\int_0^\pi 2bV_\infty\sum A_n\sin n\theta\;\frac b2\sin\theta\,d\theta = \frac{2b^2}{S}\sum A_n\int_0^\pi\sin n\theta\sin\theta\,d\theta .$$
+  <p>The sines are orthogonal: \(\int_0^\pi\sin n\theta\sin m\theta\,d\theta = \pi/2\) if m = n and 0 otherwise. Only n = 1 survives:</p>
+  $$\boxed{\;C_L = \pi\,AR\,A_1\;}$$
+  <p>The total lift depends on \(A_1\) alone. The other harmonics move lift around the span without changing the total.</p>
+
+  <h2 id="drag"><span class="sec">Section 2.5</span>Induced angle, induced drag, δ and e</h2>
+  <p>With \(\alpha_i(\theta) = \sum mA_m\sin m\theta/\sin\theta\) and \(\Gamma\,dy = 2bV_\infty\sum A_n\sin n\theta\,\tfrac b2\sin\theta\,d\theta\):</p>
+  $$C_{D_i} = \frac{2}{V_\infty S}\int\Gamma\alpha_i\,dy = \frac{2b^2}{S}\sum_n\sum_m mA_nA_m\int_0^\pi\sin n\theta\sin m\theta\,d\theta = \pi AR\sum_{n=1}^N nA_n^2 .$$
+  <p>Factor out \(A_1^2\) and use \(A_1 = C_L/(\pi AR)\):</p>
+  $$C_{D_i} = \pi AR A_1^2\left[1 + \sum_{n\ge2}n\left(\frac{A_n}{A_1}\right)^2\right] = \frac{C_L^2}{\pi AR}(1 + \delta) = \frac{C_L^2}{\pi e AR},$$
+  $$\delta = \sum_{n=2}^N n\left(\frac{A_n}{A_1}\right)^2 \ \ (\text{induced drag factor}),\qquad e = \frac1{1+\delta}\ \ (\text{span efficiency factor}).$$
+  <p>Since δ is a sum of squares, δ ≥ 0 and e ≤ 1, with equality only for elliptic loading: <b>for a given span and lift, the elliptic distribution minimizes the induced drag</b>. The drag polar of the wing is \(C_D = C_{D,0} + C_L^2/(\pi eAR)\): profile (skin friction plus form) drag plus induced drag, or zero-lift drag plus drag due to lift.</p>
+  <p>The general lift slope is written in the same spirit as \(a = a_0/[1 + (a_0/\pi AR)(1 + \tau)]\), where τ is another small factor found from the \(A_n\). Unlike δ, τ is not negligible (it is about 0.1–0.25 for rectangular wings).</p>
+
+  <h2 id="rect"><span class="sec">Section 2.6</span>Example: the rectangular wing</h2>
+  <p>Take an untwisted rectangular wing (c constant) with a symmetric thin airfoil (α<sub>L=0</sub> = 0, a₀ = 2π) and AR = b/c = 6. Write μ = πc/(2b) = π/12 and divide the monoplane equation by 1/μ:</p>
+  $$\sum_{n=1,3,5,7}\hat A_n\sin n\theta_0\left(1 + \frac{n\mu}{\sin\theta_0}\right) = \alpha,\qquad \hat A_n = A_n/\mu .$$
+  <p>At θ₀ = π/8, π/4, 3π/8, π/2 this is the 4 × 4 system below (Kuethe and Chow's form). Its solution is \(\hat A_1 = 0.9174\alpha\), \(\hat A_3 = 0.1104\alpha\), \(\hat A_5 = 0.0218\alpha\), \(\hat A_7 = 0.0038\alpha\), so \(A_1 = 0.2402\alpha\) and</p>
+  $$C_L = \pi(6)(0.2402\alpha) = 4.5273\,\alpha,\qquad \frac{C_L}{2\pi\alpha} = 0.72,\qquad \delta = 0.0464,\qquad e = 0.956,\qquad C_{D_i} = 1.1378\,\alpha^2 .$$
+  <p>The rectangular wing has only 4.6% more induced drag than an elliptic wing of the same AR and C<sub>L</sub>: not a huge penalty, but a few percent of fuel matters to an airline.</p>
+</div>
+
+<section class="lab" id="lab2">
+  <div class="lab-head"><span class="num">Interactive 2</span><span class="title">The 4 × 4 system for a rectangular wing</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="rAR">Aspect ratio b/c <output for="rAR"></output></label><input type="range" id="rAR" min="3" max="14" step="0.5" value="6" data-dec="1"></div>
+    <div class="ctl"><label for="rA">α <output for="rA"></output></label><input type="range" id="rA" min="1" max="12" step="0.5" value="10" data-dec="1" data-unit="°"></div>
+    <div id="ro2" class="readout"></div>
+  </div>
+  <div class="views"><div id="mat"></div></div>
+</section>
+
+<section class="lab" id="lab3">
+  <div class="lab-head"><span class="num">Interactive 3</span><span class="title">Lifting-line solver: any taper and twist</span><span class="live"></span></div>
+  <div class="controls">
+    <div class="ctl"><label for="sAR">Aspect ratio <output for="sAR"></output></label><input type="range" id="sAR" min="3" max="20" step="0.5" value="8" data-dec="1"></div>
+    <div class="ctl"><label for="sL">Taper ratio λ = c<sub>t</sub>/c<sub>r</sub> <output for="sL"></output></label><input type="range" id="sL" min="0.05" max="1.5" step="0.05" value="0.4" data-dec="2"></div>
+    <div class="ctl"><label for="sT">Linear twist at the tip (− = washout) <output for="sT"></output></label><input type="range" id="sT" min="-6" max="4" step="0.5" value="0" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="sA">Root α − α<sub>L=0</sub> <output for="sA"></output></label><input type="range" id="sA" min="0" max="12" step="0.5" value="6" data-dec="1" data-unit="°"></div>
+    <div class="ctl"><label for="sN">Odd terms N <output for="sN"></output></label><input type="range" id="sN" min="1" max="20" step="1" value="10" data-dec="0"></div>
+    <div id="ro3" class="readout"></div>
+  </div>
+  <div class="views two-up">
+    <figure><div id="sG"></div><figcaption>Γ/(2bV∞) (solid) and the elliptic loading with the same lift (dashed).</figcaption></figure>
+    <figure><div id="sI"></div><figcaption>Induced angle α<sub>i</sub>(y) in degrees. For elliptic loading it would be the flat line C<sub>L</sub>/(πAR).</figcaption></figure>
+  </div>
+  <div id="sTab"></div>
+</section>
+
+<div class="prose">
+  <h2 id="key"><span class="sec">Section 2.7</span>Key equations</h2>
+</div>
+<div class="keyeq">
+  <div><h4>Series and solution</h4>
+    $$y = -\tfrac b2\cos\theta,\qquad \Gamma = 2bV_\infty\sum A_n\sin n\theta$$
+    $$\sum A_n\sin n\theta_0\left(\frac{2b}{\pi c} + \frac{n}{\sin\theta_0}\right) = \alpha - \alpha_{L=0}$$
+    $$\alpha_i(\theta) = \sum nA_n\frac{\sin n\theta}{\sin\theta}$$</div>
+  <div><h4>Results</h4>
+    $$C_L = \pi AR\,A_1,\qquad C_{D_i} = \pi AR\sum nA_n^2$$
+    $$\delta = \sum_{n\ge2}n\left(\frac{A_n}{A_1}\right)^2,\qquad e = \frac{1}{1+\delta}$$
+    $$C_{D_i} = \frac{C_L^2}{\pi AR}(1+\delta) = \frac{C_L^2}{\pi eAR}$$</div>
+</div>
+<div class="prose">
+  <div class="note warn"><b>Calculator traps</b>Evaluate sin nθ in radians. At the root, θ = π/2 and sin nθ = +1, −1, +1, −1 for n = 1, 3, 5, 7, so Γ(0) = 2bV∞(A₁ − A₃ + A₅ − A₇) and α<sub>i</sub>(0) = A₁ − 3A₃ + 5A₅ − 7A₇. δ starts at n = 2 (or 3 for symmetric loading), never n = 1.</div>
+
+  <h2 id="examples"><span class="sec">Section 2.8</span>Worked examples</h2>
+</div>
+<div class="tabs">
+  <div class="tablist"><span class="tab-title">Worked examples</span><button>Ex 2.1 · C_L, δ, e</button><button>Ex 2.2 · Root loading</button><button>Ex 2.3 · A station</button><button>Ex 2.4 · Rectangular wing</button></div>
+  <div class="panel">
+    <p>A wing of AR 7 has A₁ = 0.0412, A₃ = 0.0049, A₅ = 0.0011 (even terms zero). Find C<sub>L</sub>, δ, e and C<sub>Di</sub>.</p>
+    <details><summary>Solution</summary>
+    <p>C<sub>L</sub> = π(7)(0.0412) = 0.9061. δ = 3(0.0049/0.0412)² + 5(0.0011/0.0412)² = 3(0.01414) + 5(0.000713) = 0.04243 + 0.00356 = 0.0460. e = 1/1.0460 = 0.956.</p>
+    <p>C<sub>Di</sub> = 0.9061²(1.0460)/(7π) = 0.03905. Check with πARΣnAₙ²: 21.99(0.001697 + 0.0000720 + 0.0000061) = 0.03905 ✓.</p></details>
+  </div>
+  <div class="panel">
+    <p>For the wing of Ex 2.1 with b = 12 m flying at 55 m/s at sea level, find Γ and L′ at the root.</p>
+    <details><summary>Solution</summary>
+    <p>θ = π/2: Γ(0) = 2(12)(55)(0.0412 − 0.0049 + 0.0011) = 1320(0.0374) = 49.37 m²/s. L′(0) = ρV∞Γ = 1.225(55)(49.37) = 3326 N/m.</p></details>
+  </div>
+  <div class="panel">
+    <p>For the same wing find the induced angle at 2y/b = 0.5 (right wing).</p>
+    <details><summary>Solution</summary>
+    <p>cos θ = −0.5, θ = 120° = 2.0944 rad. sin θ = 0.8660, sin 3θ = sin 360° = 0, sin 5θ = sin 600° = −0.8660.</p>
+    <p>α<sub>i</sub> = [0.0412(0.8660) + 3(0.0049)(0) + 5(0.0011)(−0.8660)]/0.8660 = 0.0412 − 0.0055 = 0.0357 rad = 2.05°. At the root it is 0.0412 − 0.0147 + 0.0055 = 0.0320 rad = 1.83°: not uniform, because the loading is not elliptic.</p></details>
+  </div>
+  <div class="panel">
+    <p>Using the AR 6 rectangular-wing results, find C<sub>L</sub>, C<sub>Di</sub> and the ratio of induced drag to that of an elliptic wing at α = 10°.</p>
+    <details><summary>Solution</summary>
+    <p>α = 0.17453 rad. C<sub>L</sub> = 4.5273(0.17453) = 0.7902. C<sub>Di</sub> = 1.1378(0.17453)² = 0.03466. Elliptic wing at the same C<sub>L</sub>: 0.7902²/(6π) = 0.03312; ratio 1.0464 = 1 + δ.</p></details>
+  </div>
+</div>
+
+<div class="prose">
+  <h2 id="check"><span class="sec">Section 2.9</span>Check your understanding</h2>
+  <div class="selfcheck">
+    <div class="sc"><p>Sketch three drag polars: elliptic AR 10, elliptic AR 20 and a "general" loading with AR 10.</p><details><summary>Answer</summary><p>All share C<sub>D0</sub> at C<sub>L</sub> = 0. The elliptic AR 20 parabola is the narrowest; the general AR 10 wing (e &lt; 1) is slightly wider than the elliptic AR 10 one. Aspect ratio has a much stronger effect than δ.</p></details></div>
+    <div class="sc"><p>Why do the even coefficients vanish for a symmetric wing?</p><details><summary>Answer</summary><p>sin nθ with n even is antisymmetric about θ = π/2, so it would put more lift on one wing than the other.</p></details></div>
+    <div class="sc"><p>A student computes δ = Σ n(Aₙ/A₁)² including n = 1. What answer do they get for an elliptic wing, and what is wrong?</p><details><summary>Answer</summary><p>δ = 1 and e = 0.5, double the true induced drag. The sum for δ starts at n = 2; the n = 1 term is the "1" in (1 + δ).</p></details></div>
+    <div class="sc"><p>Which wing has e = 1 exactly, and why can no planar wing beat it?</p><details><summary>Answer</summary><p>The elliptically loaded one. Any other loading has some Aₙ ≠ 0 for n ≥ 2, each adding nAₙ² &gt; 0 to C<sub>Di</sub> without adding lift.</p></details></div>
+  </div>
+
+  <h2 id="practice"><span class="sec">Section 2.10</span>Practice problem generator</h2>
+  <p>Conceptual and numerical problems with full solutions. Untick topics to focus.</p>
+</div>
+<div id="gen"></div>
+</main>
+<script src="../../assets/js/gasdyn.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="../../assets/js/aae334/engine.js"></script>
+<script src="../../assets/js/aae334/gen-exam2.js"></script>
+<script src="../../assets/js/aae334/gen-lessons.js"></script>
+<script src="../../assets/js/aae334/lessons.js"></script>
+<script>
+(function () {
+  const D = Math.PI / 180, fmt = UI.fmt;
+  const th = UI.linspace(0.002, Math.PI - 0.002, 400), eta = th.map(t => -Math.cos(t));
+  // ---------- Interactive 1 ----------
+  UI.wire("#lab1", () => {
+    const r = { 1: 1, 2: UI.val("m2"), 3: UI.val("m3"), 5: UI.val("m5"), 7: UI.val("m7") }, ns = [1, 2, 3, 5, 7];
+    const G = th.map(t => ns.reduce((s, n) => s + r[n] * Math.sin(n * t), 0)), E = th.map(Math.sin);
+    const ai = th.map(t => ns.reduce((s, n) => s + n * r[n] * Math.sin(n * t), 0) / Math.sin(t));
+    UI.plot("#mG", { xlabel: "2y/b", ylabel: "Γ/(2bV∞A₁)", xlim: [-1, 1], h: 280, series: [{ x: eta, y: E, c: 6, dash: true, label: "elliptic" }, { x: eta, y: G, c: 4, width: 2.3, label: "your loading" }], legend: "bl" });
+    UI.plot("#mA", { xlabel: "2y/b", ylabel: "αᵢ/A₁", xlim: [-1, 1], ylim: [-1, 3], h: 280, series: [{ x: eta, y: ai.map(v => Math.max(-1, Math.min(3, v))), c: 4, width: 2.3 }], hlines: [{ y: 1, label: "elliptic", c: 6 }] });
+    const delta = ns.slice(1).reduce((s, n) => s + n * r[n] * r[n], 0);
+    UI.readout("#ro1", [["δ = Σ n(Aₙ/A₁)²", fmt(delta, 4)], ["e = 1/(1 + δ)", fmt(1 / (1 + delta), 4)], ["C_Di / elliptic", fmt(1 + delta, 4)], ["root Γ/(2bV∞A₁)", fmt(1 - r[3] + r[5] - r[7], 4)]]);
+    UI.live("#lab1", `e = ${fmt(1 / (1 + delta), 3)}`);
+  });
+  // ---------- Interactive 2 ----------
+  UI.wire("#lab2", () => {
+    const AR = UI.val("rAR"), al = UI.val("rA") * D, mu = Math.PI / (2 * AR), ns = [1, 3, 5, 7], ths = [1, 2, 3, 4].map(m => m * Math.PI / 8);
+    const M = ths.map(t => ns.map(n => Math.sin(n * t) * (1 + n * mu / Math.sin(t)))), Ah = AQH.solve(M, [1, 1, 1, 1]);
+    const A = Ah.map(x => x * mu * al), CL = Math.PI * AR * A[0], delta = [3, 5, 7].reduce((s, n, k) => s + n * (A[k + 1] / A[0]) ** 2, 0);
+    const lab = ["π/8", "π/4", "3π/8", "π/2"];
+    let h = `<table class="data"><thead><tr><th>θ₀</th><th>Â₁</th><th>Â₃</th><th>Â₅</th><th>Â₇</th><th>= </th></tr></thead><tbody>`;
+    M.forEach((r, i) => { h += `<tr><td>${lab[i]}</td>${r.map(x => `<td>${x.toFixed(4)}</td>`).join("")}<td>α</td></tr>`; });
+    h += `</tbody></table><p class="aq-muted" style="margin:.5rem 0 0">Each entry is sin nθ₀(1 + nμ/sin θ₀), with μ = πc/(2b) = π/(2AR) = ${mu.toFixed(4)}. Solution: Â₁ = ${Ah[0].toFixed(4)}α, Â₃ = ${Ah[1].toFixed(4)}α, Â₅ = ${Ah[2].toFixed(4)}α, Â₇ = ${Ah[3].toFixed(4)}α, and Aₙ = μÂₙ.</p>`;
+    document.getElementById("mat").innerHTML = h;
+    UI.readout("#ro2", [["C_L/α", fmt(CL / al) + " /rad"], ["C_L", fmt(CL)], ["slope / 2π", fmt(CL / al / (2 * Math.PI), 4)], ["δ", fmt(delta, 4)], ["e", fmt(1 / (1 + delta), 4)], ["C_Di", fmt(CL * CL * (1 + delta) / (Math.PI * AR))]]);
+    UI.live("#lab2", `C_L = ${fmt(CL / al, 5)} α`);
+  });
+  // ---------- Interactive 3 ----------
+  UI.wire("#lab3", () => {
+    const AR = UI.val("sAR"), lam = UI.val("sL"), tw = UI.val("sT"), al = UI.val("sA"), N = Math.round(UI.val("sN"));
+    const L = AQH.liftingLine({ AR, lam, alphaDeg: al, twistDeg: tw, N });
+    const ns = L.A.map((_, k) => 2 * k + 1), gam = th.map(t => ns.reduce((s, n, j) => s + L.A[j] * Math.sin(n * t), 0));
+    const ai = th.map(t => ns.reduce((s, n, j) => s + n * L.A[j] * Math.sin(n * t), 0) / Math.sin(t) / D);
+    UI.plot("#sG", { xlabel: "2y/b", ylabel: "Γ/(2bV∞)", xlim: [-1, 1], h: 280, series: [{ x: eta, y: th.map(t => L.A[0] * Math.sin(t)), c: 6, dash: true, label: "elliptic, same C_L" }, { x: eta, y: gam, c: 4, width: 2.3, label: "this wing" }], legend: "bl" });
+    const lo = Math.min(...ai), hi = Math.max(...ai), pad = Math.max(0.2, 0.1 * (hi - lo));
+    UI.plot("#sI", { xlabel: "2y/b", ylabel: "αᵢ (deg)", xlim: [-1, 1], ylim: [Math.min(0, lo - pad), hi + pad], h: 280, series: [{ x: eta, y: ai, c: 4, width: 2.3 }], hlines: [{ y: L.CL / (Math.PI * AR) / D, label: "C_L/(πAR)", c: 6 }] });
+    UI.readout("#ro3", [["C_L", fmt(L.CL)], ["C_L/(α − α_L=0)", L.CL ? fmt(L.CL / (al * D)) + " /rad" : "—"], ["δ", fmt(L.delta, 4)], ["e", fmt(L.e, 4)], ["C_Di", fmt(L.CDi)]]);
+    UI.table("#sTab", ["n", ...ns.slice(0, 8)], [["Aₙ", ...L.A.slice(0, 8).map(x => x.toExponential(3))], ["n(Aₙ/A₁)²", ...ns.slice(0, 8).map((n, j) => (n * (L.A[j] / L.A[0]) ** 2).toExponential(2))]]);
+    UI.live("#lab3", `δ = ${fmt(L.delta, 3)}`);
+  });
+  AQL.practice("#gen", ["L2-concept", "L2-station", "L2-rect", "llt-coef", "p2-llt"]);
+})();
+</script>
+</body>
+</html>

@@ -386,3 +386,12 @@ ul.checklist li { margin: .25rem 0; }
   .aq, .aq-q { border: none; box-shadow: none; }
   body.printing-exam main > *:not(.aq-exam) { display: none !important; }
 }
+
+/* ---------- AAE 334 lessons ---------- */
+.selfcheck { display: grid; gap: .6rem; margin: 1rem 0; }
+.selfcheck .sc { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .6rem .9rem; }
+.selfcheck .sc > p:first-child { margin: 0 0 .3rem; }
+.selfcheck .scn { color: var(--accent); }
+.selfcheck details > summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: .9rem; }
+.deriv { border-left: 3px solid var(--accent-2); padding: .2rem 0 .2rem 1rem; margin: 1rem 0; }
+.deriv > b:first-child { display: block; font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-2); margin-bottom: .2rem; }

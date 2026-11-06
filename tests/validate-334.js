@@ -8,6 +8,7 @@ global.GD = GD;
 const AQ = require("../assets/js/aae334/engine.js");
 global.AQ = AQ;
 const H = require("../assets/js/aae334/gen-exam2.js");
+require("../assets/js/aae334/gen-lessons.js");
 let n = 0, fails = 0;
 function check(name, got, want, tol) {
   n++; const ok = Math.abs(got - want) <= tol * Math.abs(want || 1); if (!ok) fails++;

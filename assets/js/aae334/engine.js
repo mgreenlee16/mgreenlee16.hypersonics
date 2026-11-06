@@ -141,12 +141,12 @@
   function drill(target, opts = {}) {
     const el = typeof target === "string" ? document.querySelector(target) : target;
     if (!el) return;
-    const all = ORDER.filter(id => !opts.exam || TOPICS[id].exam === opts.exam);
+    const all = opts.ids ? opts.ids.filter(id => TOPICS[id]) : ORDER.filter(id => !opts.exam || TOPICS[id].exam === opts.exam);
     let active = all.slice(), cur = null, nS = 0, sumS = 0;
     const groups = [];
     all.forEach(id => { if (!groups.includes(TOPICS[id].group)) groups.push(TOPICS[id].group); });
     el.className = "aq aq-drill";
-    el.innerHTML = `<div class="aq-head"><b>Topic drill</b><span class="aq-stats"></span></div>
+    el.innerHTML = `<div class="aq-head"><b>${opts.title || "Topic drill"}</b><span class="aq-stats"></span></div>
       <div class="aq-topics">${groups.map(g => `<span class="grp">${g}</span>` + all.filter(id => TOPICS[id].group === g).map(id => `<label><input type="checkbox" value="${id}" checked>${TOPICS[id].title}</label>`).join("")).join("")}
         <span class="aq-quick"><button type="button" data-f="I">Part I only</button><button type="button" data-f="II">Part II only</button><button type="button" data-f="all">All</button></span></div>
       <div class="aq-body"></div>`;
