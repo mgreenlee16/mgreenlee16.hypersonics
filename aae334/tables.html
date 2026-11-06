@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compressible Flow Tables · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="aae334" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Reference</div>
+  <h1>Compressible Flow Tables</h1>
+  <p class="lead">Isentropic-flow and normal-shock tables for air (γ = 1.4), laid out like the textbook appendices the exams allow. On the exam, use the <b>closest entry</b> and do not interpolate; the lookup below finds that entry for you, so you can practice the same way.</p>
+  <nav class="toc"><b>Contents</b><ol><li><a href="#lookup">Closest-entry lookup</a></li><li><a href="#isen">Isentropic flow</a></li><li><a href="#shock">Normal shock</a></li></ol></nav>
+  <h2 id="lookup"><span class="sec">Lookup</span>Closest-entry lookup</h2>
+</div>
+<section class="calc">
+  <div class="inputs">
+    <label>Table<select id="lt"><option value="isen">Isentropic flow</option><option value="shock">Normal shock</option></select></label>
+    <label>Known column<select id="lc"></select></label>
+    <label>Value<input type="number" id="lv" value="2" step="any"></label>
+    <label>Branch (A/A* only)<select id="lb"><option value="sup">supersonic</option><option value="sub">subsonic</option></select></label>
+  </div>
+  <div class="results" id="lo"></div>
+</section>
+<div class="prose"><h2 id="isen"><span class="sec">Table A</span>Isentropic flow (γ = 1.4)</h2></div>
+<div class="ftable" id="ti"></div>
+<div class="prose"><h2 id="shock"><span class="sec">Table B</span>Normal shock (γ = 1.4)</h2></div>
+<div class="ftable" id="ts"></div>
+<div class="prose"><p>Values are computed from the exact relations to four significant figures. Steps: 0.02 in M up to 3, 0.05 up to 5, 0.5 up to 10. <a href="exam2.html">← Exam 2 review</a></p></div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script>
+(function () {
+  const g = 1.4, { isen, normalShock } = GD;
+  const Ms = [];
+  for (let M = 0; M < 3 - 1e-9; M += 0.02) Ms.push(+M.toFixed(2));
+  for (let M = 3; M < 5 - 1e-9; M += 0.05) Ms.push(+M.toFixed(2));
+  for (let M = 5; M <= 10 + 1e-9; M += 0.5) Ms.push(+M.toFixed(2));
+  const p4 = x => (isFinite(x) ? (x >= 1e4 ? x.toExponential(3) : x.toPrecision(4)) : "∞");
+  const TAB = {
+    isen: { head: ["M", "p₀/p", "ρ₀/ρ", "T₀/T", "A/A*"], keys: ["M", "p0_p", "rho0_rho", "T0_T", "A"],
+      rows: Ms.map(M => ({ M, p0_p: isen.p0_p(M, g), rho0_rho: isen.rho0_rho(M, g), T0_T: isen.T0_T(M, g), A: M > 0 ? isen.A_Astar(M, g) : Infinity })) },
+    shock: { head: ["M₁", "p₂/p₁", "ρ₂/ρ₁", "T₂/T₁", "p₀₂/p₀₁", "p₀₂/p₁", "M₂"], keys: ["M", "p2_p1", "rho2_rho1", "T2_T1", "p02_p01", "p02_p1", "M2"],
+      rows: Ms.filter(M => M >= 1).map(M => Object.assign({ M }, normalShock(M, g))) },
+  };
+  const render = (id, t, hit) => {
+    document.getElementById(id).innerHTML = `<table class="data"><thead><tr>${t.head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${t.rows.map((r, i) =>
+      `<tr${i === hit ? ' class="hit" id="hit-' + id + '"' : ""}>${t.keys.map(k => `<td>${k === "M" ? r.M.toFixed(2) : p4(r[k])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  };
+  render("ti", TAB.isen); render("ts", TAB.shock);
+  const lt = document.getElementById("lt"), lc = document.getElementById("lc"), lv = document.getElementById("lv"), lb = document.getElementById("lb");
+  const fill = () => { const t = TAB[lt.value]; lc.innerHTML = t.keys.map((k, i) => `<option value="${k}">${t.head[i]}</option>`).join(""); };
+  function look() {
+    const t = TAB[lt.value], k = lc.value, v = parseFloat(lv.value);
+    if (!isFinite(v)) return;
+    let best = -1, d = Infinity;
+    t.rows.forEach((r, i) => {
+      if (k === "A" && ((lb.value === "sup") !== (r.M >= 1))) return;
+      const dd = Math.abs(r[k] - v); if (isFinite(dd) && dd < d) { d = dd; best = i; }
+    });
+    if (best < 0) return;
+    render(lt.value === "isen" ? "ti" : "ts", t, best);
+    const r = t.rows[best];
+    UI.table("#lo", ["Closest entry", "Value"], t.keys.map((key, i) => [t.head[i], key === "M" ? r.M.toFixed(2) : p4(r[key])]));
+    const el = document.getElementById("hit-" + (lt.value === "isen" ? "ti" : "ts"));
+    if (el) el.parentNode.parentNode.parentNode.scrollTop = el.offsetTop - 40;
+  }
+  lt.addEventListener("change", () => { fill(); look(); }); [lc, lv, lb].forEach(e => { e.addEventListener("input", look); e.addEventListener("change", look); });
+  fill(); look();
+})();
+</script>
+</body>
+</html>

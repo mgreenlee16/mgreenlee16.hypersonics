@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam 2 Review · AAE 334 · Learn Hypersonics</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-section="aae334" data-gamma="off">
+<main>
+<div class="prose">
+  <div class="eyebrow">AAE 334 · Midterm Exam 2</div>
+  <h1>Exam 2 Review</h1>
+  <p class="lead">Finite wings, longitudinal static stability, and compressible flow (thermodynamics, isentropic flow, normal and moving shocks, Pitot probes). This page has the scope, an objectives checklist, a summary formula sheet, the trend tables, the mistakes that cost points, worked exam-style problems, and a practice-exam generator that builds a new exam in the real format each time.</p>
+  <div class="note"><b>Scope (Fall 2026)</b>Lectures 14–22 and HW 6–9. Part I is qualitative (about 50 points: multiple choice, check boxes, matching and sketches); Part II is quantitative (about 50 points: worked problems). Nozzles appear only through isentropic or normal-shock analysis: no area–Mach relation (A/A*) and no classification of nozzle flow type. There are no horseshoe-vortex airplane models. Closed book and notes, with the equation sheet and the compressible flow tables (use the closest entry; do not interpolate).</div>
+  <nav class="toc"><b>Contents</b><ol>
+    <li><a href="#objectives">Objectives checklist</a></li>
+    <li><a href="#sheet">Formula summary</a></li>
+    <li><a href="#trends">Trend tables</a></li>
+    <li><a href="#mistakes">Mistakes that cost points</a></li>
+    <li><a href="#worked">Worked exam-style problems</a></li>
+    <li><a href="#exam">Practice exam generator</a></li>
+    <li><a href="#drill">Topic drill</a></li>
+    <li><a href="#progress">Your progress</a></li>
+    <li><a href="#study">How to study for it</a></li>
+  </ol></nav>
+
+  <h2 id="objectives"><span class="sec">Part 1</span>Objectives checklist</h2>
+  <p>Tick each item when you can do it on a blank sheet with only the equation sheet and tables. Ticks are saved in this browser.</p>
+  <h3>Finite wings (lectures 13–16, HW 6)</h3>
+  <ul class="checklist ck" data-ck="W">
+    <li>Relate the geometric, effective and induced angles of attack in Prandtl's lifting-line equation.</li>
+    <li>Compute C<sub>L</sub>, α<sub>i</sub>, downwash, C<sub>Di</sub>, D<sub>i</sub> and Γ₀ for an elliptically loaded wing.</li>
+    <li>Given Γ(y) or the Fourier coefficients Aₙ, find the lift, the downwash or induced angle at a station, δ, e and C<sub>Di</sub>.</li>
+    <li>Explain the effect of aspect ratio on the lift slope and induced drag, and sketch lift curves and drag polars for different AR.</li>
+    <li>Match tapered, swept and twisted planforms to their c<sub>ℓ</sub>(y) and L′(y) distributions; explain tip stall and three ways to mitigate it.</li>
+    <li>Compare the lift slope, stall angle and C<sub>L,max</sub> of a delta wing and a high-AR wing; explain vortex lift and vortex breakdown.</li>
+  </ul>
+  <h3>Longitudinal static stability (HW 7)</h3>
+  <ul class="checklist ck" data-ck="S">
+    <li>Build C<sub>L</sub> and C<sub>M,cg</sub> for a wing–tail airplane, including downwash, ε₀, i<sub>w</sub> and i<sub>t</sub>.</li>
+    <li>Find C<sub>Lα</sub>, C<sub>Mα</sub>, the neutral point, the static margin, V<sub>H</sub>, and the CG for a required static margin.</li>
+    <li>Find the trim condition (C<sub>M,cg</sub> = 0): trim C<sub>L</sub>, α, the wing and tail lift coefficients, and the tail incidence.</li>
+    <li>Read a C<sub>M,cg</sub>–C<sub>L</sub> (or α) plot: stability, trim, and what changes when the CG, tail size or i<sub>t</sub> change.</li>
+  </ul>
+  <h3>Compressible flow (lectures 19–22, HW 8–9)</h3>
+  <ul class="checklist ck" data-ck="C">
+    <li>Distinguish adiabatic, reversible and isentropic processes, internal energy and enthalpy; know γ for air and monatomic gases.</li>
+    <li>Use the isentropic relations (p, ρ, T ratios); compute Δs for an ideal gas; find stagnation and sonic conditions.</li>
+    <li>Given T₀, p₀ and M (or p), find T, p, ρ, u, a, h, h₀ anywhere in an isentropic nozzle or tunnel.</li>
+    <li>Use the normal-shock relations (equations or tables) in both directions, and the entropy change across a shock.</li>
+    <li>Change frames to analyze a moving shock or blast wave; find the induced velocity and, for a reflected shock, the new state.</li>
+    <li>Find M and V from a Pitot probe in subsonic flow (isentropic) and supersonic flow (Rayleigh–Pitot), with a thermocouple for T₀.</li>
+    <li>Fill in increase / decrease / same tables for shocks and isentropic nozzle flow, and explain each entry physically.</li>
+  </ul>
+
+  <h2 id="sheet"><span class="sec">Part 2</span>Formula summary</h2>
+  <p>This is my own summary of the relations used in this unit, not the official equation sheet. Air: γ = 1.4, R = 287 J/(kg K) = 1716 ft·lbf/(slug·°R), c<sub>p</sub> = 1004.5 J/(kg K) = 6006 ft·lbf/(slug·°R).</p>
+</div>
+<div class="keyeq wide">
+  <div><h4>Lifting line and elliptic loading</h4>
+    $$\alpha(y_0) = \frac{\Gamma(y_0)}{\pi V_\infty c(y_0)} + \alpha_{L=0}(y_0) + \frac{1}{4\pi V_\infty}\int_{-b/2}^{b/2}\frac{d\Gamma/dy}{y_0 - y}\,dy$$
+    $$\text{elliptic: } w = -\frac{\Gamma_0}{2b},\ \alpha_i = \frac{C_L}{\pi AR},\ C_{D_i} = \frac{C_L^2}{\pi AR},\ C_L = \frac{\pi b\Gamma_0}{2V_\infty S}$$</div>
+  <div><h4>Fourier form</h4>
+    $$\Gamma(\theta) = 2bV_\infty\sum A_n\sin n\theta,\quad y = -\tfrac b2\cos\theta$$
+    $$C_L = \pi AR\,A_1,\quad \delta = \sum_{n\ge3}n\left(\frac{A_n}{A_1}\right)^2,\quad C_{D_i} = \frac{C_L^2(1+\delta)}{\pi AR},\quad e = \frac{1}{1+\delta}$$
+    $$\alpha_i(\theta) = \sum nA_n\frac{\sin n\theta}{\sin\theta},\qquad L' = \rho_\infty V_\infty\Gamma$$</div>
+  <div><h4>Aspect ratio, drag polar</h4>
+    $$a = \frac{a_0}{1 + a_0/(\pi e AR)},\quad C_D = C_{D0} + \frac{C_L^2}{\pi eAR},\quad \left(\frac LD\right)_{\max} = \frac12\sqrt{\frac{\pi eAR}{C_{D0}}}$$
+    $$\text{Schrenk: } L'(y) = \tfrac12\left[c(y) + \tfrac{4S}{\pi b}\sqrt{1 - (2y/b)^2}\right]\frac{L}{S}$$</div>
+  <div><h4>Wing–tail airplane</h4>
+    $$C_{L,w} = a_w(\alpha + i_w - \alpha_{0,w}),\quad C_{L,t} = a_t[(1 - \tfrac{d\epsilon}{d\alpha})\alpha + i_t - \epsilon_0],\quad \tfrac{d\epsilon}{d\alpha} = \tfrac{\kappa a_w}{\pi AR_w}$$
+    $$C_L = C_{L,w} + \tfrac{S_t}{S_w}C_{L,t},\quad C_{M,cg} = C_{M,ac,w} + C_L(\bar x_{cg} - \bar x_{ac}) - V_HC_{L,t},\quad V_H = \tfrac{S_t\ell_t}{S_w\bar c}$$</div>
+  <div><h4>Stability and trim</h4>
+    $$C_{L\alpha} = a_w + \tfrac{S_t}{S_w}a_t(1 - \tfrac{d\epsilon}{d\alpha}),\quad C_{M\alpha} = C_{L\alpha}(\bar x_{cg} - \bar x_{ac}) - V_Ha_t(1 - \tfrac{d\epsilon}{d\alpha})$$
+    $$\bar x_{np} = \bar x_{ac} + \frac{V_Ha_t(1 - d\epsilon/d\alpha)}{C_{L\alpha}},\quad SM = \bar x_{np} - \bar x_{cg} = -\frac{C_{M\alpha}}{C_{L\alpha}}$$
+    $$\text{trim: } C_{L,t} = \frac{C_{M,ac,w} + C_L(\bar x_{cg} - \bar x_{ac})}{V_H},\quad C_{L,w} = C_L - \tfrac{S_t}{S_w}C_{L,t}$$</div>
+  <div><h4>Thermodynamics</h4>
+    $$p = \rho RT,\ h = c_pT,\ c_p - c_v = R,\ \gamma = \tfrac{c_p}{c_v},\ c_p = \tfrac{\gamma R}{\gamma-1}$$
+    $$s_2 - s_1 = c_p\ln\tfrac{T_2}{T_1} - R\ln\tfrac{p_2}{p_1},\qquad \tfrac{p_2}{p_1} = \left(\tfrac{\rho_2}{\rho_1}\right)^\gamma = \left(\tfrac{T_2}{T_1}\right)^{\frac{\gamma}{\gamma-1}}\ \text{(isentropic)}$$</div>
+  <div><h4>Isentropic flow</h4>
+    $$\tfrac{T_0}{T} = 1 + \tfrac{\gamma-1}{2}M^2,\quad \tfrac{p_0}{p} = \left(\tfrac{T_0}{T}\right)^{\frac{\gamma}{\gamma-1}},\quad \tfrac{\rho_0}{\rho} = \left(\tfrac{T_0}{T}\right)^{\frac{1}{\gamma-1}}$$
+    $$h_0 = h + \tfrac{u^2}{2},\quad \tfrac{T^*}{T_0} = 0.8333,\ \tfrac{p^*}{p_0} = 0.5283,\ \tfrac{\rho^*}{\rho_0} = 0.6339\ (\gamma = 1.4)$$</div>
+  <div><h4>Normal shock</h4>
+    $$M_2^2 = \frac{1 + \frac{\gamma-1}{2}M_1^2}{\gamma M_1^2 - \frac{\gamma-1}{2}},\quad \frac{p_2}{p_1} = 1 + \frac{2\gamma}{\gamma+1}(M_1^2 - 1),\quad \frac{\rho_2}{\rho_1} = \frac{(\gamma+1)M_1^2}{2 + (\gamma-1)M_1^2}$$
+    $$T_{02} = T_{01},\qquad s_2 - s_1 = -R\ln\frac{p_{02}}{p_{01}}$$</div>
+  <div><h4>Moving shocks and Pitot probes</h4>
+    $$\text{moving shock at } W\text{: } M_1 = W/a_1,\quad u_{air} = W - M_2a_2 = W(1 - \rho_1/\rho_2)$$
+    $$\text{subsonic Pitot: } p_0/p = (1 + \tfrac{\gamma-1}{2}M^2)^{\frac{\gamma}{\gamma-1}}\ \ (\text{use if } p_0/p &lt; 1.893)$$
+    $$\frac{p_{02}}{p_1} = \left[\frac{(\gamma+1)^2M_1^2}{4\gamma M_1^2 - 2(\gamma-1)}\right]^{\frac{\gamma}{\gamma-1}}\frac{1 - \gamma + 2\gamma M_1^2}{\gamma+1}$$</div>
+</div>
+<div class="prose">
+  <p>Tables for isentropic flow and normal shocks, with a closest-entry lookup, are on the <a href="tables.html">tables page</a>.</p>
+
+  <h2 id="trends"><span class="sec">Part 3</span>Trend tables</h2>
+  <p>These should make physical sense rather than be memorized: they are the fastest way to catch a wrong answer.</p>
+</div>
+<div class="prose">
+<table class="data text"><thead><tr><th>Quantity</th><th>Across a normal shock</th><th>Isentropic, accelerating (subsonic converging or supersonic diverging)</th><th>Isentropic, decelerating</th></tr></thead><tbody>
+  <tr><td>Mach number M</td><td>decreases (to M₂ &lt; 1)</td><td>increases</td><td>decreases</td></tr>
+  <tr><td>Static p, T, ρ</td><td>increase</td><td>decrease</td><td>increase</td></tr>
+  <tr><td>Velocity u</td><td>decreases</td><td>increases</td><td>decreases</td></tr>
+  <tr><td>Speed of sound a</td><td>increases</td><td>decreases</td><td>increases</td></tr>
+  <tr><td>Total temperature T₀, h₀</td><td>same (adiabatic)</td><td>same</td><td>same</td></tr>
+  <tr><td>Total pressure p₀</td><td>decreases (irreversible)</td><td>same</td><td>same</td></tr>
+  <tr><td>Entropy s</td><td>increases</td><td>same</td><td>same</td></tr>
+  <tr><td>Mass flux ρu; tangential velocity (oblique shock)</td><td>same</td><td>(ρu changes with area)</td><td>(ρu changes with area)</td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+  <h2 id="mistakes"><span class="sec">Part 4</span>Mistakes that cost points</h2>
+  <ul>
+    <li><b>Reference area.</b> The airplane lift coefficient is C<sub>L</sub> = L/(q∞S<sub>w</sub>), based on the wing area only. Do not add S<sub>t</sub> to S<sub>w</sub>.</li>
+    <li><b>Airfoil versus wing lift slope.</b> In stability problems, use the finite-wing slopes a<sub>w</sub> = a₀/(1 + a₀/(πAR)) and a<sub>t</sub>, never dc<sub>ℓ</sub>/dα of the airfoil.</li>
+    <li><b>Trim means C<sub>M,cg</sub> = 0.</b> To split the lift between wing and tail at trim, impose C<sub>M,cg</sub> = 0 together with C<sub>L</sub> = C<sub>L,w</sub> + (S<sub>t</sub>/S<sub>w</sub>)C<sub>L,t</sub>. Assuming i<sub>w</sub> = i<sub>t</sub> = 0 instead of solving for them loses credit.</li>
+    <li><b>Downwash.</b> The tail sees α(1 − dε/dα) − ε₀ + i<sub>t</sub>; keep ε₀ when the wing has camber or incidence.</li>
+    <li><b>Supersonic Pitot probes.</b> If p<sub>Pitot</sub>/p &gt; 1.893 a normal shock stands ahead of the probe: use the Rayleigh–Pitot relation (or p₀₂/p₁ in the shock table), not the isentropic relation.</li>
+    <li><b>Freestream versus measured p₀.</b> Behind the shock the probe reads p₀₂ &lt; p₀∞; T₀ is the same on both sides.</li>
+    <li><b>Frames for moving shocks.</b> The jump relations hold in the shock frame. Convert back: the air behind a blast wave moves at W − u₂ in the direction of the wave.</li>
+    <li><b>Tables.</b> Use the closest entry, and say which table and entry you used. Keep 4 significant digits.</li>
+    <li><b>Absolute temperature.</b> Convert °C to K and °F to °R before using p = ρRT or a = √(γRT).</li>
+    <li><b>Multiple choice.</b> Erase completely; two marked answers are graded wrong. For "circle all that apply", every choice must be right.</li>
+  </ul>
+
+  <h2 id="worked"><span class="sec">Part 5</span>Worked exam-style problems</h2>
+  <p>Each tab draws a fresh Part II problem with its full solution shown. Work it on paper first, then open the solution. Press "Another one" for new numbers.</p>
+</div>
+<div class="tabs" id="worked-tabs">
+  <div class="tablist"><span class="tab-title">Problems</span>
+    <button>Stability and trim</button><button>Pitot probe</button><button>Blast wave</button><button>Normal shock</button><button>Wind tunnel</button><button>Elliptic wing</button><button>Lifting line</button></div>
+  <div class="panel" data-gen="p2-stab"></div><div class="panel" data-gen="p2-pitot"></div><div class="panel" data-gen="p2-blast"></div><div class="panel" data-gen="p2-shock"></div>
+  <div class="panel" data-gen="p2-tunnel"></div><div class="panel" data-gen="p2-elliptic"></div><div class="panel" data-gen="p2-llt"></div>
+</div>
+
+<div class="prose">
+  <h2 id="exam"><span class="sec">Part 6</span>Practice exam generator</h2>
+  <p>A full practice exam in the format of the real one: Part I qualitative questions (about 50 points) followed by three Part II problems (about 50 points). Choose a format, optionally start the 2-hour timer, work Part II on paper, enter your final answers, then submit to see your score and every solution. Each exam is different. Your past scores are kept in this browser.</p>
+</div>
+<div id="exam2"></div>
+
+<div class="prose">
+  <h2 id="drill"><span class="sec">Part 7</span>Topic drill</h2>
+  <p>One problem at a time, from the topics you select. Use it to work on a weak area before taking another full exam.</p>
+</div>
+<div id="drill2"></div>
+
+<div class="prose"><h2 id="progress"><span class="sec">Part 8</span>Your progress</h2><p>Average credit on your last attempts of each topic (practice exams and drill).</p></div>
+<div id="mast"></div>
+
+<div class="prose">
+  <h2 id="study"><span class="sec">Part 9</span>How to study for it</h2>
+  <ul>
+    <li><b>Practice like you play.</b> Cover a solution and rework the problem on blank paper using only the equation sheet and tables; then check. The practice exam's timer and table rule are there for this.</li>
+    <li><b>Retrieval practice.</b> Answer without notes: describe a wing that has induced drag at C<sub>L</sub> = 0, and why; sketch delta-wing and high-AR lift curves on one plot; explain what the tail volume coefficient does for stability.</li>
+    <li><b>Elaboration.</b> Explain in your own words the minimum requirements for longitudinal static stability, and the advantages and disadvantages of tapering a wing.</li>
+    <li><b>Make a one-pager.</b> Summarize the unit on a single sheet of unlined paper with colors and sketches; arrange it on purpose so the relationships are visible.</li>
+    <li><b>Redo the homework</b> (HW 6–9) and the previous semester's exam under timed conditions.</li>
+  </ul>
+  <p><a href="index.html">← AAE 334 home</a> · <a href="tables.html">Compressible flow tables</a></p>
+</div>
+</main>
+<script src="../assets/js/gasdyn.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/aae334/engine.js"></script>
+<script src="../assets/js/aae334/gen-exam2.js"></script>
+<script>
+(function () {
+  document.querySelectorAll(".checklist.ck").forEach(ul => {
+    ul.querySelectorAll("li").forEach((li, i) => {
+      const key = "ck2." + ul.dataset.ck + i;
+      li.innerHTML = `<label><input type="checkbox"${AQ.LS.get(key, "") === "1" ? " checked" : ""}><span>${li.innerHTML}</span></label>`;
+      li.querySelector("input").addEventListener("change", e => AQ.LS.set(key, e.target.checked ? "1" : ""));
+    });
+  });
+  // worked problems: show the problem and its solution
+  document.querySelectorAll("#worked-tabs .panel").forEach(panel => {
+    const show = () => {
+      const p = AQ.make(panel.dataset.gen);
+      panel.innerHTML = `<div class="aq-text">${p.q}</div><p class="aq-muted">${p.parts.map(x => x.label.replace(/<[^>]+>/g, "")).join(" · ")}</p>
+        <details><summary>Show the solution</summary><div class="aq-sol show">${p.sol}${UI.table ? "" : ""}<p><b>Answers:</b> ${p.parts.map(x => `${x.label} = ${UI.fmt(x.ans, 4)}`).join("; ")}</p></div></details>
+        <p><button type="button" class="another">Another one →</button></p>`;
+      panel.querySelector(".another").addEventListener("click", show);
+      UI.typeset(panel);
+    };
+    show();
+  });
+  const m = AQ.mastery("#mast", 2);
+  const header = `<h3>AAE 33400 · Practice Midterm Exam 2</h3>
+    <ol><li>Closed book, closed notes. You may use the equation sheet and the compressible flow tables (closest entry; do not interpolate).</li>
+    <li>Unless stated otherwise, the working fluid is air treated as an ideal gas with constant specific heats, γ = 1.4 and R = 287 J/(kg K) = 1716 ft·lbf/(slug·°R).</li>
+    <li>Show your work for Part II on paper. Carry at least 4 significant digits.</li>
+    <li>For multiple choice, select one answer unless told to circle all that apply; for tables, mark one box per row.</li></ol>
+    <p style="text-align:center;margin:.3rem 0 0"><i>Relax. Take a deep breath. You are going to do great!</i></p>`;
+  AQ.exam("#exam2", { exam: 2, header, partI: { target: 50 }, partII: [["p2-stab"], ["p2-pitot", "p2-tunnel", "p2-shock"], ["p2-blast", "p2-shock", "p2-elliptic", "p2-llt"]], onGrade: () => m.render() });
+  AQ.drill("#drill2", { exam: 2, onAnswer: () => m.render() });
+})();
+</script>
+</body>
+</html>

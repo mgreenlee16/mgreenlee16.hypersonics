@@ -127,6 +127,7 @@
         <nav>
           <a href="${ROOT}index.html#lessons" ${here === "lessons" ? 'aria-current="page"' : ""}>Lessons</a>
           <a href="${ROOT}index.html#calculators" ${here === "calculators" ? 'aria-current="page"' : ""}>Calculators</a>
+          <a href="${ROOT}aae334/index.html" ${here === "aae334" ? 'aria-current="page"' : ""}>AAE 334</a>
           <a href="${ROOT}about.html" ${here === "about" ? 'aria-current="page"' : ""}>About</a>
         </nav>
         <div class="tools">
@@ -170,7 +171,8 @@
 
   function buildFooter() {
     const f = document.createElement("footer");
-    f.innerHTML = `<div class="inner">
+    const course = document.body.dataset.section === "aae334" ? `<p style="margin:0 0 .6rem"><b style="color:var(--chrome-text)">AAE 334 review</b> is a personal study aid by Michael Greenlee. Its questions are original practice problems written in the style of the course; they are not official course materials, and the official scope, equation sheet and tables are those given by the instructors.</p>` : "";
+    f.innerHTML = `<div class="inner">${course}
       <b style="color:var(--chrome-text)">Learn Hypersonics</b> by Michael Greenlee — interactive notes on compressible aerodynamics, hypersonic flight and high-speed testing.
       Values come from closed-form relations for a calorically perfect gas unless a page says otherwise; they are for learning, not design.
       Main references: J. D. Anderson, <i>Fundamentals of Aerodynamics</i> and <i>Modern Compressible Flow</i>; Liepmann &amp; Roshko, <i>Elements of Gasdynamics</i>;
